@@ -34,21 +34,23 @@ class MNISTEnsembleBooster:
         fewshot_examples = self._get_hard_examples(3)
         random.shuffle(fewshot_examples)
         
-        # Create classifier and optimizer
+        # Create and train optimized classifier
         classifier = MNISTClassifier(model_name=self.model_name)
         optimizer = LabeledFewShot(k=len(fewshot_examples))
+        optimized_classifier = optimizer.compile(classifier, trainset=fewshot_examples)
         
-        # Train with current hard examples
-        optimized = optimizer.compile(classifier, trainset=fewshot_examples)
-        self.classifiers.append(optimized)
+        # Store both the compiled classifier and its predictor module
+        self.classifiers.append(optimized_classifier)
+        optimized_predictor = optimized_classifier.predict
         
         # Use same 100 samples repeatedly to find hard cases
         eval_data = self.test_pool[:100]  # Fixed set for consistent evaluation
-        # Evaluate with 100 threads for parallel processing
+        # Evaluate using the actual optimized predictor from this iteration
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
-        accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)  # Convert count to fraction
+        evaluator.inference.classifier.predict = optimized_predictor  # Use current iteration's optimized predictor
+        accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)
         
-        # Collect misclassified examples
+        # Get misclassifications using the optimized predictor
         new_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
         self.hard_examples = new_hard  # Reset with only current iteration's hard examples
         self.misclassification_history[iteration] = new_hard
