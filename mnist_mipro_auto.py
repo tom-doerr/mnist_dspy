@@ -87,14 +87,25 @@ class MNISTMIPROAutoTrainer:
         return accuracy
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train MNIST classifier with MIPROv2')
-    parser.add_argument('--light', action='store_true', help='Use light optimization preset')
-    parser.add_argument('--medium', action='store_true', help='Use medium optimization preset')
-    parser.add_argument('--heavy', action='store_true', help='Use heavy optimization preset')
+    parser = argparse.ArgumentParser(description='Train MNIST classifier with MIPROv2',
+                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    # Optimization presets (mutually exclusive)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--light', action='store_true', 
+                      help='Light optimization: Fastest run with minimal optimization')
+    group.add_argument('--medium', action='store_true', 
+                      help='Medium optimization: Balanced optimization (default)')
+    group.add_argument('--heavy', action='store_true', 
+                      help='Heavy optimization: Most thorough but slowest optimization')
+    
+    # Model selection
     parser.add_argument('--model', choices=['reasoner', 'chat'], default='chat',
-                      help='Model to use: reasoner or chat (default: chat)')
+                      help='Base model: reasoner (specialized) or chat (general purpose)')
+    
+    # Performance options
     parser.add_argument('--no-cache', action='store_true',
-                      help='Disable model caching')
+                      help='Disable model response caching (slower but fresh results)')
+    
     return parser.parse_args()
 
 def main():
