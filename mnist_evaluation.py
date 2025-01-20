@@ -5,8 +5,8 @@ from mnist_inference import MNISTInference
 from mnist_dspy import create_test_data
 
 class MNISTEvaluator:
-    def __init__(self):
-        self.inference = MNISTInference()
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
+        self.inference = MNISTInference(model_name=model_name, no_cache=no_cache)
 
     def evaluate_accuracy(self, test_data: List[Tuple[str, str]]) -> float:
         correct = 0
