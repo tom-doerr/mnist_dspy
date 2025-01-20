@@ -46,7 +46,7 @@ class MNISTEnsembleBooster:
         eval_data = self.test_pool[:100]  # Fixed set for consistent evaluation
         # Evaluate with 100 threads for parallel processing
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
-        accuracy = evaluator.evaluate_accuracy(eval_data)
+        accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)  # Convert count to fraction
         
         # Collect misclassified examples
         new_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
