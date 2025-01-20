@@ -7,20 +7,26 @@ from mnist_evaluation import MNISTEvaluator
 class MNISTTrainer:
     def __init__(self):
         self.classifier = MNISTClassifier()
-        # Convert training data to dspy.Example format
+        # Create training data with proper dspy.Example format
         raw_train = create_training_data()
-        self.train_data = [dspy.Example(pixel_matrix=pixels, digit=label).with_inputs('pixel_matrix') 
-                          for pixels, label in raw_train]
+        self.train_data = [
+            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            for pixels, label in raw_train
+        ]
         
-        # Convert test data to dspy.Example format
+        # Create test data with proper dspy.Example format
         raw_test = create_test_data()
-        self.test_data = [dspy.Example(pixel_matrix=pixels, digit=label).with_inputs('pixel_matrix')
-                         for pixels, label in raw_test]
+        self.test_data = [
+            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            for pixels, label in raw_test
+        ]
         self.evaluator = MNISTEvaluator()
 
     def _accuracy_metric(self, example, pred, trace=None):
-        # Access the digit from the example and compare with prediction
-        return str(example.digit) == str(pred.digit)
+        # Ensure both values are strings and compare
+        true_label = str(example.digit) if hasattr(example, 'digit') else str(example)
+        pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
+        return true_label == pred_label
 
     def train(self):
         print("Initializing MIPROv2 optimizer...")
