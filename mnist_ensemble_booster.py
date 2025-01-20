@@ -81,7 +81,7 @@ class MNISTEnsembleBooster:
         for i in range(self.iterations):
             acc = self.train_iteration(i)
             remaining = len(self.hard_examples)
-            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/1000:.1%})")
+            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/100:.1%})")
         
         print("\nRunning final ensemble evaluation...")
         final_acc, results = self.evaluate_ensemble()
