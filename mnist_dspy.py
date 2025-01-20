@@ -13,7 +13,7 @@ class MNISTClassifier(dspy.Module):
         super().__init__()
         self.model_name = model_name
         # Configure model with temperature only for chat models
-        lm_kwargs = {"temperature": 0.3} if "chat" in model_name else {}
+        lm_kwargs = {"temperature": 1.0} if "chat" in model_name else {}
         self.predict = dspy.Predict(MNISTSignature, lm=lm_kwargs)
         
     def forward(self, pixel_matrix: str) -> str:
