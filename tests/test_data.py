@@ -10,4 +10,6 @@ def sample_training_data():
 @pytest.fixture
 def sample_test_data():
     mnist = MNISTData()
-    return mnist.get_test_data()[:50]  # Small subset for fast testing
+    raw_data = mnist.get_test_data()[:50]  # Small subset for fast testing
+    return [dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix') 
+            for pixels, label in raw_data]
