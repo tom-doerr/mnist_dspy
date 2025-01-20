@@ -1,4 +1,5 @@
 import pytest
+import dspy
 from mnist_data import MNISTData
 
 @pytest.fixture
