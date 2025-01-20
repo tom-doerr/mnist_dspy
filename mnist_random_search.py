@@ -66,6 +66,8 @@ class MNISTRandomSearch:
                     self.best_config = config
                 
                 print(f"Trial accuracy: {accuracy:.2%}")
+                print(f"   Best so far: {self.best_accuracy:.2%} with")
+                print("   " + "\n   ".join(f"{k}: {v}" for k,v in self.best_config.items()))
                 
             except Exception as e:
                 print(f"⚠️ Config failed: {str(e)}")
