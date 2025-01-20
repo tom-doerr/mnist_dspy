@@ -18,15 +18,15 @@ class MNISTTrainer:
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
             max_bootstrapped_demos=3,
-            max_labeled_demos=5,
-            requires_permission_to_run=False
+            max_labeled_demos=5
         )
         
         print("Starting training with MIPROv2...")
         print(f"Training on {len(self.train_data)} samples")
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
-            trainset=self.train_data
+            trainset=self.train_data,
+            requires_permission_to_run=False
         )
         print("Training completed successfully")
         
