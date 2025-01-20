@@ -10,8 +10,8 @@ class MNISTTrainer:
         self.run_config = {
             'model': 'MNISTClassifier',
             'optimizer': 'MIPROv2',
-            'max_bootstrapped_demos': 3,
-            'max_labeled_demos': 5,
+            'max_bootstrapped_demos': 100,
+            'max_labeled_demos': 100,
             'num_threads': 100,
             'train_samples': 1000,
             'test_samples': 200,
