@@ -11,7 +11,7 @@ class MNISTEvaluator:
         self.inference = MNISTInference(model_name=model_name, no_cache=no_cache)
         self.num_threads = num_threads
 
-    def evaluate_accuracy(self, test_data: List[Tuple[str, str]]) -> float:
+    def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None) -> float:
         evaluator = Evaluate(
             devset=test_data,
             metric=lambda example, pred: example.digit == pred,
@@ -20,11 +20,14 @@ class MNISTEvaluator:
             display_table=0
         )
         
+        # Use custom predictor if provided, else default classifier
+        predictor = predictor or self.inference.classifier
+        
         # Configure LM with caching and threading
         dspy.configure(lm=dspy.LM(self.inference.model_name, cache=True, num_threads=self.num_threads))
         
         # Run evaluation using DSPy's Evaluate utility
-        accuracy = evaluator(self.inference.classifier)
+        accuracy = evaluator(predictor)
         return accuracy
 
     def run_evaluation(self) -> float:
