@@ -50,7 +50,10 @@ class MNISTRandomSearch:
                 
                 # Train and evaluate
                 optimized_classifier = teleprompter.compile(classifier, trainset=train_data)
-                accuracy = evaluator.evaluate_accuracy(create_test_data())
+                # Create new evaluator with optimized model
+                optimized_evaluator = MNISTEvaluator()
+                optimized_evaluator.inference.classifier = optimized_classifier
+                accuracy = optimized_evaluator.evaluate_accuracy(create_test_data())
                 
                 # Track results
                 result = config.copy()
