@@ -89,14 +89,9 @@ class MNISTMIPROAutoTrainer:
 def parse_args():
     parser = argparse.ArgumentParser(description='Train MNIST classifier with MIPROv2',
                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    # Optimization presets (mutually exclusive)
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--light', action='store_true', 
-                      help='Light optimization: Fastest run with minimal optimization')
-    group.add_argument('--medium', action='store_true', 
-                      help='Medium optimization: Balanced optimization (default)')
-    group.add_argument('--heavy', action='store_true', 
-                      help='Heavy optimization: Most thorough but slowest optimization')
+    # Optimization preset selection
+    parser.add_argument('--auto', choices=['light', 'medium', 'heavy'], default='light',
+                      help='Optimization level: light (fastest), medium (balanced), heavy (most thorough)')
     
     # Model selection
     parser.add_argument('--model', choices=['reasoner', 'chat'], default='chat',
@@ -111,13 +106,8 @@ def parse_args():
 def main():
     args = parse_args()
     
-    # Determine auto setting based on args
-    if args.medium:
-        auto_setting = "medium"
-    elif args.heavy:
-        auto_setting = "heavy"
-    else:
-        auto_setting = "light"  # Default to light if no option specified
+    # Get auto setting from command line
+    auto_setting = args.auto
         
     # Set model based on selection
     model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
