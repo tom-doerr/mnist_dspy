@@ -77,7 +77,10 @@ class MNISTMIPROAutoTrainer:
             
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples")
-        accuracy = self.evaluator.evaluate_accuracy(self.test_data)
+        # Create new evaluator with optimized model
+        optimized_evaluator = MNISTEvaluator()
+        optimized_evaluator.inference.classifier = self.optimized_classifier
+        accuracy = optimized_evaluator.evaluate_accuracy(self.test_data)
         
         # Add final results to run config
         self.run_config['final_accuracy'] = float(accuracy)

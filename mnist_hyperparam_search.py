@@ -21,6 +21,8 @@ class MNISTHyperparamSearch:
                     auto_setting=auto_level,
                     model_name='deepseek/deepseek-reasoner' if model == 'reasoner' else 'deepseek/deepseek-chat'
                 )
+                # Ensure evaluator uses optimized model
+                trainer.evaluator.inference.classifier = trainer.optimized_classifier
                 trainer.train()
                 accuracy = trainer.evaluate()
                 
