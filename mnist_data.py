@@ -28,7 +28,11 @@ class MNISTData:
         return X_train, X_test, y_train, y_test
 
     def _matrix_to_text(self, matrix: np.ndarray) -> str:
-        return '\n'.join(' '.join(str(pixel) for pixel in row) for row in matrix.reshape(28, 28))
+        reshaped = matrix.reshape(28, 28)
+        print(f"Sample matrix (first 5x5):")
+        for row in reshaped[:5]:
+            print(' '.join(f"{pixel:3}" for pixel in row[:5]))
+        return '\n'.join(' '.join(str(pixel) for pixel in row) for row in reshaped)
 
     def get_training_data(self) -> List[Tuple[str, int]]:
         return [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_train, self.y_train)]

@@ -15,6 +15,7 @@ class MNISTEvaluator:
         with tqdm(test_data, desc="Evaluating", unit="sample") as pbar:
             for i, (pixels, true_label) in enumerate(pbar):
                 predicted = self.inference.predict(pixels)
+                print(f"True label: {true_label}, Predicted: {predicted}")
                 if predicted == true_label:
                     correct += 1
                 

@@ -13,7 +13,10 @@ class MNISTClassifier(dspy.Module):
         self.predict = dspy.Predict(MNISTSignature)
         
     def forward(self, pixel_matrix: str) -> str:
+        print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
         result = self.predict(pixel_matrix=pixel_matrix)
+        print(f"Model prediction: {result.digit}")
+        print(f"Full prediction result: {result}")
         return result.digit
 
 def create_training_data() -> List[Tuple[str, str]]:
