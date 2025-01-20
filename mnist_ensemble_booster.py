@@ -62,7 +62,7 @@ class MNISTEnsembleBooster:
         voting_results = {}
         
         for ex in tqdm(test_data, desc="Ensemble Evaluation"):
-            predictions = [clf(pixel_matrix=ex.pixel_matrix).digit for clf in self.classifiers]
+            predictions = [clf(pixel_matrix=ex.pixel_matrix) for clf in self.classifiers]
             majority = max(set(predictions), key=predictions.count)
             voting_results[ex.pixel_matrix] = {
                 'predictions': predictions,

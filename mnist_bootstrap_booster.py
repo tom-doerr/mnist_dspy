@@ -54,7 +54,7 @@ class MNISTBootstrapBooster:
 
     def forward(self, pixel_matrix: str) -> str:
         """Make prediction with ensemble voting"""
-        predictions = [model(pixel_matrix=pixel_matrix).digit 
+        predictions = [model(pixel_matrix=pixel_matrix)
                       for model in self.models]
         return max(set(predictions), key=predictions.count)
 
