@@ -18,8 +18,7 @@ class MNISTRandomSearch:
         return {
             'num_bootstrapped_demos': random.choice([5, 10, 15, 20]),
             'max_labeled_demos': random.choice([5, 10, 15, 20]),
-            'train_samples': random.choice([500, 1000, 1500, 2000]),
-            'num_threads': random.choice([4, 8, 16, 32, 64])
+            'train_samples': random.choice([500, 1000, 1500, 2000])
         }
 
     def run_search(self):
@@ -43,8 +42,7 @@ class MNISTRandomSearch:
                 # Configure optimizer
                 teleprompter = BootstrapFewShot(
                     max_bootstrapped_demos=config['num_bootstrapped_demos'],
-                    max_labeled_demos=config['max_labeled_demos'],
-                    num_threads=config['num_threads']
+                    max_labeled_demos=config['max_labeled_demos']
                 )
                 
                 # Train and evaluate
