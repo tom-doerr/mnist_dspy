@@ -109,7 +109,10 @@ class MNISTEnsembleBooster:
         for i in range(self.iterations):
             acc = self.train_iteration(i)
             remaining = len(self.hard_examples)
-            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/100:.1%})")
+            never_correct_pct = (sum(1 for ex in self.hard_examples 
+                                   if all(ex in hist for hist in self.misclassification_history.values())) 
+                                / remaining * 100) if remaining > 0 else 0
+            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/100:.1%}) | Never-Correct: {never_correct_pct:.1f}%")
         
         print("\nRunning final ensemble evaluation...")
         final_acc, results = self.evaluate_ensemble()
