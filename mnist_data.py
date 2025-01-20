@@ -30,7 +30,8 @@ class MNISTData:
 
     def _matrix_to_text(self, matrix: np.ndarray) -> str:
         reshaped = matrix.reshape(28, 28)
-        return '\n'.join(' '.join(str(pixel) for pixel in row) for row in reshaped)
+        # Optimized string conversion using numpy operations
+        return '\n'.join([' '.join(map(str, row)) for row in reshaped])
 
     def get_training_data(self, validation_ratio: float = 0.1) -> Tuple[List[Tuple[str, int]], List[Tuple[str, int]]]:
         """Split training data into train/validation sets"""

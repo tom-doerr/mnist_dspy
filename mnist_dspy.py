@@ -58,9 +58,12 @@ def create_training_data() -> List[Tuple[str, str]]:
     print(f"Using first 1000 samples from {len(train_data)} available training samples")
     return [(pixels, str(label)) for pixels, label in train_data[:1000]]  # Use subset for training
 
-def create_test_data() -> List[Tuple[str, str]]:
+def create_test_data() -> List[dspy.Example]:
     print("Creating test data...")
     mnist = MNISTData()
-    test_data = mnist.get_test_data()
-    print(f"Using first 200 samples from {len(test_data)} available test samples")
-    return [(pixels, str(label)) for pixels, label in test_data[:200]]  # Use subset for testing
+    raw_test = mnist.get_test_data()
+    print(f"Using first 200 samples from {len(raw_test)} available test samples")
+    return [
+        dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+        for pixels, label in raw_test[:200]
+    ]
