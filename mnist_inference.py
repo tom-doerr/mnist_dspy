@@ -8,7 +8,7 @@ class MNISTInference:
         self._configure_model()
 
     def _configure_model(self):
-        model = dspy.OpenAI(
+        model = dspy.LM(
             model='deepseek/deepseek-chat',
             temperature=1.0
         )
