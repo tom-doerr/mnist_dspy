@@ -6,7 +6,7 @@ from mnist_dspy import MNISTClassifier, MNISTBooster, create_training_data, crea
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTMIPROAutoTrainer:
-    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
+    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False, boosting_iterations: int = 3):
         # Initialize run configuration
         self.run_config = {
             'model': 'MNISTClassifier',
@@ -17,12 +17,13 @@ class MNISTMIPROAutoTrainer:
             'num_threads': 100,  # High parallelism for maximum throughput
             'random_state': 42,
             'model_name': model_name,
-            'no_cache': no_cache
+            'no_cache': no_cache,
+            'boosting_iterations': boosting_iterations
         }
         
         self.classifier = MNISTBooster(
-            model_name="deepseek/deepseek-chat",
-            boosting_iterations=self.run_config.get('boosting_iterations', 3)
+            model_name=model_name,
+            boosting_iterations=boosting_iterations
         )
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
@@ -103,6 +104,8 @@ def parse_args():
     # Performance options
     parser.add_argument('--no-cache', action='store_true',
                       help='Disable model response caching (slower but fresh results)')
+    parser.add_argument('--boosting', type=int, default=3,
+                      help='Number of boosting iterations for ensemble voting')
     
     return parser.parse_args()
 
@@ -116,7 +119,12 @@ def main():
     model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
         
     print(f"Running MNIST Trainer with MIPROv2 (auto={auto_setting})")
-    trainer = MNISTMIPROAutoTrainer(auto_setting=auto_setting, no_cache=args.no_cache)
+    trainer = MNISTMIPROAutoTrainer(
+        auto_setting=auto_setting,
+        model_name=model_name,
+        no_cache=args.no_cache,
+        boosting_iterations=args.boosting
+    )
     print("Training model...")
     trainer.train()
     accuracy = trainer.evaluate()
