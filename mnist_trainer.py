@@ -81,6 +81,7 @@ class MNISTTrainer:
         return accuracy
 
 if __name__ == "__main__":
+    print("Running MNIST Trainer with MIPROv2 optimizer")
     trainer = MNISTTrainer()
     print("Training model...")
     trainer.train()

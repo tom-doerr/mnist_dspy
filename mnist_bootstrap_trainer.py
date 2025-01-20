@@ -78,6 +78,7 @@ class MNISTBootstrapTrainer:
         return accuracy
 
 if __name__ == "__main__":
+    print("Running MNIST Trainer with BootstrapFewShot optimizer")
     trainer = MNISTBootstrapTrainer()
     print("Training model...")
     trainer.train()
