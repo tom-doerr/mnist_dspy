@@ -42,8 +42,8 @@ class MNISTEnsembleBooster:
         optimized = optimizer.compile(classifier, trainset=fewshot_examples)
         self.classifiers.append(optimized)
         
-        # Evaluate on 100 random samples
-        eval_data = random.sample(self.test_pool, 100)
+        # Use same 100 samples repeatedly to find hard cases
+        eval_data = self.test_pool[:100]  # Fixed set for consistent evaluation
         # Evaluate with 100 threads for parallel processing
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
         accuracy = evaluator.evaluate_accuracy(eval_data)
