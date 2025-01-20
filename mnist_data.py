@@ -32,8 +32,11 @@ class MNISTData:
         reshaped = matrix.reshape(28, 28)
         return '\n'.join(' '.join(str(pixel) for pixel in row) for row in reshaped)
 
-    def get_training_data(self) -> List[Tuple[str, int]]:
-        return [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_train, self.y_train)]
+    def get_training_data(self, validation_ratio: float = 0.1) -> Tuple[List[Tuple[str, int]], List[Tuple[str, int]]]:
+        """Split training data into train/validation sets"""
+        full_data = [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_train, self.y_train)]
+        val_size = int(len(full_data) * validation_ratio)
+        return full_data[val_size:], full_data[:val_size]
 
     def get_test_data(self) -> List[Tuple[str, int]]:
         return [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_test, self.y_test)]
