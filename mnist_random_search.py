@@ -34,9 +34,12 @@ class MNISTRandomSearch:
                 
                 # Create training data
                 raw_train = create_training_data()
+                # Shuffle and sample training data
+                random.shuffle(raw_train)
+                sampled_train = raw_train[:config['train_samples']]
                 train_data = [
                     dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
-                    for pixels, label in raw_train[:config['train_samples']]
+                    for pixels, label in sampled_train
                 ]
                 
                 # Configure optimizer
