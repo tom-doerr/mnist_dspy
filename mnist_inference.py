@@ -4,13 +4,13 @@ from mnist_dspy import MNISTClassifier
 from typing import List, Tuple
 
 class MNISTInference:
-    def __init__(self):
-        self.classifier = MNISTClassifier()
-        self._configure_model()
+    def __init__(self, model_name: str = "deepseek/deepseek-chat"):
+        self.classifier = MNISTClassifier(model_name)
+        self._configure_model(model_name)
 
-    def _configure_model(self):
+    def _configure_model(self, model_name: str):
         model = dspy.LM(
-            model='deepseek/deepseek-chat',
+            model=model_name,
             temperature=1.0
         )
         dspy.settings.configure(lm=model)

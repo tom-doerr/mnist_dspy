@@ -6,7 +6,7 @@ from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTMIPROAutoTrainer:
-    def __init__(self, auto_setting: str = "light"):
+    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat"):
         # Initialize run configuration
         self.run_config = {
             'model': 'MNISTClassifier',
@@ -14,10 +14,11 @@ class MNISTMIPROAutoTrainer:
             'auto_setting': auto_setting,
             'train_samples': 1000,
             'test_samples': 200,
-            'random_state': 42
+            'random_state': 42,
+            'model_name': model_name
         }
         
-        self.classifier = MNISTClassifier()
+        self.classifier = MNISTClassifier(model_name=model_name)
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
         self.train_data = [
@@ -81,6 +82,8 @@ def parse_args():
     parser.add_argument('--light', action='store_true', help='Use light optimization preset')
     parser.add_argument('--medium', action='store_true', help='Use medium optimization preset')
     parser.add_argument('--heavy', action='store_true', help='Use heavy optimization preset')
+    parser.add_argument('--model', choices=['reasoner', 'chat'], default='chat',
+                      help='Model to use: reasoner or chat (default: chat)')
     return parser.parse_args()
 
 def main():
@@ -93,6 +96,9 @@ def main():
         auto_setting = "heavy"
     else:
         auto_setting = "light"  # Default to light if no option specified
+        
+    # Set model based on selection
+    model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
         
     print(f"Running MNIST Trainer with MIPROv2 (auto={auto_setting})")
     trainer = MNISTMIPROAutoTrainer(auto_setting=auto_setting)
