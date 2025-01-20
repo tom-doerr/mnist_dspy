@@ -87,3 +87,8 @@ if __name__ == "__main__":
     trainer.train()
     accuracy = trainer.evaluate()
     print(f"Optimized model accuracy: {accuracy:.2%}")
+    
+    print("\n=== Final Run Configuration ===")
+    for key, value in trainer.run_config.items():
+        print(f"{key}: {value}")
+    print("==============================")
