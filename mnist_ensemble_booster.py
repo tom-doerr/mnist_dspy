@@ -44,7 +44,8 @@ class MNISTEnsembleBooster:
         
         # Evaluate on 100 random samples
         eval_data = random.sample(self.test_pool, 100)
-        evaluator = MNISTEvaluator(model_name=self.model_name)
+        # Evaluate with 100 threads for parallel processing
+        evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
         accuracy = evaluator.evaluate_accuracy(eval_data)
         
         # Collect misclassified examples
