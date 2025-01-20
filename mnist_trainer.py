@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import dspy
 from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
@@ -6,12 +7,20 @@ from mnist_evaluation import MNISTEvaluator
 class MNISTTrainer:
     def __init__(self):
         self.classifier = MNISTClassifier()
-        self.train_data = create_training_data()
-        self.test_data = create_test_data()
+        # Convert training data to dspy.Example format
+        raw_train = create_training_data()
+        self.train_data = [dspy.Example(pixel_matrix=pixels, digit=label).with_inputs('pixel_matrix') 
+                          for pixels, label in raw_train]
+        
+        # Convert test data to dspy.Example format
+        raw_test = create_test_data()
+        self.test_data = [dspy.Example(pixel_matrix=pixels, digit=label).with_inputs('pixel_matrix')
+                         for pixels, label in raw_test]
         self.evaluator = MNISTEvaluator()
 
     def _accuracy_metric(self, example, pred, trace=None):
-        return example.digit == pred.digit
+        # Convert both to strings for comparison
+        return str(example[1]) == str(pred.digit)
 
     def train(self):
         print("Initializing MIPROv2 optimizer...")
