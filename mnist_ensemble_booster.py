@@ -30,7 +30,23 @@ class MNISTEnsembleBooster:
         Prioritizes examples that persist across iterations"""
         if not self.hard_examples:
             return random.sample(self.raw_data, min(3, len(self.raw_data)))
-        return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
+            
+        # Explicitly prioritize never-correct examples first
+        never_correct = [ex for ex in self.hard_examples 
+                       if all(ex in hist for hist in self.misclassification_history.values())]
+        persistent = [ex for ex in self.hard_examples if ex not in never_correct]
+        
+        # Sample priority order: never-correct -> persistent -> new
+        samples = []
+        samples += random.sample(never_correct, min(num_samples, len(never_correct)))
+        remaining = num_samples - len(samples)
+        if remaining > 0:
+            samples += random.sample(persistent, min(remaining, len(persistent)))
+        remaining = num_samples - len(samples)
+        if remaining > 0:
+            samples += random.sample(self.hard_examples, min(remaining, len(self.hard_examples)))
+            
+        return samples[:num_samples]  # Ensure exact sample count
 
     def train_iteration(self, iteration: int) -> float:
         """Train a single iteration classifier"""
