@@ -42,6 +42,12 @@ class MNISTTrainer:
         return true_label == pred_label
 
     def train(self):
+        # Evaluate baseline model before optimization
+        print("Evaluating baseline model before optimization...")
+        baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data)
+        self.run_config['baseline_accuracy'] = float(baseline_accuracy)
+        print(f"Baseline accuracy: {baseline_accuracy:.2%}")
+        
         print("Initializing MIPROv2 optimizer...")
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
