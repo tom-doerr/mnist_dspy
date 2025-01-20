@@ -14,7 +14,7 @@ class MNISTEvaluator:
     def evaluate_accuracy(self, test_data: List[Tuple[str, str]]) -> float:
         evaluator = Evaluate(
             devset=test_data,
-            metric=lambda example, pred: example.digit == pred.digit,
+            metric=lambda example, pred: example.digit == pred,
             num_threads=self.num_threads,
             display_progress=True,
             display_table=0
