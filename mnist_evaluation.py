@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from typing import List, Tuple
 from mnist_inference import MNISTInference
 from mnist_dspy import create_test_data
