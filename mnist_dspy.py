@@ -13,9 +13,10 @@ class MNISTClassifier(dspy.Module):
         super().__init__()
         self.model_name = model_name
         self.verbose = verbose
-        # Configure model with temperature only for chat models
-        # Only pass temperature for chat models
-        if "chat" in model_name:
+        # Configure model temperature explicitly
+        if model_name == "deepseek/deepseek-reasoner":
+            self.predict = dspy.Predict(MNISTSignature, lm={"temperature": None})
+        elif "chat" in model_name:
             self.predict = dspy.Predict(MNISTSignature, lm={"temperature": 1.0})
         else:
             self.predict = dspy.Predict(MNISTSignature)
