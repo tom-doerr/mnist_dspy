@@ -64,12 +64,15 @@ class MNISTEnsembleBooster:
         return accuracy
 
     def evaluate_ensemble(self) -> Tuple[float, Dict]:
-        """Final evaluation with majority voting"""
+        """Final evaluation with majority voting using threaded evaluation"""
         test_data = random.sample(self.test_pool, 1000)
-        correct = 0
         voting_results = {}
         
-        for ex in tqdm(test_data, desc="Ensemble Evaluation"):
+        # Create evaluator with high parallelism
+        evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
+        
+        # Define threaded evaluation function
+        def ensemble_predict(ex):
             predictions = [clf(pixel_matrix=ex.pixel_matrix) for clf in self.classifiers]
             majority = max(set(predictions), key=predictions.count)
             voting_results[ex.pixel_matrix] = {
@@ -77,8 +80,10 @@ class MNISTEnsembleBooster:
                 'majority': majority,
                 'true_label': ex.digit
             }
-            if majority == ex.digit:
-                correct += 1
+            return dspy.Prediction(digit=majority)
+            
+        # Run parallel evaluation
+        correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict)
                 
         return correct / len(test_data), voting_results
 
