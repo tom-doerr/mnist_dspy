@@ -73,13 +73,18 @@ class MNISTEnsembleBooster:
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
         
         # Define threaded evaluation function
-        def ensemble_predict(ex):
-            predictions = [clf(pixel_matrix=ex.pixel_matrix) for clf in self.classifiers]
+        def ensemble_predict(pixel_matrix: str) -> dspy.Prediction:
+            """Make ensemble prediction for a single image matrix"""
+            # Collect predictions from all classifiers
+            predictions = [clf(pixel_matrix=pixel_matrix).digit for clf in self.classifiers]
+            
+            # Get majority vote
             majority = max(set(predictions), key=predictions.count)
-            voting_results[ex.pixel_matrix] = {
+            
+            # Store results with input hash for analysis
+            voting_results[hash(pixel_matrix)] = {
                 'predictions': predictions,
-                'majority': majority,
-                'true_label': ex.digit
+                'majority': majority
             }
             return dspy.Prediction(digit=majority)
             
