@@ -10,8 +10,8 @@ class MNISTBootstrapTrainer:
         self.run_config = {
             'model': 'MNISTClassifier',
             'optimizer': 'BootstrapFewShot',
-            'max_bootstrapped_demos': 100,
-            'max_labeled_demos': 100,
+            'max_bootstrapped_demos': 10,
+            'max_labeled_demos': 10,
             'num_threads': 100,
             'train_samples': 1000,
             'test_samples': 200,
