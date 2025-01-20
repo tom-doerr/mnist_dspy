@@ -59,6 +59,7 @@ class MNISTEnsembleBooster:
             self.hard_examples = persistent_hard + new_hard[:20]  # Keep core persistent + new
         else:
             self.hard_examples = current_hard
+            new_hard = current_hard
         self.misclassification_history[iteration] = new_hard
         
         return accuracy
