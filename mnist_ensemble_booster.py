@@ -36,7 +36,7 @@ class MNISTEnsembleBooster:
         
         # Create classifier and optimizer
         classifier = MNISTClassifier(model_name=self.model_name)
-        optimizer = LabeledFewShot(k=len(fewshot_examples), num_threads=100)
+        optimizer = LabeledFewShot(k=len(fewshot_examples))
         
         # Train with current hard examples
         optimized = optimizer.compile(classifier, trainset=fewshot_examples)
