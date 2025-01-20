@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict
 from tqdm import tqdm
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
-from dspy.teleprompt import LabelFewShot
+from dspy.teleprompt import LabeledFewShot
 
 class MNISTEnsembleBooster:
     def __init__(self, iterations: int = 10, model_name: str = "deepseek/deepseek-chat"):
@@ -36,7 +36,7 @@ class MNISTEnsembleBooster:
         
         # Create classifier and optimizer
         classifier = MNISTClassifier(model_name=self.model_name)
-        optimizer = LabelFewShot(k=len(fewshot_examples), num_threads=100)
+        optimizer = LabeledFewShot(k=len(fewshot_examples), num_threads=100)
         
         # Train with current hard examples
         optimized = optimizer.compile(classifier, trainset=fewshot_examples)
