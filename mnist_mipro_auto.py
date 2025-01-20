@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import random
 import dspy
 from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, MNISTBooster, create_training_data, create_test_data
