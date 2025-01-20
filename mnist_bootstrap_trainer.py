@@ -45,8 +45,7 @@ class MNISTBootstrapTrainer:
         teleprompter = BootstrapFewShot(
             metric=self._accuracy_metric,
             max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
-            max_labeled_demos=self.run_config['max_labeled_demos'],
-            num_threads=self.run_config['num_threads']
+            max_labeled_demos=self.run_config['max_labeled_demos']
         )
         
         print("Starting training with BootstrapFewShot...")
