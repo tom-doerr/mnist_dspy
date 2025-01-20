@@ -14,7 +14,7 @@ class MNISTMIPROAutoTrainer:
             'auto_setting': auto_setting,
             'train_samples': 5000,  # Match increased sample size
             'test_samples': 1000,
-            'num_threads': 4,  # Added explicit thread count
+            'num_threads': 100,  # High parallelism for maximum throughput
             'random_state': 42,
             'model_name': model_name,
             'no_cache': no_cache

@@ -12,7 +12,7 @@ class MNISTTrainer:
             'optimizer': 'MIPROv2',
             'max_bootstrapped_demos': 20,
             'max_labeled_demos': 20,
-            'num_threads': 4,  # Reduced from 100 to prevent resource contention
+            'num_threads': 100,  # High parallelism for maximum throughput
             'train_samples': 5000,  # Increased sample size
             'test_samples': 1000,
             'requires_permission': False,
