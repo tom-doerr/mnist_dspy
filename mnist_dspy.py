@@ -51,19 +51,19 @@ class MNISTClassifier(dspy.Module):
             print(f"Full prediction result: {result}")
         return result.digit
 
-def create_training_data() -> List[Tuple[str, str]]:
+def create_training_data(samples: int = 1000) -> List[Tuple[str, str]]:
     print("Creating training data...")
     mnist = MNISTData()
     train_data, val_data = mnist.get_training_data()
-    print(f"Using first 1000 samples from {len(train_data)} available training samples")
-    return [(pixels, str(label)) for pixels, label in train_data[:1000]]  # Use subset for training
+    print(f"Using {samples} samples from {len(train_data)} available training samples")
+    return [(pixels, str(label)) for pixels, label in train_data[:samples]]
 
-def create_test_data() -> List[dspy.Example]:
+def create_test_data(samples: int = 200) -> List[dspy.Example]:
     print("Creating test data...")
     mnist = MNISTData()
     raw_test = mnist.get_test_data()
-    print(f"Using first 200 samples from {len(raw_test)} available test samples")
+    print(f"Using {samples} samples from {len(raw_test)} available test samples")
     return [
         dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
-        for pixels, label in raw_test[:200]
+        for pixels, label in raw_test[:samples]
     ]

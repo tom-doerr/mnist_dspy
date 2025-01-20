@@ -26,14 +26,17 @@ class MNISTMIPROAutoTrainer:
             boosting_iterations=boosting_iterations
         )
         # Create training data with proper dspy.Example format
-        raw_train = create_training_data()
+        raw_train = create_training_data(samples=self.run_config['train_samples'])
+        # Shuffle and sample training data
+        random.shuffle(raw_train)
+        sampled_train = raw_train[:self.run_config['train_samples']]
         self.train_data = [
             dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
-            for pixels, label in raw_train
+            for pixels, label in sampled_train
         ]
         
         # Create test data with proper dspy.Example format
-        raw_test = create_test_data()
+        raw_test = create_test_data(samples=self.run_config['test_samples'])
         self.test_data = [
             dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_test
