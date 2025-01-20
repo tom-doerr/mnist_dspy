@@ -12,6 +12,7 @@ class MNISTClassifier(dspy.Module):
     def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = True):
         super().__init__()
         self.model_name = model_name
+        self.verbose = verbose
         # Configure model with temperature only for chat models
         # Only pass temperature for chat models
         if "chat" in model_name:
@@ -31,7 +32,7 @@ class MNISTClassifier(dspy.Module):
 def create_training_data() -> List[Tuple[str, str]]:
     print("Creating training data...")
     mnist = MNISTData()
-    train_data = mnist.get_training_data()
+    train_data, val_data = mnist.get_training_data()
     print(f"Using first 1000 samples from {len(train_data)} available training samples")
     return [(pixels, str(label)) for pixels, label in train_data[:1000]]  # Use subset for training
 
