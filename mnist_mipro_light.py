@@ -48,7 +48,8 @@ class MNISTMIPROLightTrainer:
         print(f"Training on {len(self.train_data)} samples")
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
-            trainset=self.train_data
+            trainset=self.train_data,
+            requires_permission_to_run=False
         )
         print("Training completed successfully")
         

@@ -55,7 +55,7 @@ class MNISTTrainer:
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
             trainset=self.train_data,
-            requires_permission_to_run=self.run_config['requires_permission']
+            requires_permission_to_run=False
         )
         print("Training completed successfully")
         
