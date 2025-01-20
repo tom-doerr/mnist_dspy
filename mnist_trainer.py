@@ -19,8 +19,8 @@ class MNISTTrainer:
         self.evaluator = MNISTEvaluator()
 
     def _accuracy_metric(self, example, pred, trace=None):
-        # Convert both to strings for comparison
-        return str(example[1]) == str(pred.digit)
+        # Access the digit from the example and compare with prediction
+        return str(example.digit) == str(pred.digit)
 
     def train(self):
         print("Initializing MIPROv2 optimizer...")
