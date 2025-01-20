@@ -25,22 +25,14 @@ class MNISTEvaluator:
                 if isinstance(predicted, list):
                     predicted = max(set(predicted), key=predicted.count)
                 
-                # Print detailed comparison
-                print(f"\nSample {i+1}/{total}")
-                print(f"True label: {true_label}")
-                print(f"Predicted: {predicted}")
-                print(f"Input preview:\n{pixels[:100]}...")
-                
                 # Update accuracy
                 if predicted == true_label:
                     correct += 1
-                    print("✅ Correct prediction")
-                else:
-                    print("❌ Incorrect prediction")
                 
                 # Update progress
                 current_accuracy = correct / (i + 1)
                 pbar.set_postfix({"accuracy": f"{current_accuracy:.2%}"})
+                pbar.update()
                 
         return correct / total
 

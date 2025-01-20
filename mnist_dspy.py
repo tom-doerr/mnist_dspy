@@ -9,7 +9,7 @@ class MNISTSignature(dspy.Signature):
     digit = dspy.OutputField(desc="predicted digit from 0 to 9")
 
 class MNISTBooster(dspy.Module):
-    def __init__(self, model_name: str = "deepseek/deepseek-chat", boosting_iterations: int = 3, verbose: bool = True):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", boosting_iterations: int = 3, verbose: bool = False):
         super().__init__()
         self.models = [
             MNISTClassifier(model_name=model_name, verbose=verbose)
@@ -30,7 +30,7 @@ class MNISTBooster(dspy.Module):
         return max(set(predictions), key=predictions.count)
 
 class MNISTClassifier(dspy.Module):
-    def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = True):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = False):
         super().__init__()
         self.model_name = model_name
         self.verbose = verbose
