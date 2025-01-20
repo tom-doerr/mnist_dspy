@@ -1,6 +1,6 @@
 from typing import List, Tuple
 import numpy as np
-from sklearn.datasets import fetch_openml
+from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
 class MNISTData:
@@ -10,15 +10,21 @@ class MNISTData:
         self.X_train, self.X_test, self.y_train, self.y_test = self._load_data()
 
     def _load_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        print("Loading MNIST data from OpenML...")
-        mnist = fetch_openml('mnist_784', version=1, as_frame=False)
-        print(f"Loaded {len(mnist.data)} samples")
-        X = mnist.data.astype(np.uint8)
-        y = mnist.target.astype(np.uint8)
-        print("Splitting data into train/test sets...")
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=self.test_size, random_state=self.random_state)
-        print(f"Training set: {len(X_train)} samples")
-        print(f"Test set: {len(X_test)} samples")
+        print("Loading MNIST data from Hugging Face...")
+        dataset = load_dataset("mnist")
+        
+        # Convert to numpy arrays
+        X_train = np.array(dataset['train']['image'])
+        y_train = np.array(dataset['train']['label'])
+        X_test = np.array(dataset['test']['image'])
+        y_test = np.array(dataset['test']['label'])
+        
+        # Convert images to 784-dimensional vectors
+        X_train = np.array([np.array(img).flatten() for img in X_train])
+        X_test = np.array([np.array(img).flatten() for img in X_test])
+        
+        print(f"Loaded {len(X_train)} training samples")
+        print(f"Loaded {len(X_test)} test samples")
         return X_train, X_test, y_train, y_test
 
     def _matrix_to_text(self, matrix: np.ndarray) -> str:
