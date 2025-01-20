@@ -64,7 +64,11 @@ if __name__ == "__main__":
     print("Starting training...")
     booster.train()
     
-    # Evaluate on subset of test data
-    test_data = create_training_data()[100:150]  # Use validation set for quick test
+    # Evaluate on subset of test data (convert tuples to dspy.Examples)
+    raw_test = create_training_data()[100:150]  # Use validation set for quick test
+    test_data = [
+        dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+        for pixels, label in raw_test
+    ]
     accuracy = booster.evaluate(test_data)
     print(f"\nEnsemble accuracy: {accuracy:.2%}")
