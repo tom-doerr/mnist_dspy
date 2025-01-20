@@ -1,5 +1,6 @@
 import pytest
-from mnist_dspy import MNISTClassifier, MNISTEnsembleBooster
+from mnist_dspy import MNISTClassifier
+from mnist_ensemble_booster import MNISTEnsembleBooster
 from mnist_evaluation import MNISTEvaluator
 from mnist_ensemble_booster import create_training_data
 
