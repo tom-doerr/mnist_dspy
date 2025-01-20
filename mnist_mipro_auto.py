@@ -12,8 +12,9 @@ class MNISTMIPROAutoTrainer:
             'model': 'MNISTClassifier',
             'optimizer': f'MIPROv2 (auto={auto_setting})',
             'auto_setting': auto_setting,
-            'train_samples': 1000,
-            'test_samples': 200,
+            'train_samples': 5000,  # Match increased sample size
+            'test_samples': 1000,
+            'num_threads': 4,  # Added explicit thread count
             'random_state': 42,
             'model_name': model_name,
             'no_cache': no_cache
@@ -51,7 +52,8 @@ class MNISTMIPROAutoTrainer:
         print(f"Initializing MIPROv2 with auto={self.run_config['auto_setting']}...")
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
-            auto=self.run_config['auto_setting']
+            auto=self.run_config['auto_setting'],
+            num_threads=self.run_config['num_threads']
         )
         
         print("Starting training...")

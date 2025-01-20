@@ -12,9 +12,9 @@ class MNISTTrainer:
             'optimizer': 'MIPROv2',
             'max_bootstrapped_demos': 20,
             'max_labeled_demos': 20,
-            'num_threads': 100,
-            'train_samples': 1000,
-            'test_samples': 200,
+            'num_threads': 4,  # Reduced from 100 to prevent resource contention
+            'train_samples': 5000,  # Increased sample size
+            'test_samples': 1000,
             'requires_permission': False,
             'random_state': 42
         }
