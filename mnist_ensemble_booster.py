@@ -50,9 +50,15 @@ class MNISTEnsembleBooster:
         evaluator.inference.classifier.predict = optimized_predictor  # Use current iteration's optimized predictor
         accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)
         
-        # Get misclassifications using the optimized predictor
-        new_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
-        self.hard_examples = new_hard  # Reset with only current iteration's hard examples
+        # Find persistent hard cases by checking against original errors
+        current_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
+        if self.hard_examples:
+            # Keep examples that were hard in previous OR current iteration
+            persistent_hard = [ex for ex in self.hard_examples if ex in current_hard]
+            new_hard = list(set(self.hard_examples + current_hard))  # Combine history
+            self.hard_examples = persistent_hard + new_hard[:20]  # Keep core persistent + new
+        else:
+            self.hard_examples = current_hard
         self.misclassification_history[iteration] = new_hard
         
         return accuracy
