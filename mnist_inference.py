@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 class MNISTInference:
     def __init__(self, model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
+        self.model_name = model_name
         self.classifier = MNISTClassifier(model_name)
         self._configure_model(model_name, no_cache)
 
