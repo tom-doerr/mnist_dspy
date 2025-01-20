@@ -10,10 +10,16 @@ class MNISTData:
         self.X_train, self.X_test, self.y_train, self.y_test = self._load_data()
 
     def _load_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        print("Loading MNIST data from OpenML...")
         mnist = fetch_openml('mnist_784', version=1, as_frame=False)
+        print(f"Loaded {len(mnist.data)} samples")
         X = mnist.data.astype(np.uint8)
         y = mnist.target.astype(np.uint8)
-        return train_test_split(X, y, test_size=self.test_size, random_state=self.random_state)
+        print("Splitting data into train/test sets...")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=self.test_size, random_state=self.random_state)
+        print(f"Training set: {len(X_train)} samples")
+        print(f"Test set: {len(X_test)} samples")
+        return X_train, X_test, y_train, y_test
 
     def _matrix_to_text(self, matrix: np.ndarray) -> str:
         return '\n'.join(' '.join(str(pixel) for pixel in row) for row in matrix.reshape(28, 28))

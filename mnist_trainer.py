@@ -13,6 +13,7 @@ class MNISTTrainer:
         return example.digit == pred.digit
 
     def train(self):
+        print("Initializing MIPROv2 optimizer...")
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
             max_bootstrapped_demos=3,
@@ -20,10 +21,13 @@ class MNISTTrainer:
             requires_permission_to_run=False
         )
         
+        print("Starting training with MIPROv2...")
+        print(f"Training on {len(self.train_data)} samples")
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
             trainset=self.train_data
         )
+        print("Training completed successfully")
         
         return self.optimized_classifier
 
@@ -31,7 +35,11 @@ class MNISTTrainer:
         if not hasattr(self, 'optimized_classifier'):
             raise ValueError("Model must be trained before evaluation")
             
-        return self.evaluator.evaluate_accuracy(self.test_data)
+        print("Evaluating model on test data...")
+        print(f"Using {len(self.test_data)} test samples")
+        accuracy = self.evaluator.evaluate_accuracy(self.test_data)
+        print("Evaluation completed")
+        return accuracy
 
 if __name__ == "__main__":
     trainer = MNISTTrainer()

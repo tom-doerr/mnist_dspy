@@ -17,11 +17,15 @@ class MNISTClassifier(dspy.Module):
         return result.digit
 
 def create_training_data() -> List[Tuple[str, str]]:
+    print("Creating training data...")
     mnist = MNISTData()
     train_data = mnist.get_training_data()
+    print(f"Using first 1000 samples from {len(train_data)} available training samples")
     return [(pixels, str(label)) for pixels, label in train_data[:1000]]  # Use subset for training
 
 def create_test_data() -> List[Tuple[str, str]]:
+    print("Creating test data...")
     mnist = MNISTData()
     test_data = mnist.get_test_data()
+    print(f"Using first 200 samples from {len(test_data)} available test samples")
     return [(pixels, str(label)) for pixels, label in test_data[:200]]  # Use subset for testing
