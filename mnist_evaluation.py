@@ -21,6 +21,10 @@ class MNISTEvaluator:
                 # Make prediction
                 predicted = self.inference.predict(pixels)
                 
+                # Handle booster model's majority voting
+                if isinstance(predicted, list):
+                    predicted = max(set(predicted), key=predicted.count)
+                
                 # Print detailed comparison
                 print(f"\nSample {i+1}/{total}")
                 print(f"True label: {true_label}")

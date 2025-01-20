@@ -8,6 +8,26 @@ class MNISTSignature(dspy.Signature):
     pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
     digit = dspy.OutputField(desc="predicted digit from 0 to 9")
 
+class MNISTBooster(dspy.Module):
+    def __init__(self, model_names: list = ["deepseek/deepseek-reasoner", "deepseek/deepseek-chat", "deepseek/deepseek-chat"], verbose: bool = True):
+        super().__init__()
+        self.models = [
+            MNISTClassifier(model_name=name, verbose=verbose) 
+            for name in model_names
+        ]
+        self.verbose = verbose
+
+    def forward(self, pixel_matrix: str) -> str:
+        predictions = []
+        for model in self.models:
+            pred = model(pixel_matrix=pixel_matrix)
+            predictions.append(pred)
+            if self.verbose:
+                print(f"Model {model.model_name} prediction: {pred}")
+        
+        # Return majority vote
+        return max(set(predictions), key=predictions.count)
+
 class MNISTClassifier(dspy.Module):
     def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = True):
         super().__init__()

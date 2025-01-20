@@ -20,7 +20,11 @@ class MNISTMIPROAutoTrainer:
             'no_cache': no_cache
         }
         
-        self.classifier = MNISTClassifier(model_name=model_name)
+        self.classifier = MNISTBooster(model_names=[
+            "deepseek/deepseek-reasoner", 
+            "deepseek/deepseek-chat",
+            "deepseek/deepseek-chat"
+        ])
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
         self.train_data = [
