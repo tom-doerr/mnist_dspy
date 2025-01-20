@@ -7,7 +7,7 @@ from mnist_dspy import MNISTClassifier, MNISTBooster, create_training_data, crea
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTMIPROAutoTrainer:
-    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False, boosting_iterations: int = 3):
+    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False, boosting_iterations: int = 1):
         # Initialize run configuration
         self.run_config = {
             'model': 'MNISTClassifier',
@@ -111,7 +111,7 @@ def parse_args():
     # Performance options
     parser.add_argument('--no-cache', action='store_true',
                       help='Disable model response caching (slower but fresh results)')
-    parser.add_argument('--boosting', type=int, default=3,
+    parser.add_argument('--boosting', type=int, default=1,
                       help='Number of boosting iterations for ensemble voting')
     
     return parser.parse_args()
