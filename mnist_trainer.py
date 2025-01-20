@@ -27,7 +27,8 @@ class MNISTTrainer:
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
             max_bootstrapped_demos=3,
-            max_labeled_demos=5
+            max_labeled_demos=5,
+            num_threads=100
         )
         
         print("Starting training with MIPROv2...")
