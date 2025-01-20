@@ -16,9 +16,12 @@ class MNISTRandomSearch:
 
     def _generate_random_config(self) -> Dict:
         return {
-            'num_bootstrapped_demos': random.choice([5, 10, 15, 20]),
-            'max_labeled_demos': random.choice([5, 10, 15, 20]),
-            'train_samples': random.choice([500, 1000, 1500, 2000])
+            'num_bootstrapped_demos': random.choice([10, 20, 30, 40, 50]),
+            'max_labeled_demos': random.choice([10, 20, 30, 40, 50]),
+            'train_samples': random.choice([1000, 2000, 3000, 4000, 5000]),
+            'temperature': random.uniform(0.1, 2.0),
+            'max_answer_length': random.choice([64, 128, 256, 512]),
+            'model': random.choice(['chat', 'reasoner'])
         }
 
     def run_search(self):
