@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from typing import List, Tuple
+from tqdm import tqdm
 from mnist_inference import MNISTInference
 from mnist_dspy import create_test_data
 
@@ -11,10 +12,15 @@ class MNISTEvaluator:
         correct = 0
         total = len(test_data)
         
-        for pixels, true_label in test_data:
-            predicted = self.inference.predict(pixels)
-            if predicted == true_label:
-                correct += 1
+        with tqdm(test_data, desc="Evaluating", unit="sample") as pbar:
+            for i, (pixels, true_label) in enumerate(pbar):
+                predicted = self.inference.predict(pixels)
+                if predicted == true_label:
+                    correct += 1
+                
+                # Update progress bar with current accuracy
+                current_accuracy = correct / (i + 1)
+                pbar.set_postfix({"accuracy": f"{current_accuracy:.2%}"})
                 
         return correct / total
 
