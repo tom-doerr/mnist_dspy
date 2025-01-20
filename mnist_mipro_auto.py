@@ -6,7 +6,7 @@ from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTMIPROAutoTrainer:
-    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat"):
+    def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
         # Initialize run configuration
         self.run_config = {
             'model': 'MNISTClassifier',
@@ -15,7 +15,8 @@ class MNISTMIPROAutoTrainer:
             'train_samples': 1000,
             'test_samples': 200,
             'random_state': 42,
-            'model_name': model_name
+            'model_name': model_name,
+            'no_cache': no_cache
         }
         
         self.classifier = MNISTClassifier(model_name=model_name)
@@ -32,7 +33,7 @@ class MNISTMIPROAutoTrainer:
             dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_test
         ]
-        self.evaluator = MNISTEvaluator()
+        self.evaluator = MNISTEvaluator(model_name=model_name, no_cache=no_cache)
 
     def _accuracy_metric(self, example, pred, trace=None):
         # Ensure both values are strings and compare
@@ -90,6 +91,8 @@ def parse_args():
     parser.add_argument('--heavy', action='store_true', help='Use heavy optimization preset')
     parser.add_argument('--model', choices=['reasoner', 'chat'], default='chat',
                       help='Model to use: reasoner or chat (default: chat)')
+    parser.add_argument('--no-cache', action='store_true',
+                      help='Disable model caching')
     return parser.parse_args()
 
 def main():
@@ -107,7 +110,7 @@ def main():
     model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
         
     print(f"Running MNIST Trainer with MIPROv2 (auto={auto_setting})")
-    trainer = MNISTMIPROAutoTrainer(auto_setting=auto_setting)
+    trainer = MNISTMIPROAutoTrainer(auto_setting=auto_setting, no_cache=args.no_cache)
     print("Training model...")
     trainer.train()
     accuracy = trainer.evaluate()

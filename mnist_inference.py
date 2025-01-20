@@ -4,14 +4,15 @@ from mnist_dspy import MNISTClassifier
 from typing import List, Tuple
 
 class MNISTInference:
-    def __init__(self, model_name: str = "deepseek/deepseek-chat"):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
         self.classifier = MNISTClassifier(model_name)
-        self._configure_model(model_name)
+        self._configure_model(model_name, no_cache)
 
-    def _configure_model(self, model_name: str):
+    def _configure_model(self, model_name: str, no_cache: bool = False):
         model = dspy.LM(
             model=model_name,
-            temperature=1.0
+            temperature=1.0,
+            cache=not no_cache
         )
         dspy.settings.configure(lm=model)
 
