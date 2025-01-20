@@ -23,7 +23,11 @@ class MNISTEnsembleBooster:
         self.test_pool = create_test_data(samples=1000)
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
-        """Sample challenging examples from misclassified pool"""
+        """Sample challenging examples that consistently fool models:
+        - Frequently misclassified digits (e.g. 4 vs 9, 7 vs 1)
+        - Ambiguous handwritten shapes
+        - Edge cases with unusual rotations/sizes
+        Prioritizes examples that persist across iterations"""
         if not self.hard_examples:
             return random.sample(self.raw_data, min(3, len(self.raw_data)))
         return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
