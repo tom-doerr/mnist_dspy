@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
