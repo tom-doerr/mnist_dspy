@@ -20,3 +20,8 @@ class MNISTEvaluator:
     def run_evaluation(self) -> float:
         test_data = create_test_data()
         return self.evaluate_accuracy(test_data)
+
+if __name__ == "__main__":
+    evaluator = MNISTEvaluator()
+    accuracy = evaluator.run_evaluation()
+    print(f"Model accuracy: {accuracy:.2%}")
