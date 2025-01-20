@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import dspy
 from typing import List, Tuple
 from tqdm import tqdm
 from mnist_inference import MNISTInference
