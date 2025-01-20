@@ -8,8 +8,8 @@ def test_baseline_accuracy(sample_test_data):
     model = MNISTClassifier(model_name="deepseek/deepseek-chat")
     evaluator = MNISTEvaluator(model_name="deepseek/deepseek-chat")
     
-    accuracy = evaluator.evaluate_accuracy(sample_test_data)['accuracy']
-    assert accuracy >= 0.85, f"Baseline accuracy dropped below 85% ({accuracy:.1%})"
+    accuracy = evaluator.evaluate_accuracy(sample_test_data)
+    assert accuracy >= 0.85, f"Baseline accuracy dropped below 85% ({accuracy:.0%})"
 
 def test_reasoner_model_initialization():
     """Test reasoner model initializes without temperature param"""
