@@ -4,7 +4,8 @@ from tabulate import tabulate
 from mnist_mipro_auto import MNISTMIPROAutoTrainer
 
 class MNISTHyperparamSearch:
-    def __init__(self):
+    def __init__(self, models=None):
+        self.models = models
         self.results = []
         
     def run(self):
