@@ -6,6 +6,19 @@ from mnist_evaluation import MNISTEvaluator
 
 class MNISTTrainer:
     def __init__(self):
+        # Initialize run configuration
+        self.run_config = {
+            'model': 'MNISTClassifier',
+            'optimizer': 'MIPROv2',
+            'max_bootstrapped_demos': 3,
+            'max_labeled_demos': 5,
+            'num_threads': 100,
+            'train_samples': 1000,
+            'test_samples': 200,
+            'requires_permission': False,
+            'random_state': 42
+        }
+        
         self.classifier = MNISTClassifier()
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
@@ -32,9 +45,9 @@ class MNISTTrainer:
         print("Initializing MIPROv2 optimizer...")
         teleprompter = MIPROv2(
             metric=self._accuracy_metric,
-            max_bootstrapped_demos=3,
-            max_labeled_demos=5,
-            num_threads=100
+            max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
+            max_labeled_demos=self.run_config['max_labeled_demos'],
+            num_threads=self.run_config['num_threads']
         )
         
         print("Starting training with MIPROv2...")
@@ -42,7 +55,7 @@ class MNISTTrainer:
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
             trainset=self.train_data,
-            requires_permission_to_run=False
+            requires_permission_to_run=self.run_config['requires_permission']
         )
         print("Training completed successfully")
         
@@ -55,7 +68,16 @@ class MNISTTrainer:
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples")
         accuracy = self.evaluator.evaluate_accuracy(self.test_data)
-        print("Evaluation completed")
+        
+        # Add final results to run config
+        self.run_config['final_accuracy'] = float(accuracy)
+        
+        print("\n=== Run Configuration ===")
+        for key, value in self.run_config.items():
+            print(f"{key}: {value}")
+        print("========================")
+        
+        print("\nEvaluation completed")
         return accuracy
 
 if __name__ == "__main__":
