@@ -12,7 +12,9 @@ class MNISTClassifier(dspy.Module):
     def __init__(self, model_name: str = "deepseek/deepseek-chat"):
         super().__init__()
         self.model_name = model_name
-        self.predict = dspy.Predict(MNISTSignature)
+        # Configure model with temperature only for chat models
+        lm_kwargs = {"temperature": 0.3} if "chat" in model_name else {}
+        self.predict = dspy.Predict(MNISTSignature, lm=lm_kwargs)
         
     def forward(self, pixel_matrix: str) -> str:
         print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
