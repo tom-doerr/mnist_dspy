@@ -50,7 +50,7 @@ class MNISTEnsembleBooster:
         
         # Collect misclassified examples
         new_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
-        self.hard_examples.extend(new_hard)
+        self.hard_examples = new_hard  # Reset with only current iteration's hard examples
         self.misclassification_history[iteration] = new_hard
         
         return accuracy
