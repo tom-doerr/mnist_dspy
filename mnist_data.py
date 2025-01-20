@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from typing import List, Tuple
 import numpy as np
 from datasets import load_dataset

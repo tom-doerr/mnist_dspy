@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import dspy
 from mnist_dspy import MNISTClassifier
 from typing import List, Tuple
