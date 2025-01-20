@@ -58,12 +58,15 @@ class MNISTEnsembleBooster:
         current_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
         if self.hard_examples:
             # Keep examples that were hard in previous OR current iteration
-            # Track examples that were never correctly classified in any iteration
+            # Track example types:
+            # - Never-correct: Failed in ALL iterations (most critical)
+            # - Persistent: Failed in SOME previous iterations
+            # - New: First-time failures (current iteration only)
             never_correct = [ex for ex in current_hard 
                            if all(ex in hist for hist in self.misclassification_history.values())]
             
-            # Prioritize never-correct examples first, then persistent, then new
-            persistent_hard = [ex for ex in self.hard_examples if ex in current_hard]
+            persistent_hard = [ex for ex in self.hard_examples  # Failed before AND now
+                             if ex in current_hard]
             new_hard = list(set(self.hard_examples + current_hard))  # Combine history
             self.hard_examples = never_correct + persistent_hard + new_hard[:20]
         else:
