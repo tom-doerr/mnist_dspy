@@ -8,8 +8,8 @@ class MNISTHyperparamSearch:
         self.results = []
         
     def run(self):
-        # Test all combinations of models and optimization levels
-        models = ['reasoner', 'chat']
+        # Get models from command line or use both
+        models = self.models if self.models else ['reasoner', 'chat']
         auto_levels = ['light', 'medium', 'heavy']
         
         for model in models:
@@ -57,11 +57,13 @@ class MNISTHyperparamSearch:
 def parse_args():
     parser = argparse.ArgumentParser(description='Run hyperparameter search for MNIST classification')
     parser.add_argument('--verbose', action='store_true', help='Show detailed config for each run')
+    parser.add_argument('--model', choices=['reasoner', 'chat'], nargs='*',
+                      help='Models to test (default: both)')
     return parser.parse_args()
 
 def main():
     args = parse_args()
-    searcher = MNISTHyperparamSearch()
+    searcher = MNISTHyperparamSearch(models=args.model)
     results = searcher.run()
     
     if args.verbose:
