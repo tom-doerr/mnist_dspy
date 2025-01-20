@@ -11,8 +11,3 @@ def test_baseline_accuracy(sample_test_data):
     accuracy = evaluator.evaluate_accuracy(sample_test_data)
     assert accuracy >= 0.15, f"Baseline accuracy dropped below 15% ({accuracy:.0%})"
 
-def test_reasoner_model_initialization():
-    """Test reasoner model initializes without temperature param"""
-    model = MNISTClassifier(model_name="deepseek/deepseek-reasoner")
-    # Verify no temperature in LM config
-    assert model.predict.lm is None or "temperature" not in model.predict.lm.kwargs

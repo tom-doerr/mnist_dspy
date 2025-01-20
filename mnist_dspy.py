@@ -9,13 +9,14 @@ class MNISTSignature(dspy.Signature):
     digit = dspy.OutputField(desc="predicted digit from 0 to 9")
 
 class MNISTBooster(dspy.Module):
-    def __init__(self, model_names: list = ["deepseek/deepseek-reasoner", "deepseek/deepseek-chat", "deepseek/deepseek-chat"], verbose: bool = True):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", boosting_iterations: int = 3, verbose: bool = True):
         super().__init__()
         self.models = [
-            MNISTClassifier(model_name=name, verbose=verbose) 
-            for name in model_names
+            MNISTClassifier(model_name=model_name, verbose=verbose)
+            for _ in range(boosting_iterations)
         ]
         self.verbose = verbose
+        self.boosting_iterations = boosting_iterations
 
     def forward(self, pixel_matrix: str) -> str:
         predictions = []
