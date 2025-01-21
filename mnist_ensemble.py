@@ -43,7 +43,7 @@ class MNISTEnsemble:
 
     def evaluate(self) -> tuple[float, dict]:
         """Evaluate ensemble with majority voting"""
-        test_data = random.sample(self.test_pool, 1000)
+        test_data = MNISTData().get_test_data()  # Get fresh test data from source
         voting_results = {}
         
         def ensemble_predict(pixel_matrix: str) -> dspy.Prediction:
@@ -71,9 +71,6 @@ class MNISTEnsemble:
         total = len(test_data)
         correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
                                             display_progress=True, display_table=0, display_summary=False)
-        # Calculate actual correct count from voting results
-        actual_correct = sum(1 for v in voting_results.values() if v.get('correct', False))
-        accuracy = actual_correct / total if total > 0 else 0.0
         
         
         # Store true labels in voting results for analysis

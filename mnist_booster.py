@@ -16,7 +16,7 @@ class MNISTBooster:
         print(f"\n🚀 Starting Boosting Iteration {iteration + 1}")
         
         # 1. Get hard examples from ensemble
-        hard_examples = self.ensemble._get_hard_examples()
+        hard_examples = self.ensemble._get_hard_examples(num_samples=100)  # Get substantial sample of hard examples
         print(f"📚 Training with {len(hard_examples)} hard examples")
         
         # 2. Train new classifier on current hard examples
