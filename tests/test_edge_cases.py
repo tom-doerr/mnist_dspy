@@ -88,17 +88,16 @@ def test_never_correct_percentage_increase(sample_ensemble):
     
     iter1_pct = calc_pct()  # 100% (1/1)
     
-    # Third iteration: Add new errors (now 1 never-correct out of 2 total)
-    new_error = sample_ensemble.test_pool[1]
-    sample_ensemble.misclassification_history[2] = [new_error]
-    sample_ensemble.hard_examples = [test_case, new_error]
-    iter2_pct = calc_pct()  # 50% (1/2)
+    # Third iteration: Test case still fails, add new error
+    sample_ensemble.misclassification_history[2] = [test_case, sample_ensemble.test_pool[1]]
+    sample_ensemble.hard_examples = [test_case, sample_ensemble.test_pool[1]]
+    iter2_pct = calc_pct()  # 33% (1/3 total errors, but only test_case is never-correct)
     
-    # Percentage should decrease when new errors are added
-    assert iter2_pct < iter1_pct, "Never-correct percentage should decrease when new errors are added"
+    # Percentage should decrease when new non-never-correct errors are added
+    assert iter2_pct < iter1_pct, "Percentage should decrease when adding new non-persistent errors"
     
-    # Test percentage increases when total errors decrease but never-correct remains
-    sample_ensemble.hard_examples = [test_case]  # Remove new error
+    # Test percentage increases when non-never-correct errors are removed
+    sample_ensemble.hard_examples = [test_case]  # Remove transient error
     iter3_pct = calc_pct()  # 100% (1/1)
     assert iter3_pct > iter2_pct, "Percentage should increase if total errors decrease but never-correct remains"
 
