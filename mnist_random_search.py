@@ -42,7 +42,7 @@ class MNISTRandomSearch(MNISTHyperparamSearch):
                 random.shuffle(raw_train)
                 sampled_train = raw_train[:config['train_samples']]
                 train_data = [
-                    dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+                    dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
                     for pixels, label in sampled_train
                 ]
                 

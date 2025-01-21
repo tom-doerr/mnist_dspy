@@ -23,7 +23,7 @@ class MNISTTrainer:
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_train
         ]
         
@@ -37,8 +37,8 @@ class MNISTTrainer:
 
     def _accuracy_metric(self, example, pred, trace=None):
         # Ensure both values are strings and compare
-        true_label = str(example.digit) if hasattr(example, 'digit') else str(example)
-        pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
+        true_label = str(example.number) if hasattr(example, 'number') else str(example)
+        pred_label = str(pred.number) if hasattr(pred, 'number') else str(pred)
         return true_label == pred_label
 
     def train(self, data):
