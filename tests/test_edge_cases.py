@@ -1,7 +1,7 @@
 import pytest
-from mnist_ensemble_booster import MNISTEnsembleBooster
+from mnist_booster import MNISTBooster
 from dspy import Example
-from mnist_ensemble_booster import create_training_data
+from mnist_dspy import create_training_data
 
 @pytest.fixture
 def sample_ensemble():
