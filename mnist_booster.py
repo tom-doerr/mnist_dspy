@@ -23,7 +23,7 @@ class MNISTBooster:
         self.model_name = model_name
         self.iterations = iterations
         self.ensemble = MNISTEnsemble(model_name)
-        self.trainer = MNISTTrainer(model_name=model_name)
+        self.trainer = MNISTTrainer()
 
     def run_boosting_iteration(self, iteration: int):
         """Run a single boosting iteration"""
