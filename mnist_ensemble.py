@@ -22,8 +22,6 @@ class MNISTEnsemble:
         Returns list of examples ordered by difficulty"""
 
         return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
-            
-        return samples[:num_samples]
 
     def evaluate(self) -> tuple[float, dict]:
         """Evaluate ensemble with majority voting"""
