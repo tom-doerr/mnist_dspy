@@ -20,16 +20,17 @@ class MNISTBooster(dspy.Module):
         self.verbose = verbose
         self.boosting_iterations = boosting_iterations
 
-    def forward(self, pixel_matrix: str) -> str:
+    def forward(self, pixel_matrix: str) -> dspy.Prediction:
+        """Make ensemble prediction using majority voting."""
         predictions = []
         for model in self.models:
-            pred = model(pixel_matrix=pixel_matrix)
+            pred = model(pixel_matrix=pixel_matrix).digit
             predictions.append(pred)
             if self.verbose:
                 print(f"Model {model.model_name} prediction: {pred}")
         
-        # Return majority vote
-        return max(set(predictions), key=predictions.count)
+        majority_vote = max(set(predictions), key=predictions.count)
+        return dspy.Prediction(digit=majority_vote)
 
 class MNISTClassifier(dspy.Module):
     def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = False):

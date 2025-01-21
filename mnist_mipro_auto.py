@@ -26,7 +26,8 @@ class MNISTMIPROTrainer:
         
         self.classifier = MNISTBooster(
             model_name=model_name,
-            boosting_iterations=boosting_iterations
+            boosting_iterations=boosting_iterations,
+            verbose=False
         )
         # Create training data with proper dspy.Example format
         raw_train = create_training_data(samples=self.run_config['train_samples'])
