@@ -34,7 +34,7 @@ class MNISTEvaluator:
         print(f"Test data size: {len(test_data)}")
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
         
-        def metric_fn(example, pred, idx=0):
+        def metric_fn(example, pred):
             true_label = str(example.number)
             pred_label = str(pred.number) if hasattr(pred, 'number') else str(pred)
             match = true_label == pred_label
@@ -51,11 +51,15 @@ class MNISTEvaluator:
             return match
 
         # Create indexed examples for tracking
-        indexed_data = [ex.with_(idx=i) for i, ex in enumerate(test_data)]
+        # Create new examples with idx field added
+        indexed_data = []
+        for i, ex in enumerate(test_data):
+            new_ex = dspy.Example(pixel_matrix=ex.pixel_matrix, digit=ex.digit, idx=i).with_inputs('pixel_matrix')
+            indexed_data.append(new_ex)
         
         evaluator = Evaluate(
             devset=indexed_data,
-            metric=lambda ex, pred: metric_fn(ex, pred, ex.idx),
+            metric=metric_fn,
             num_threads=self.num_threads,
             display_progress=display_progress,
             display_table=5
