@@ -8,9 +8,20 @@ from dspy.teleprompt import LabeledFewShot
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTBooster:
-    def __init__(self, iterations: int = 10, model_name: str = "deepseek/deepseek-chat"):
+    def __init__(self, iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
         self.ensemble = MNISTEnsemble(model_name)
         self.pipeline = MNISTPipeline(iterations, model_name)
+        self.hard_examples = []
+        self.misclassification_history = {}
+        self.raw_data = []
+        self.test_pool = []
+        self.classifiers = []
+        self.model_name = model_name
+        self.hard_examples = []  # Initialize missing attribute
+        self.misclassification_history = {}  # Initialize missing attribute
+        self.raw_data = []
+        self.test_pool = []
+        self.classifiers = []
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
         """Sample challenging examples that consistently fool models:

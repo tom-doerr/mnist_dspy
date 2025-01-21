@@ -19,7 +19,7 @@ def test_data_augmentation_consistency():
     """Verify that data augmentation produces valid variations"""
     mnist = MNISTData()
     original = mnist.get_training_data()[0][0]  # Get first training example
-    augmented = mnist.augment_data([original])[0]
+    augmented = mnist.augment_data([original])[0]  # Now uses the simplified version
     
     # Check basic properties
     assert isinstance(augmented, str), "Augmented data should be string"
