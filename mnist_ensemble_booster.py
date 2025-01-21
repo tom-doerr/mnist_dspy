@@ -1,5 +1,11 @@
 from .mnist_ensemble import MNISTEnsemble
 from .mnist_pipeline import MNISTPipeline
+from typing import List, Dict, Tuple
+import random
+import dspy
+from mnist_dspy import MNISTClassifier
+from dspy.teleprompt import LabeledFewShot
+from mnist_evaluation import MNISTEvaluator
 
 class MNISTBooster:
     def __init__(self, iterations: int = 10, model_name: str = "deepseek/deepseek-chat"):
@@ -120,5 +126,5 @@ class MNISTBooster:
         self.pipeline.report_results(final_acc, results)
 
 if __name__ == "__main__":
-    booster = MNISTEnsembleBooster(iterations=10)
+    booster = MNISTBooster(iterations=10)
     booster.run()

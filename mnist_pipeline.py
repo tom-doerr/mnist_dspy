@@ -1,6 +1,9 @@
 from tqdm import tqdm
 from dspy.teleprompt import LabeledFewShot
 import dspy
+import random
+from mnist_dspy import MNISTClassifier
+from mnist_evaluation import MNISTEvaluator
 
 class MNISTPipeline:
     """Manages training pipeline and iteration tracking"""
