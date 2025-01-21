@@ -19,7 +19,7 @@ class MNISTHyperparamSearch:
             for auto_level in auto_levels:
                 print(f"\n=== Starting run: model={model}, auto={auto_level} ===")
                 
-                trainer = MNISTMIPROAutoTrainer(
+                trainer = MNISTMIPROTrainer(
                     auto_setting=auto_level,
                     model_name='deepseek/deepseek-reasoner' if model == 'reasoner' else 'deepseek/deepseek-chat'
                 )
