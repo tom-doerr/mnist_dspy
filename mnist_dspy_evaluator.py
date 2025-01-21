@@ -8,15 +8,20 @@ import dspy
 class MNISTDSPyEvaluator:
     """Evaluates DSPy MNIST classifier with configurable thread pooling and example limits."""
     
-    def __init__(self, model_name: str = "deepseek/deepseek-reasoner", num_threads: int = 100):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", num_threads: int = 100):
         self.model_name = model_name
         self.num_threads = num_threads
-        self.classifier = MNISTClassifier(model_name)
         self.data = MNISTData()
-        # Configure DSPy with the LM from the classifier
-        dspy.configure(lm=self.classifier.predict.lm)
-        # Configure DSPy with the LM from the classifier
-        dspy.configure(lm=self.classifier.predict.lm)
+        
+        # Initialize DeepSeek LM with API key
+        self.lm = dspy.HFClientLM(
+            model=model_name,
+            api_key="sk-your-key-here",  # Replace with actual API key
+            model_type="chat"
+        )
+        dspy.configure(lm=self.lm)
+        
+        self.classifier = MNISTClassifier(model_name)
         
     def evaluate(self, test_data: List[dspy.Example] = None, limit: int = 100) -> float:
         """Run evaluation with threaded execution and example limiting.
