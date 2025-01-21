@@ -46,6 +46,7 @@ class MNISTBoosterV2:
         
         for i in range(self.iterations):
             print(f"\n🚀 Starting Boosting Iteration {i+1}/{self.iterations}")
+            random.shuffle(training_data_full)
             
             # 1. Train new classifier on current hard examples
             classifier = MNISTClassifier(model_name=self.model_name)
@@ -111,7 +112,7 @@ class MNISTBoosterV2:
         # metric_val =  1 if pred.number != number else 0
         print("pred:", pred)
         print("true:", true)
-        metric_val =  1 if pred.number != true else 0
+        metric_val =  1 if pred.number == str(true.number) else 0
         print("metric_val:", metric_val)
         return metric_val
 
@@ -168,6 +169,6 @@ class MNISTBoosterV2:
 
 if __name__ == "__main__":
     # Run full boosting process with 3 iterations
-    booster = MNISTBoosterV2(iterations=30)
+    booster = MNISTBoosterV2(iterations=10)
     final_accuracy = booster.run()
     print(f"\n🏆 Final Boosted Ensemble Accuracy: {final_accuracy:.2%}")
