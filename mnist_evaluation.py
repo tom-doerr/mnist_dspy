@@ -35,7 +35,7 @@ class MNISTEvaluator:
         dspy.configure(lm=dspy.LM(self.inference.model_name, cache=True, num_threads=self.num_threads))
         
         # Run evaluation using DSPy's Evaluate utility
-        accuracy = evaluator(predictor)
+        accuracy = evaluator(predictor) / 100  # Convert percentage to ratio
         return accuracy
 
     def run_evaluation(self) -> float:
