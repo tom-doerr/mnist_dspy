@@ -4,7 +4,20 @@ from mnist_ensemble import MNISTEnsemble
 from mnist_trainer import MNISTTrainer
 
 class MNISTBooster:
-    """Orchestrates boosting iterations with hard example mining"""
+    """Orchestrates boosting iterations with hard example mining
+    
+    Implements adaptive boosting by:
+    1. Training initial classifier on random sample
+    2. For each boosting iteration:
+       a. Evaluate current ensemble to find hard examples
+       b. Train new classifier focused on those hard examples
+       c. Add new classifier to ensemble
+    3. Final predictions use majority vote across all classifiers
+    
+    The hard example mining prioritizes:
+    - Examples consistently misclassified across iterations
+    - Recent errors showing new failure patterns
+    - Balanced sampling of different error types"""
     def __init__(self, model_name: str = "deepseek/deepseek-chat", iterations: int = 3):
         self.model_name = model_name
         self.iterations = iterations

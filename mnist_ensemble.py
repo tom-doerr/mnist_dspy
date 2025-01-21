@@ -7,7 +7,18 @@ from mnist_evaluation import MNISTEvaluator
 from mnist_data import MNISTData
 
 class MNISTEnsemble:
-    """Manages ensemble of classifiers and hard example tracking"""
+    """Manages ensemble of classifiers and hard example tracking
+    
+    Implements bootstrap aggregating (bagging) with majority voting:
+    1. Maintains pool of classifiers trained on different hard example subsets
+    2. Predictions made via majority vote across all classifiers
+    3. Tracks misclassified examples to focus future training
+    
+    The boosting process works by:
+    - Starting with base classifier trained on random sample
+    - Each iteration trains new classifier on current hardest examples
+    - New classifier added to ensemble, improving collective accuracy
+    - Hard examples updated based on ensemble's combined errors"""
     def __init__(self, model_name: str):
         self.model_name = model_name
         self.classifiers: List[MNISTClassifier] = []
