@@ -4,7 +4,8 @@ from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
-        
+    def __init__(self):
+        super().__init__()
         self.classifier = MNISTClassifier()
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()

@@ -128,7 +128,7 @@ def main():
     model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
         
     print(f"Running MNIST Trainer with MIPROv2 (auto={auto_setting})")
-    trainer = MNISTMIPROAutoTrainer(
+    trainer = MNISTMIPROTrainer(
         auto_setting=auto_setting,
         model_name=model_name,
         no_cache=args.no_cache,

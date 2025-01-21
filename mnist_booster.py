@@ -143,5 +143,5 @@ class MNISTBoostingPipeline:
         self.pipeline.report_results(final_acc, results)
 
 if __name__ == "__main__":
-    booster = MNISTBooster(iterations=10)
+    booster = MNISTBoostingPipeline(iterations=10)
     booster.run()
