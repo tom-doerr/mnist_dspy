@@ -16,6 +16,7 @@ def sample_ensemble():
     return booster
 
 @pytest.mark.usefixtures("sample_test_data")
+@pytest.mark.baseline
 def test_baseline_accuracy(sample_test_data):
     """Regression test for baseline model accuracy"""
     model = MNISTClassifier(model_name="deepseek/deepseek-chat")
