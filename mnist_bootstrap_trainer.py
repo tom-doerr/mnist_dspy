@@ -22,14 +22,14 @@ class MNISTBootstrapTrainer:
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating training examples
             for pixels, label in raw_train
         ]
         
         # Create test data with proper dspy.Example format
         raw_test = create_test_data()
         self.test_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')  # Creating test examples
             for pixels, label in raw_test
         ]
         self.evaluator = MNISTEvaluator()
