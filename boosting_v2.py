@@ -42,11 +42,16 @@ class MNISTBoosterV2:
 
         training_data_full = MNISTData().get_training_data()
         random.shuffle(training_data_full)
-        training_data = training_data_full[:100] 
+        if self.args.mipro:
+            training_data = training_data_full[:1000] 
+        else:
+            training_data = training_data_full[:100] 
         
         for i in range(self.iterations):
             print(f"\n🚀 Starting Boosting Iteration {i+1}/{self.iterations}")
             random.shuffle(training_data_full)
+            # if args.mipro:
+                # training_data = training_data_full[:1000]
             
             # 1. Train new classifier on current hard examples
             classifier = MNISTClassifier(model_name=self.model_name)
@@ -70,6 +75,7 @@ class MNISTBoosterV2:
                     max_labeled_demos=num_few_shot,
                     metric=self.metric,
                     auto='light',
+                    # auto='medium',
                 )
             else:
                 teleprompter = dspy.teleprompt.LabeledFewShot(
@@ -81,7 +87,8 @@ class MNISTBoosterV2:
             training_data = [x for x in training_data if x not in sampled_data]
             if self.args.mipro:
 
-                compiled_classifier = teleprompter.compile(classifier, trainset=training_data_full, requires_permission_to_run=False)
+                # compiled_classifier = teleprompter.compile(classifier, trainset=training_data_full, requires_permission_to_run=False)
+                compiled_classifier = teleprompter.compile(classifier, trainset=training_data, requires_permission_to_run=False)
             else:
                 compiled_classifier = teleprompter.compile(classifier, trainset=sampled_data)
             
