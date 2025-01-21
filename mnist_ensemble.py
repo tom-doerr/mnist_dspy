@@ -68,12 +68,9 @@ class MNISTEnsemble:
             return dspy.Prediction(digit=majority)
 
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
-        total = len(test_data)
-        correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
-                                            display_progress=True, display_table=0, display_summary=False)
-        
-        
-        # Store true labels in voting results for analysis
+        # Get accuracy from evaluator and clean up results
+        accuracy = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
+                                             display_progress=True, display_table=0, display_summary=False)
         matched = 0
         for ex in test_data:
             # Match using the same composite key format
@@ -89,5 +86,4 @@ class MNISTEnsemble:
                     'predictions': [],
                     'correct': False
                 }
-                
-        return accuracy, voting_results
+        return accuracy
