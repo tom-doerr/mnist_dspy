@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import dspy
 from dspy.teleprompt import BootstrapFewShot
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
