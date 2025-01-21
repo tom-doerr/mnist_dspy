@@ -50,8 +50,13 @@ class MNISTDSPyEvaluator:
         return evaluator(self.classifier)
         
     def _accuracy_metric(self, example, pred, trace=None) -> float:
-        """Simple exact match accuracy metric using digit comparison."""
-        return int(example.digit) == int(pred.digit)
+        """Simple exact match accuracy metric with debug output."""
+        actual = int(example.digit)
+        predicted = int(pred.digit)
+        if actual != predicted:
+            print(f"\n❌ Mismatch | Actual: {actual} | Predicted: {predicted}")
+            print(f"Input pixels:\n{example.pixel_matrix[:200]}...")  # Show first 200 chars
+        return actual == predicted
 
 if __name__ == "__main__":
     evaluator = MNISTDSPyEvaluator()

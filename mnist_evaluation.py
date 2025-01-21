@@ -14,6 +14,12 @@ class MNISTEvaluator:
     def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None, 
                         display_progress: bool = True, display_table: int = 0, 
                         display_summary: bool = False) -> float:
+        # Print sample predictions
+        print("\nSample predictions:")
+        for ex in test_data[:3]:
+            pred = predictor(ex.pixel_matrix)
+            print(f"Input:\n{ex.pixel_matrix[:100]}...")
+            print(f"True: {ex.digit} | Predicted: {pred.digit}\n")
         evaluator = Evaluate(
             devset=test_data,
             metric=lambda example, pred: example.digit == pred,
