@@ -67,12 +67,22 @@ class MNISTBoosterV2:
         
     def get_hard_examples(self, test_data: List[dspy.Example], predictor) -> List[dspy.Example]:
         """Collect misclassified examples from test data"""
+        from concurrent.futures import ThreadPoolExecutor
+        
         self.hard_examples = []
         
-        for example in test_data:
+        def process_example(example):
             pred = predictor(example.pixel_matrix)
             if str(pred.number) != str(example.number):
-                self.hard_examples.append(example)
+                return example
+            return None
+            
+        # Process examples in parallel with 100 threads
+        with ThreadPoolExecutor(max_workers=100) as executor:
+            results = executor.map(process_example, test_data)
+            
+            # Collect non-None results (failed examples)
+            self.hard_examples = [ex for ex in results if ex is not None]
                 
         print(f"Found {len(self.hard_examples)} hard examples from {len(test_data)} total samples")
         return self.hard_examples
