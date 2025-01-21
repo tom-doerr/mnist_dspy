@@ -34,7 +34,7 @@ class MNISTBooster:
             self.run_boosting_iteration(i)
         
         # Final evaluation
-        final_acc, _ = self.ensemble.evaluate()
+        final_acc = self.ensemble.evaluate()
         print(f"\n🏆 Final Boosted Ensemble Accuracy: {final_acc:.2%}")
         return final_acc
 
