@@ -104,13 +104,5 @@ class MNISTEnsemble:
                     'predictions': [],
                     'correct': False
                 }
-            else:
-                # Handle cases where evaluation example wasn't processed
-                voting_results[key] = {
-                    'true_label': ex.digit,
-                    'majority': '?',
-                    'predictions': [],
-                    'correct': False
-                }
                 
         return accuracy, voting_results
