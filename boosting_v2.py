@@ -79,8 +79,7 @@ class MNISTBoosterV2:
                 'max_labeled_demos': num_few_shot if self.args.mipro else None,
                 'k': num_few_shot if not self.args.mipro else None,
                 'model_name': self.model_name,
-                # 'auto': 'light',
-                'auto': 'heavy',
+                'auto_setting': 'heavy',
             }
             
             if self.args.mipro:
@@ -88,7 +87,7 @@ class MNISTBoosterV2:
                     max_labeled_demos=optimizer_config['max_labeled_demos'],
                     metric=self.metric,
                     # auto='light',
-                    auto=optimizer_config['auto'],
+                    auto=optimizer_config['auto_setting'],
                 )
             else:
                 teleprompter = dspy.teleprompt.LabeledFewShot(
@@ -130,6 +129,7 @@ class MNISTBoosterV2:
             print(f"Accuracy: {config['accuracy']:.2%}")
             if config['use_mipro']:
                 print(f"MIPRO max_labeled_demos: {config['max_labeled_demos']}")
+                print(f"Auto setting: {config['auto_setting']}")
             else:
                 print(f"LabeledFewShot k: {config['k']}")
 
