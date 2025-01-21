@@ -40,4 +40,9 @@ class MNISTData:
         return full_data[val_size:], full_data[:val_size]
 
     def get_test_data(self) -> List[Tuple[str, int]]:
-        return [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_test, self.y_test)]
+        test_data = [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_test, self.y_test)]
+        print(f"\nData Loader Debug:")
+        print(f"Total test samples: {len(test_data)}")
+        print(f"Sample label: {test_data[0][1]}")
+        print(f"Sample pixels start: {test_data[0][0][:50]}...")
+        return test_data

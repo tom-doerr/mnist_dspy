@@ -63,8 +63,12 @@ class MNISTEnsemble:
         
         # Store true labels in voting results for analysis
         for ex in test_data:
-            key = hash(ex.pixel_matrix)
+            # Create more unique key with hash + first 10 pixels
+            pixel_prefix = ex.pixel_matrix[:50]
+            key = hash(pixel_prefix)
             if key in voting_results:
                 voting_results[key]['true_label'] = ex.digit
+                # Also store actual prediction vs truth
+                voting_results[key]['correct'] = voting_results[key]['majority'] == str(ex.digit)
                 
         return accuracy, voting_results
