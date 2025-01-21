@@ -96,12 +96,22 @@ class MNISTBoosterV2:
                 break
 
         return accuracy
-    def metric(self, pixel_matrix: str, number: str, trace=None) -> int:
-        """Simple metric to calculate distance from correct number"""
-        pred = self.ensemble_predict(pixel_matrix)
-        print("pred.number:", pred.number)
-        print("number:", number)
-        metric_val =  1 if pred.number != number else 0
+    # def metric(self, pixel_matrix: str, number: str, trace=None) -> int:
+        # """Simple metric to calculate distance from correct number"""
+        # pred = self.ensemble_predict(pixel_matrix)
+        # print("pred.number:", pred.number)
+        # print("number:", number)
+        # metric_val =  1 if pred.number != number else 0
+        # print("metric_val:", metric_val)
+        # return metric_val
+
+    def metric(self, true: str, pred: str, trace=None) -> int:
+        # print("pred.number:", pred.number)
+        # print("number:", number)
+        # metric_val =  1 if pred.number != number else 0
+        print("pred:", pred)
+        print("true:", true)
+        metric_val =  1 if pred.number != true else 0
         print("metric_val:", metric_val)
         return metric_val
 
@@ -158,6 +168,6 @@ class MNISTBoosterV2:
 
 if __name__ == "__main__":
     # Run full boosting process with 3 iterations
-    booster = MNISTBoosterV2(iterations=10)
+    booster = MNISTBoosterV2(iterations=30)
     final_accuracy = booster.run()
     print(f"\n🏆 Final Boosted Ensemble Accuracy: {final_accuracy:.2%}")
