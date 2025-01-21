@@ -46,7 +46,7 @@ class MNISTPipeline:
         accuracy = evaluator.evaluate_accuracy(ensemble.test_pool[:100]) / 100
         
         current_hard = [ex for ex in ensemble.test_pool[:100] 
-                       if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
+                       if ex.number != evaluator.inference.predict(ex.pixel_matrix)]
         
         if ensemble.hard_examples:
             never_correct = [ex for ex in current_hard 
