@@ -81,7 +81,3 @@ print(f"Model Accuracy: {accuracy:.2%}")
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📧 Contact
-
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - your.email@example.com
