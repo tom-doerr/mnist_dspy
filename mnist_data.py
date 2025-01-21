@@ -52,6 +52,6 @@ class MNISTData:
         ]
         print(f"\nData Loader Debug:")
         print(f"Total test samples: {len(test_data)}")
-        print(f"Sample label: {test_data[0][1]}")
-        print(f"Sample pixels start: {test_data[0][0][:50]}...")
+        print(f"Sample label: {test_data[0].digit}")
+        print(f"Sample pixels start: {test_data[0].pixel_matrix[:50]}...")
         return test_data
