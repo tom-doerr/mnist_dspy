@@ -15,13 +15,24 @@ class MNISTEnsemble:
         self.test_pool = create_test_data(samples=1000)
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
-        """Sample challenging examples that consistently fool models"""
+        """Sample challenging examples using a priority hierarchy:
+        1. Never-correct: Failed in ALL previous iterations
+        2. Persistent: Failed in multiple but not all iterations  
+        3. New errors: Recent failures
+        
+        Returns list of examples ordered by difficulty"""
         if not self.hard_examples:
             return random.sample(self.raw_data, min(3, len(self.raw_data)))
 
-        never_correct = [ex for ex in self.hard_examples 
-                       if all(ex in hist for hist in self.misclassification_history.values())]
-        persistent = [ex for ex in self.hard_examples if ex not in never_correct]
+        # Classify errors by persistence level
+        never_correct = [
+            ex for ex in self.hard_examples 
+            if all(ex in hist for hist in self.misclassification_history.values())
+        ]
+        persistent = [
+            ex for ex in self.hard_examples 
+            if sum(ex in hist for hist in self.misclassification_history.values()) > 1
+        ]
         
         samples = []
         samples += random.sample(never_correct, min(num_samples, len(never_correct)))

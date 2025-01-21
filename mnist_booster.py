@@ -24,30 +24,50 @@ class MNISTBooster:
         return random.sample(self.raw_data, min(num_samples, len(self.raw_data)))
 
     def train_iteration(self, iteration: int) -> float:
-        """Train a single boosting iteration"""
-        # Train on hardest examples
-        examples = self._get_hard_examples(3)
+        """Train a single boosting iteration using a 3-phase approach:
+        1. Sample hardest examples from previous iterations
+        2. Train new classifier on these challenging cases
+        3. Update tracking of persistently misclassified digits
+        
+        Returns accuracy on validation subset"""
+        # Phase 1: Select challenging examples
+        examples = self._get_hard_examples(3)  # Get top 3 hardest
+        
+        # Phase 2: Train specialized classifier
         classifier = MNISTClassifier(model_name=self.model_name)
-        optimized = LabeledFewShot(k=len(examples)).compile(classifier, trainset=examples)
+        optimized = LabeledFewShot(k=len(examples)).compile(
+            classifier, 
+            trainset=examples
+        )
         self.classifiers.append(optimized)
         
-        # Evaluate and update hard examples
+        # Phase 3: Identify persistent errors
         evaluator = MNISTEvaluator(model_name=self.model_name)
         eval_data = self.test_pool[:100]  # Fixed evaluation set
         accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)
         
-        # Track persistently hard examples
-        self.hard_examples = [
+        # Update hard examples with current model's errors
+        current_errors = [
             ex for ex in eval_data 
             if ex.digit != evaluator.inference.predict(ex.pixel_matrix)
-        ][:20]  # Keep top 20 hardest
+        ]
+        # Merge with existing hard examples, keeping most frequent
+        self.hard_examples = (self.hard_examples + current_errors)[:20]
         
         return accuracy
 
     def evaluate_ensemble(self) -> Tuple[float, Dict]:
-        """Final evaluation with majority voting using threaded evaluation"""
+        """Final evaluation with majority voting using threaded evaluation.
+        
+        The voting system works by:
+        1. Each classifier makes independent predictions
+        2. Majority vote determines final ensemble prediction
+        3. Track prediction history for error analysis
+        4. Use parallel evaluation for speed
+        
+        Returns tuple of (accuracy, detailed_voting_results)"""
         test_data = random.sample(self.test_pool, 1000)
-        voting_results = {}
+        voting_results = {}  # Stores {input_hash: {predictions: [], majority: str}}
         
         # Create evaluator with high parallelism
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
