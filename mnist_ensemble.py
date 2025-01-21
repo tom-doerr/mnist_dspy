@@ -43,9 +43,9 @@ class MNISTEnsemble:
             predictions = []
             for clf in self.classifiers:
                 result = clf(pixel_matrix=pixel_matrix)
-                predictions.append(str(result.digit).strip())  # Clean whitespace from predictions
+                predictions.append(str(result.number).strip())  # Clean whitespace from predictions
             majority = max(set(predictions), key=predictions.count)
-            return dspy.Prediction(digit=majority)
+            return dspy.Prediction(number=majority)
 
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
         accuracy = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
