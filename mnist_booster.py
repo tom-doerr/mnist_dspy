@@ -108,12 +108,31 @@ class MNISTBooster:
         # Run parallel evaluation
         correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict)
         
-        # Print predictions and labels
-        print("\nPredictions vs Labels:")
+        # Print predictions and labels with formatting
+        print("\nFinal Evaluation Results:")
+        print(f"{'True':<5} | {'Majority':<7} | {'Predictions':<50}")
+        print("-" * 70)
+        correct = 0
+        wrong = 0
+        
         for ex in test_data:
             votes = voting_results[hash(ex.pixel_matrix)]
-            print(f"True: {ex.digit} -> Predictions: {votes['predictions']} -> Majority: {votes['majority']}")
+            is_correct = votes['majority'] == ex.digit
+            if is_correct:
+                correct += 1
+            else:
+                wrong += 1
                 
+            # Truncate long prediction lists
+            pred_str = str(votes['predictions'])
+            if len(pred_str) > 45:
+                pred_str = pred_str[:42] + "..."
+                
+            print(f"{ex.digit:<5} | {votes['majority']:<7} | {pred_str:<50} {'✓' if is_correct else '✗'}")
+        
+        print("\nSummary:")
+        print(f"Correct: {correct} | Wrong: {wrong} | Accuracy: {correct/(correct+wrong):.1%}")
+        print("-" * 70)
         return correct / len(test_data), voting_results
 
     def run(self):
