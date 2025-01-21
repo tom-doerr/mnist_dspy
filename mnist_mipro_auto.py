@@ -115,7 +115,7 @@ def parse_args():
     parser.add_argument('--no-cache', action='store_true',
                       help='Disable model response caching (slower but fresh results)')
     parser.add_argument('--boosting', type=int, default=1,
-                      help='Number of boosting iterations for ensemble voting')
+                      help='Number of boosting iterations for ensemble voting (3-5 recommended)')
     
     return parser.parse_args()
 
