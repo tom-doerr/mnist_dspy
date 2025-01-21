@@ -31,7 +31,9 @@ class MNISTEnsemble:
         3. New errors: Recent failures
         
         Returns list of examples ordered by difficulty"""
-
+        
+        if not self.hard_examples:  # Handle empty initial case
+            return []
         return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
 
     def evaluate(self) -> float:
@@ -46,5 +48,10 @@ class MNISTEnsemble:
             return dspy.Prediction(digit=majority)
 
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
-        return evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
+        accuracy = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
                                          display_progress=True, display_table=0, display_summary=False)
+        
+        # Update hard examples with current errors
+        self.hard_examples = [ex for ex in test_data 
+                            if not ensemble_predict(ex.pixel_matrix).digit == str(ex.digit)]
+        return accuracy

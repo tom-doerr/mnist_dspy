@@ -43,6 +43,12 @@ class MNISTBooster:
     def run(self):
         """Execute full boosting pipeline"""
         print("⚡ Starting MNIST Boosting Process")
+        
+        # Start with base classifier trained on random sample
+        initial_data = MNISTData().get_training_data()[:100]  # Initial random sample
+        base_clf = self.trainer.train(initial_data)
+        self.ensemble.classifiers.append(base_clf)
+        
         for i in range(self.iterations):
             self.run_boosting_iteration(i)
         
