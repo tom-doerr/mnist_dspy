@@ -52,3 +52,13 @@ def test_hard_example_tracking(sample_ensemble):
     assert len(sample_ensemble.hard_examples) > 0, "Should track challenging examples"
     assert 2 in sample_ensemble.misclassification_history, "Should track iteration history"
 
+def test_classifier_output_format(sample_ensemble):
+    """Verify all classifiers return Prediction objects with digit attribute"""
+    test_input = "0 0 0 0 " + "0 "*(28*28-4)  # Minimal valid input
+    
+    for i, clf in enumerate(sample_ensemble.classifiers):
+        result = clf(pixel_matrix=test_input)
+        assert hasattr(result, 'digit'), f"Classifier {i} missing 'digit' attribute"
+        assert isinstance(result.digit, str), f"Classifier {i} digit should be string"
+        assert result.digit in {str(n) for n in range(10)}, f"Classifier {i} invalid digit: {result.digit}"
+

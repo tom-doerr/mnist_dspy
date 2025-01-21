@@ -104,8 +104,15 @@ class MNISTEnsembleBooster:
         def ensemble_predict(pixel_matrix: str) -> dspy.Prediction:
             """Make ensemble prediction for a single image matrix"""
             # Collect predictions from all classifiers
-            # Get raw predictions from classifiers and ensure they're strings
-            predictions = [str(clf(pixel_matrix=pixel_matrix).digit) for clf in self.classifiers]
+            # Safely get predictions from classifiers and extract digit values
+            predictions = []
+            for clf in self.classifiers:
+                result = clf(pixel_matrix=pixel_matrix)
+                if hasattr(result, 'digit'):
+                    pred = str(result.digit)
+                else:  # Handle raw string output if Prediction wrapper fails
+                    pred = str(result).split("'digit': '")[1].split("'")[0] if "'digit': '" in str(result) else str(result)
+                predictions.append(pred)
             
             # Get majority vote
             majority = max(set(predictions), key=predictions.count)
