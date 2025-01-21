@@ -4,9 +4,9 @@ from mnist_dspy import MNISTClassifier
 from typing import List, Tuple
 
 class MNISTInference:
-    def __init__(self, model_name: str = "deepseek/deepseek-chat", no_cache: bool = False):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", no_cache: bool = False, optimized_model=None):
         self.model_name = model_name
-        self.classifier = MNISTClassifier(model_name)
+        self.classifier = optimized_model if optimized_model else MNISTClassifier(model_name)
         self._configure_model(model_name, no_cache)
 
     def _configure_model(self, model_name: str, no_cache: bool = False):
