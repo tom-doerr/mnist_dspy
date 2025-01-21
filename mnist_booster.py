@@ -24,7 +24,7 @@ class MNISTBooster:
         self.ensemble.classifiers.append(new_clf)
         
         # 3. Evaluate updated ensemble
-        accuracy, results = self.ensemble.evaluate()
+        accuracy = self.ensemble.evaluate()
         print(f"🎯 Iteration {iteration + 1} Ensemble Accuracy: {accuracy:.2%}")
 
     def run(self):
