@@ -14,29 +14,35 @@ class MNISTFewShotTrainer:
         self.num_examples = num_examples
         self.classifier = MNISTClassifier(model_name)
         self.data = MNISTData()
+        self.teleprompter = dspy.teleprompt.BootstrapFewShot(
+            max_bootstrapped_demos=3,
+            max_labeled_demos=3
+        )
         
         # Load and prepare few-shot examples
         raw_train = create_training_data()
-        # print("raw_train:", raw_train)
-        # self.train_data = [
-            # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
-            # for pixels, label in raw_train[:num_examples]
-        # ]
         self.train_data = [
             dspy.Example(pixel_matrix=e['pixel_matrix'], number=str(e['number'])).with_inputs('pixel_matrix')
             for e in raw_train[:num_examples]
         ]
         
-        # print("self.train_data:", self.train_data)
         # Load test data
         raw_test = create_test_data()
-        # self.test_data = [
-            # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
-            # for pixels, label in raw_test
-        # ]
         self.test_data = [dspy.Example(pixel_matrix=e['pixel_matrix'], number=str(e['number'])).with_inputs('pixel_matrix') for e in raw_test]
         
         self.evaluator = MNISTEvaluator(model_name=model_name)
+
+    def train_with_hard_examples(self, hard_examples: List[dspy.Example]) -> MNISTClassifier:
+        """Train classifier on challenging examples using few-shot learning"""
+        if len(hard_examples) < 3:
+            raise ValueError("Need at least 3 hard examples for few-shot training")
+            
+        # Sample exactly 3 hard examples
+        training_sample = random.sample(hard_examples, 3)
+        
+        # Train with bootstrap few-shot on hard examples
+        classifier = MNISTClassifier()
+        return self.teleprompter.compile(classifier, trainset=training_sample)
 
     def train(self) -> MNISTClassifier:
         """Train using simple few-shot learning"""
