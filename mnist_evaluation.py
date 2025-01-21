@@ -14,12 +14,22 @@ class MNISTEvaluator:
     def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None, 
                         display_progress: bool = True, display_table: int = 0, 
                         display_summary: bool = False) -> float:
-        # Print sample predictions
-        print("\nSample predictions:")
-        for ex in test_data[:3]:
-            pred = predictor(ex.pixel_matrix)
-            print(f"Input:\n{ex.pixel_matrix[:100]}...")
-            print(f"True: {ex.digit} | Predicted: {pred}\n")
+        # Print sample predictions with more debug info
+        print("\n=== DEBUG: Sample predictions ===")
+        for i, ex in enumerate(test_data[:3]):
+            print(f"\n- Example {i+1} -")
+            print(f"Input type: {type(ex.pixel_matrix)}")
+            print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
+            print(f"True label type: {type(ex.digit)}")
+            
+            try:
+                pred = predictor(ex.pixel_matrix)
+                print(f"Raw prediction: {pred}")
+                print(f"Predicted label type: {type(pred.digit) if hasattr(pred, 'digit') else type(pred)}")
+                print(f"True: {ex.digit} | Predicted: {pred.digit}")
+                print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
+            except Exception as e:
+                print(f"Prediction failed: {str(e)}")
         print("\n=== DEBUG: Creating evaluator ===")
         print(f"Test data size: {len(test_data)}")
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
