@@ -2,6 +2,7 @@
 from typing import List, Tuple
 import numpy as np
 import dspy
+import random
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
