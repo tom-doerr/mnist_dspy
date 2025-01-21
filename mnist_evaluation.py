@@ -11,13 +11,15 @@ class MNISTEvaluator:
         self.inference = MNISTInference(model_name=model_name, no_cache=no_cache)
         self.num_threads = num_threads
 
-    def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None) -> float:
+    def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None, 
+                        display_progress: bool = True, display_table: int = 0, 
+                        display_summary: bool = False) -> float:
         evaluator = Evaluate(
             devset=test_data,
             metric=lambda example, pred: example.digit == pred,
             num_threads=self.num_threads,
-            display_progress=True,
-            display_table=0
+            display_progress=display_progress,
+            display_table=display_table
         )
         
         # Use custom predictor if provided, else default classifier
