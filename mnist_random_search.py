@@ -7,7 +7,7 @@ from dspy.teleprompt import BootstrapFewShot
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
-class MNISTRandomSearch:
+class MNISTRandomSearch(MNISTHyperparamSearch):
     def __init__(self, max_trials: int = 10):
         self.max_trials = max_trials
         self.results = []

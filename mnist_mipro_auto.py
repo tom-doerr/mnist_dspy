@@ -6,7 +6,9 @@ from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, MNISTBooster, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
-class MNISTMIPROAutoTrainer:
+class MNISTMIPROTrainer:
+    """Train MNIST classifier using MIPROv2 optimization with configurable automation levels."""
+    
     def __init__(self, auto_setting: str = "light", model_name: str = "deepseek/deepseek-chat", no_cache: bool = False, boosting_iterations: int = 1):
         # Initialize run configuration
         self.run_config = {

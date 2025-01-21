@@ -40,7 +40,7 @@ class MNISTBootstrapTrainer:
         pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
         return true_label == pred_label
 
-    def train(self):
+    def train(self) -> MNISTClassifier:
         # Evaluate baseline model before optimization
         print("Evaluating baseline model before optimization...")
         baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data)

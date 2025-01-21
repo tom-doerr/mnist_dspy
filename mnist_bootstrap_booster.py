@@ -42,6 +42,7 @@ class MNISTBootstrapBooster:
             self.optimizers.append(optimizer)
 
     def evaluate(self, test_data: List[dspy.Example]) -> float:
+        """Evaluate ensemble using majority voting on test data."""
         """Evaluate ensemble using majority voting"""
         correct = 0
         for example in test_data:

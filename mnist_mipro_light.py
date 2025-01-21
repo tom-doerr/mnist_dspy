@@ -4,16 +4,6 @@ from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
-class MNISTMIPROLightTrainer:
-    def __init__(self):
-        # Initialize run configuration
-        self.run_config = {
-            'model': 'MNISTClassifier',
-            'optimizer': 'MIPROv2 (auto=light)',
-            'train_samples': 1000,
-            'test_samples': 200,
-            'random_state': 42
-        }
         
         self.classifier = MNISTClassifier()
         # Create training data with proper dspy.Example format

@@ -7,7 +7,8 @@ from mnist_dspy import MNISTClassifier
 from dspy.teleprompt import LabeledFewShot
 from mnist_evaluation import MNISTEvaluator
 
-class MNISTBooster:
+class MNISTBoostingPipeline:
+    """Orchestrates the complete boosting training pipeline including ensemble evaluation."""
     def __init__(self, iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
         self.ensemble = MNISTEnsemble(model_name)
         self.pipeline = MNISTPipeline(iterations, model_name)

@@ -9,6 +9,8 @@ class MNISTSignature(dspy.Signature):
     digit = dspy.OutputField(desc="predicted digit from 0 to 9")
 
 class MNISTBooster(dspy.Module):
+    """DSPy module for boosted MNIST classification using ensemble voting."""
+    
     def __init__(self, model_name: str = "deepseek/deepseek-chat", boosting_iterations: int = 3, verbose: bool = False):
         super().__init__()
         self.models = [

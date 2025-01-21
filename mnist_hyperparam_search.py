@@ -4,6 +4,7 @@ from tabulate import tabulate
 from mnist_mipro_auto import MNISTMIPROAutoTrainer
 
 class MNISTHyperparamSearch:
+    """Unified hyperparameter search supporting both grid and random strategies."""
     def __init__(self, models=None):
         self.models = models
         self.results = []
