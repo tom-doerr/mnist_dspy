@@ -51,7 +51,7 @@ class MNISTDSPyEvaluator:
         
     def _accuracy_metric(self, example, pred, trace=None) -> float:
         """Simple exact match accuracy metric with debug output."""
-        actual = int(example.digit)
+        actual = int(example.number) 
         predicted = int(pred.number) 
         if actual != predicted:
             print(f"\n❌ Mismatch | Actual: {actual} | Predicted: {predicted}")

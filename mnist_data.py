@@ -38,7 +38,7 @@ class MNISTData:
 
     def get_test_data(self) -> List[dspy.Example]:
         test_data = [
-            dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")  # Creating base test examples
+            dspy.Example(pixel_matrix=self._matrix_to_text(x), number=int(y)).with_inputs("pixel_matrix")  # Creating base test examples
             for x, y in zip(self.X_test, self.y_test)
         ]
         return test_data
@@ -50,7 +50,7 @@ class MNISTData:
         X_shuffled, y_shuffled = zip(*shuffled)
         
         train_data = [
-            dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
+            dspy.Example(pixel_matrix=self._matrix_to_text(x), number=int(y)).with_inputs("pixel_matrix")
             for x, y in zip(X_shuffled, y_shuffled)
         ]
         
@@ -59,5 +59,5 @@ class MNISTData:
         print(f"Total training examples: {len(train_data)}")
         sample_ex = train_data[0]
         print(f"Sample pixel matrix:\n{sample_ex.pixel_matrix[:200]}...") 
-        print(f"Sample label: {sample_ex.digit} (type: {type(sample_ex.digit)})")
+        print(f"Sample label: {sample_ex.number} (type: {type(sample_ex.number)})")
         return train_data
