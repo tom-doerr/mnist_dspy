@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import dspy
 import argparse
+import random
+from typing import List
 from dspy.teleprompt import LabeledFewShot
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
