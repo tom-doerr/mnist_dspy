@@ -20,13 +20,13 @@ class MNISTEvaluator:
             print(f"\n- Example {i+1} -")
             print(f"Input type: {type(ex.pixel_matrix)}")
             print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
-            print(f"True label type: {type(ex.digit)}")
+            print(f"True label type: {type(ex.number)}")
             
             try:
                 pred = predictor(ex.pixel_matrix)
                 print(f"Raw prediction: {pred}")
                 print(f"Predicted label type: {type(pred.number) if hasattr(pred, 'number') else type(pred)}")
-                print(f"True: {ex.digit} | Predicted: {pred.digit}")
+                print(f"True: {ex.number} | Predicted: {pred.number}")
                 print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
             except Exception as e:
                 print(f"Prediction failed: {str(e)}")
@@ -54,7 +54,7 @@ class MNISTEvaluator:
         # Create new examples with idx field added
         indexed_data = []
         for i, ex in enumerate(test_data):
-            new_ex = dspy.Example(pixel_matrix=ex.pixel_matrix, digit=ex.digit, idx=i).with_inputs('pixel_matrix')
+            new_ex = dspy.Example(pixel_matrix=ex.pixel_matrix, number=ex.number, idx=i).with_inputs('pixel_matrix')
             indexed_data.append(new_ex)
         
         evaluator = Evaluate(
