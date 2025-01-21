@@ -2,6 +2,7 @@ import dspy
 from typing import List
 from mnist_data import MNISTData
 from mnist_dspy import MNISTClassifier
+from mnist_evaluation import MNISTEvaluator
 
 class MNISTBoosterV2:
     """Advanced boosting implementation with hard example tracking"""
