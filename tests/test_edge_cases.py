@@ -6,7 +6,7 @@ from mnist_ensemble_booster import create_training_data
 @pytest.fixture
 def sample_ensemble():
     """Fixture providing a trained ensemble booster with 3 iterations"""
-    booster = MNISTEnsembleBooster(iterations=3)
+    booster = MNISTBooster(iterations=3)
     booster.raw_data = create_training_data(samples=100)
     booster.test_pool = create_training_data(samples=50)
     booster.train_iteration(0)
