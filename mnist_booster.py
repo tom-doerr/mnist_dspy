@@ -30,7 +30,10 @@ class MNISTBooster:
         print(f"\n🚀 Starting Boosting Iteration {iteration + 1}")
         
         # 1. Get hard examples from ensemble
-        hard_examples = self.ensemble._get_hard_examples(num_samples=100)  # Get substantial sample of hard examples
+        hard_examples = self.ensemble._get_hard_examples(num_samples=100)
+        if not hard_examples:  # Fallback to random sample if no hard examples
+            hard_examples = MNISTData().get_training_data()[:100]
+            print("⚠️  No hard examples found, using random sample instead")
         print(f"📚 Training with {len(hard_examples)} hard examples")
         
         # 2. Train new classifier on current hard examples

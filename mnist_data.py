@@ -43,8 +43,13 @@ class MNISTData:
         return test_data
 
     def get_training_data(self) -> List[dspy.Example]:
+        # Shuffle training data to ensure random sample
+        shuffled = list(zip(self.X_train, self.y_train))
+        random.shuffle(shuffled)
+        X_shuffled, y_shuffled = zip(*shuffled)
+        
         train_data = [
             dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
-            for x, y in zip(self.X_train, self.y_train)
+            for x, y in zip(X_shuffled, y_shuffled)
         ]
         return train_data
