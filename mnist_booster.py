@@ -1,3 +1,6 @@
+from mnist_dspy import MNISTBooster
+from mnist_evaluation import MNISTEvaluator
+
 class MNISTBoostingPipeline:
     """Orchestrates the complete boosting training pipeline including ensemble evaluation."""
     
