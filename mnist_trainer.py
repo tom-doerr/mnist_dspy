@@ -41,7 +41,7 @@ class MNISTTrainer:
         pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
         return true_label == pred_label
 
-    def train(self):
+    def train(self, data):
         # Evaluate baseline model before optimization
         print("Evaluating baseline model before optimization...")
         baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data)
@@ -57,10 +57,10 @@ class MNISTTrainer:
         )
         
         print("Starting training with MIPROv2...")
-        print(f"Training on {len(self.train_data)} samples")
+        print(f"Training on {len(data)} samples")
         self.optimized_classifier = teleprompter.compile(
             self.classifier,
-            trainset=self.train_data,
+            trainset=data,
             requires_permission_to_run=False
         )
         print("Training completed successfully")
