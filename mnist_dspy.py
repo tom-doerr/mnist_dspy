@@ -74,7 +74,15 @@ def create_test_data(samples: int = 200) -> List[dspy.Example]:
     mnist = MNISTData()
     raw_test = mnist.get_test_data()
     print(f"Using {samples} samples from {len(raw_test)} available test samples")
-    return [
+    test_data = [
         dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating formatted test examples
         for pixels, label in raw_test[:samples]
+    ]
+    
+    # Print sample test data
+    print("\n=== Test Data Sample ===")
+    sample_ex = test_data[0]
+    print(f"Sample pixel matrix shape: {len(sample_ex.pixel_matrix.split())}x{len(sample_ex.pixel_matrix.split('\n'))}")
+    print(f"Sample label: {sample_ex.number} (type: {type(sample_ex.number)})")
+    return test_data
     ]

@@ -19,6 +19,10 @@ class MNISTBootstrapTrainer:
             'random_state': 42
         }
         
+        print("\n=== Data Configuration ===")
+        print(f"Train samples: {self.run_config['train_samples']}")
+        print(f"Test samples: {self.run_config['test_samples']}")
+        
         self.classifier = MNISTClassifier()
         # Create training data with proper dspy.Example format
         raw_train = create_training_data()
