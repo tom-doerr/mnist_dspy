@@ -1,26 +1,10 @@
-#!/usr/bin/env python3
-import random
-import dspy
-from typing import List, Tuple, Dict
-from tqdm import tqdm
-from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
-from mnist_evaluation import MNISTEvaluator
-from dspy.teleprompt import LabeledFewShot
+from .mnist_ensemble import MNISTEnsemble
+from .mnist_pipeline import MNISTPipeline
 
-class MNISTEnsembleBooster:
+class MNISTBooster:
     def __init__(self, iterations: int = 10, model_name: str = "deepseek/deepseek-chat"):
-        self.iterations = iterations
-        self.model_name = model_name
-        self.classifiers: List[MNISTClassifier] = []
-        self.hard_examples: List[dspy.Example] = []
-        self.misclassification_history: Dict[int, List[dspy.Example]] = {}
-        
-        # Configure LM with caching
-        dspy.configure(lm=dspy.LM(model_name, cache=True))
-        
-        # Initial training data
-        self.raw_data = create_training_data(samples=1000)
-        self.test_pool = create_test_data(samples=1000)
+        self.ensemble = MNISTEnsemble(model_name)
+        self.pipeline = MNISTPipeline(iterations, model_name)
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
         """Sample challenging examples that consistently fool models:
@@ -131,24 +115,9 @@ class MNISTEnsembleBooster:
 
     def run(self):
         """Execute full boosting pipeline"""
-        print(f"Starting ensemble boosting with {self.iterations} iterations\n")
-        
-        for i in range(self.iterations):
-            acc = self.train_iteration(i)
-            remaining = len(self.hard_examples)
-            never_correct_pct = (sum(1 for ex in self.hard_examples 
-                                   if all(ex in hist for hist in self.misclassification_history.values())) 
-                                / remaining * 100) if remaining > 0 else 0
-            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/100:.1%}) | Never-Correct: {never_correct_pct:.1f}%")
-        
-        print("\nRunning final ensemble evaluation...")
-        final_acc, results = self.evaluate_ensemble()
-        print(f"\nFinal Ensemble Accuracy: {final_acc:.2%}")
-        
-        # Calculate error reduction
-        initial_errors = len(self.misclassification_history.get(0, []))
-        final_errors = sum(1 for v in results.values() if v['majority'] != v['true_label'])
-        print(f"Error Reduction: {initial_errors} → {final_errors} ({(initial_errors-final_errors)/initial_errors:.1%})")
+        self.pipeline.run_training(self.ensemble)
+        final_acc, results = self.ensemble.evaluate()
+        self.pipeline.report_results(final_acc, results)
 
 if __name__ == "__main__":
     booster = MNISTEnsembleBooster(iterations=10)
