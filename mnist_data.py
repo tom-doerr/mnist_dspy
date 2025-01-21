@@ -38,7 +38,7 @@ class MNISTData:
 
     def get_test_data(self) -> List[dspy.Example]:
         test_data = [
-            dspy.Example(pixel_matrix=self._matrix_to_text(x), number=int(y)).with_inputs("pixel_matrix")
+            dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
             for x, y in zip(self.X_test, self.y_test)
         ]
         return test_data
