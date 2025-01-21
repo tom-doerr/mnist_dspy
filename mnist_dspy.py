@@ -45,14 +45,14 @@ class MNISTClassifier(dspy.Module):
         else:
             self.predict = dspy.Predict(MNISTSignature)
         
-    def forward(self, pixel_matrix: str) -> str:
+    def forward(self, pixel_matrix: str) -> dspy.Prediction:
         if self.verbose:
             print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
         result = self.predict(pixel_matrix=pixel_matrix)
         if self.verbose:
             print(f"Model prediction: {result.number}")
             print(f"Full prediction result: {result}")
-        return result.number
+        return result
 
 def create_training_data(samples: int = 1000) -> List[Tuple[str, str]]:
     print("Creating training data...")
