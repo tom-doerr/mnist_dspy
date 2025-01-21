@@ -41,7 +41,7 @@ class MNISTEvaluator:
             
             # Debug print for first 10 examples
             if example.idx < 10:  # Track index via example's idx field
-                print(f"\n- Example {example._index} -")
+                print(f"\n- Example {example.idx} -")
                 print(f"True: {true_label} ({type(true_label)})")
                 print(f"Pred: {pred_label} ({type(pred_label)})")
                 print(f"Match: {match}")
