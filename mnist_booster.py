@@ -11,85 +11,36 @@ class MNISTBooster:
     def __init__(self, iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
         self.ensemble = MNISTEnsemble(model_name)
         self.pipeline = MNISTPipeline(iterations, model_name)
-        self.hard_examples = []
-        self.misclassification_history = {}
-        self.raw_data = []
-        self.test_pool = []
-        self.classifiers = []
+        self.hard_examples = []  # Track challenging examples
+        self.classifiers = []    # Store trained models
         self.model_name = model_name
-        self.hard_examples = []  # Initialize missing attribute
-        self.misclassification_history = {}  # Initialize missing attribute
-        self.raw_data = []
-        self.test_pool = []
-        self.classifiers = []
+        self.raw_data = []       # Training data pool
+        self.test_pool = []      # Evaluation data
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
-        """Sample challenging examples that consistently fool models:
-        - Frequently misclassified digits (e.g. 4 vs 9, 7 vs 1)
-        - Ambiguous handwritten shapes
-        - Edge cases with unusual rotations/sizes
-        Prioritizes examples that persist across iterations"""
-        if not self.hard_examples:
-            return random.sample(self.raw_data, min(3, len(self.raw_data)))
-            
-        # Explicitly prioritize never-correct examples first
-        never_correct = [ex for ex in self.hard_examples 
-                       if all(ex in hist for hist in self.misclassification_history.values())]
-        persistent = [ex for ex in self.hard_examples if ex not in never_correct]
-        
-        # Sample priority order: never-correct -> persistent -> new
-        samples = []
-        samples += random.sample(never_correct, min(num_samples, len(never_correct)))
-        remaining = num_samples - len(samples)
-        if remaining > 0:
-            samples += random.sample(persistent, min(remaining, len(persistent)))
-        remaining = num_samples - len(samples)
-        if remaining > 0:
-            samples += random.sample(self.hard_examples, min(remaining, len(self.hard_examples)))
-            
-        return samples[:num_samples]  # Ensure exact sample count
+        """Randomly select challenging examples from our training pool"""
+        if self.hard_examples:
+            return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
+        return random.sample(self.raw_data, min(num_samples, len(self.raw_data)))
 
     def train_iteration(self, iteration: int) -> float:
-        """Train a single iteration classifier"""
-        # Sample hard examples + random baseline
-        fewshot_examples = self._get_hard_examples(3)
-        random.shuffle(fewshot_examples)
-        
-        # Create and train optimized classifier
+        """Train a single boosting iteration"""
+        # Train on hardest examples
+        examples = self._get_hard_examples(3)
         classifier = MNISTClassifier(model_name=self.model_name)
-        optimizer = LabeledFewShot(k=len(fewshot_examples))
-        optimized_classifier = optimizer.compile(classifier, trainset=fewshot_examples)
+        optimized = LabeledFewShot(k=len(examples)).compile(classifier, trainset=examples)
+        self.classifiers.append(optimized)
         
-        # Store both the compiled classifier and its predictor module
-        self.classifiers.append(optimized_classifier)
-        optimized_predictor = optimized_classifier.predict
-        
-        # Use same 100 samples repeatedly to find hard cases
-        eval_data = self.test_pool[:100]  # Fixed set for consistent evaluation
-        # Evaluate using the actual optimized predictor from this iteration
-        evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
-        evaluator.inference.classifier.predict = optimized_predictor  # Use current iteration's optimized predictor
+        # Evaluate and update hard examples
+        evaluator = MNISTEvaluator(model_name=self.model_name)
+        eval_data = self.test_pool[:100]  # Fixed evaluation set
         accuracy = evaluator.evaluate_accuracy(eval_data) / len(eval_data)
         
-        # Find persistent hard cases by checking against original errors
-        current_hard = [ex for ex in eval_data if ex.digit != evaluator.inference.predict(ex.pixel_matrix)]
-        if self.hard_examples:
-            # Keep examples that were hard in previous OR current iteration
-            # Track example types:
-            # - Never-correct: Failed in ALL iterations (most critical)
-            # - Persistent: Failed in SOME previous iterations
-            # - New: First-time failures (current iteration only)
-            never_correct = [ex for ex in current_hard 
-                           if all(ex in hist for hist in self.misclassification_history.values())]
-            
-            persistent_hard = [ex for ex in self.hard_examples  # Failed before AND now
-                             if ex in current_hard]
-            new_hard = list(set(self.hard_examples + current_hard))  # Combine history
-            self.hard_examples = never_correct + persistent_hard + new_hard[:20]
-        else:
-            self.hard_examples = current_hard
-            new_hard = current_hard
-        self.misclassification_history[iteration] = new_hard
+        # Track persistently hard examples
+        self.hard_examples = [
+            ex for ex in eval_data 
+            if ex.digit != evaluator.inference.predict(ex.pixel_matrix)
+        ][:20]  # Keep top 20 hardest
         
         return accuracy
 
