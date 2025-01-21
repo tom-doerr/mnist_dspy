@@ -57,7 +57,7 @@ class MNISTClassifier(dspy.Module):
 def create_training_data(samples: int = 1000) -> List[Tuple[str, str]]:
     print("Creating training data...")
     mnist = MNISTData()
-    train_data, val_data = mnist.get_training_data()
+    train_data = mnist.get_training_data()  # Only get training data
     print(f"Using {samples} samples from {len(train_data)} available training samples")
     return [(pixels, str(label)) for pixels, label in train_data[:samples]]
 
