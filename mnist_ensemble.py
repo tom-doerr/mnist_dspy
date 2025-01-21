@@ -58,7 +58,8 @@ class MNISTEnsemble:
 
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
         total = len(test_data)
-        correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict)
+        correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict, 
+                                            display_progress=True, display_table=0, display_summary=False)
         # Calculate actual correct count from voting results
         actual_correct = sum(1 for v in voting_results.values() if v.get('correct', False))
         accuracy = actual_correct / total if total > 0 else 0.0
