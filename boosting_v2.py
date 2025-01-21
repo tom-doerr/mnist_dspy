@@ -17,7 +17,8 @@ class MNISTBoosterV2:
         """Execute full boosting pipeline"""
         print("⚡ Starting MNIST Boosting Process")
         
-        test_data = MNISTData().get_test_data()[:100]  # Use first 100 test samples
+        # test_data = MNISTData().get_test_data()[:100]  # Use first 100 test samples
+        test_data = MNISTData().get_training_data()[:100]  # Use first 100 test samples
         
         for i in range(self.iterations):
             print(f"\n🚀 Starting Boosting Iteration {i+1}/{self.iterations}")
@@ -34,9 +35,13 @@ class MNISTBoosterV2:
                 print("⚠️  No hard examples found, using random sample instead")
 
             # Configure and compile the classifier
-            teleprompter = dspy.teleprompt.BootstrapFewShot(
-                max_bootstrapped_demos=3,
-                max_labeled_demos=3
+            # teleprompter = dspy.teleprompt.BootstrapFewShot(
+                # max_bootstrapped_demos=0,
+                # max_labeled_demos=3
+            # )
+            teleprompter = dspy.teleprompt.LabeledFewShot(
+                # max_labeled_demos=3
+                k=3,
             )
             compiled_classifier = teleprompter.compile(classifier, trainset=training_data)
             
