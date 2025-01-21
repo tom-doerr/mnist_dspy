@@ -83,15 +83,30 @@ class MNISTBootstrapTrainer:
         print("\nEvaluation completed")
         return accuracy
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train MNIST classifier with BootstrapFewShot')
+    parser.add_argument('--model', choices=['reasoner', 'chat'], default='chat',
+                      help='Base model: reasoner (specialized) or chat (general purpose)')
+    parser.add_argument('--train-samples', type=int, default=1000,
+                      help='Number of training samples to use')
+    parser.add_argument('--verbose', action='store_true',
+                      help='Show detailed prediction outputs')
+    return parser.parse_args()
+
 if __name__ == "__main__":
-    print("Running MNIST Trainer with BootstrapFewShot optimizer")
-    trainer = MNISTBootstrapTrainer()
+    args = parse_args()
+    
+    # Set model based on selection
+    model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
+    
+    print(f"Running MNIST Trainer with BootstrapFewShot optimizer ({args.model} model)")
+    trainer = MNISTBootstrapTrainer(
+        model_name=model_name
+    )
+    trainer.run_config['train_samples'] = args.train_samples
+    trainer.classifier.verbose = args.verbose
+    
     print("Training model...")
     trainer.train()
     accuracy = trainer.evaluate()
-    print(f"Optimized model accuracy: {accuracy:.2%}")
-    
-    print("\n=== Final Run Configuration ===")
-    for key, value in trainer.run_config.items():
-        print(f"{key}: {value}")
-    print("==============================")
+    print(f"\nOptimized model accuracy: {accuracy:.2%}")
