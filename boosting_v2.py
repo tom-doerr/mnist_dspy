@@ -35,6 +35,7 @@ class MNISTBoosterV2:
     def run(self):
         """Execute full boosting pipeline"""
         print("⚡ Starting MNIST Boosting Process")
+        booster_configs = []  # To track configs and their results
         
         test_data_full = MNISTData().get_test_data()
         random.shuffle(test_data_full)
@@ -69,18 +70,29 @@ class MNISTBoosterV2:
                 # max_bootstrapped_demos=0,
                 # max_labeled_demos=3
             # )
-            num_few_shot = 5
+            num_few_shot = 3
+            # Store optimizer configuration
+            optimizer_config = {
+                'use_mipro': self.args.mipro,
+                'num_few_shot': num_few_shot,
+                'optimizer_class': 'MIPROv2' if self.args.mipro else 'LabeledFewShot',
+                'max_labeled_demos': num_few_shot if self.args.mipro else None,
+                'k': num_few_shot if not self.args.mipro else None,
+                'model_name': self.model_name,
+                # 'auto': 'light',
+                'auto': 'heavy',
+            }
+            
             if self.args.mipro:
                 teleprompter = dspy.MIPROv2(
-                    max_labeled_demos=num_few_shot,
+                    max_labeled_demos=optimizer_config['max_labeled_demos'],
                     metric=self.metric,
-                    auto='light',
-                    # auto='medium',
+                    # auto='light',
+                    auto=optimizer_config['auto'],
                 )
             else:
                 teleprompter = dspy.teleprompt.LabeledFewShot(
-                    # max_labeled_demos=3
-                    k=num_few_shot
+                    k=optimizer_config['k']
                 )
             sampled_data = random.sample(training_data, num_few_shot)
             #remove the sampled data from the test data
@@ -100,8 +112,26 @@ class MNISTBoosterV2:
             # 4. Evaluate current ensemble
             accuracy = self.evaluate_ensemble_accuracy(test_data)
             print(f"🎯 Iteration {i+1} Ensemble Accuracy: {accuracy:.2%}")
+            
+            # Store config with accuracy
+            optimizer_config['accuracy'] = accuracy
+            booster_configs.append(optimizer_config)
+            
             if len(self.hard_examples) <= num_few_shot:
                 break
+
+        # Print final configuration report
+        print("\n=== Boosting Configuration Report ===")
+        for i, config in enumerate(booster_configs):
+            print(f"\nIteration {i+1}:")
+            print(f"Optimizer: {config['optimizer_class']}")
+            print(f"Few-shot examples: {config['num_few_shot']}")
+            print(f"Model: {config['model_name']}")
+            print(f"Accuracy: {config['accuracy']:.2%}")
+            if config['use_mipro']:
+                print(f"MIPRO max_labeled_demos: {config['max_labeled_demos']}")
+            else:
+                print(f"LabeledFewShot k: {config['k']}")
 
         return accuracy
     # def metric(self, pixel_matrix: str, number: str, trace=None) -> int:
