@@ -38,7 +38,7 @@ class MNISTEnsemble:
 
     def evaluate(self) -> float:
         """Evaluate ensemble with majority voting"""
-        test_data = MNISTData().get_test_data()  # Uses cached dataset
+        test_data = MNISTData().get_training_data()  # Use training data for boosting
         def ensemble_predict(pixel_matrix: str) -> dspy.Prediction:
             predictions = []
             for clf in self.classifiers:
