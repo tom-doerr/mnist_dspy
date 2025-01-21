@@ -70,8 +70,6 @@ print(f"Model Accuracy: {accuracy:.2%}")
 
 ## 📊 Results
 
-*Benchmarks coming soon! Current experimental accuracy is ~30% - active development in progress to improve performance through better prompt engineering and model tuning.*
-
 ## 🤝 Contributing
 
 1. Fork the project
