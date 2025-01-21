@@ -30,7 +30,13 @@ class MNISTBooster(dspy.Module):
                 print(f"Model {model.model_name} prediction: {pred}")
         
         majority_vote = max(set(predictions), key=predictions.count)
-        return dspy.Prediction(digit=majority_vote)
+        print("predictions.count:", predictions.count)
+        print("predictions:", predictions)
+        print("majority_vote:", majority_vote)
+        dspy_prediction =  dspy.Prediction(digit=majority_vote)
+        print("dspy_prediction:", dspy_prediction)
+        return dspy_prediction
+
 
 class MNISTClassifier(dspy.Module):
     def __init__(self, model_name: str = "deepseek/deepseek-chat", verbose: bool = False):
@@ -49,7 +55,9 @@ class MNISTClassifier(dspy.Module):
         if self.verbose:
             print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
         result = self.predict(pixel_matrix=pixel_matrix)
-        if self.verbose:
+        print("result:", result)
+        # if self.verbose:
+        if True:
             print(f"Model prediction: {result.number}")
             print(f"Full prediction result: {result}")
         return result
