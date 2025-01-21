@@ -33,9 +33,13 @@ def test_ensemble_improvement(sample_ensemble, sample_test_data):
 def test_ensemble_voting(sample_ensemble, sample_test_data):
     """Verify majority voting mechanism works correctly"""
     test_sample = sample_test_data[0]
-    results = sample_ensemble.classifiers[0](pixel_matrix=test_sample.pixel_matrix)
-    single_pred = results.digit
     
+    # Test individual classifier output type
+    single_result = sample_ensemble.classifiers[0](pixel_matrix=test_sample.pixel_matrix)
+    assert hasattr(single_result, 'digit'), "Classifier should return Prediction object"
+    assert isinstance(single_result.digit, str), "Digit attribute should be string"
+    
+    # Test ensemble voting
     _, voting_data = sample_ensemble.evaluate_ensemble()
     ensemble_pred = voting_data[hash(test_sample.pixel_matrix)]['majority']
     
