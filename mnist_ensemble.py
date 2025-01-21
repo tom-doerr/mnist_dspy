@@ -61,9 +61,13 @@ class MNISTEnsemble:
                 predictions.append(pred)
             
             majority = max(set(predictions), key=predictions.count)
-            voting_results[hash(pixel_matrix)] = {
+            # Store both hash and first 100 chars of pixel data for accurate matching
+            key = (hash(pixel_matrix), pixel_matrix[:100])
+            voting_results[key] = {
                 'predictions': predictions,
-                'majority': majority
+                'majority': majority,
+                'true_label': None,  # Initialize label field
+                'correct': False
             }
             return dspy.Prediction(digit=majority)
 
@@ -87,11 +91,19 @@ class MNISTEnsemble:
         # Store true labels in voting results for analysis
         matched = 0
         for ex in test_data:
-            # Create unique key using both hash and pixel content
+            # Match using the same composite key format
             key = (hash(ex.pixel_matrix), ex.pixel_matrix[:100])
             if key in voting_results:
                 voting_results[key]['true_label'] = ex.digit
                 voting_results[key]['correct'] = voting_results[key]['majority'] == str(ex.digit)
+            else:
+                # Add missing entries with full context
+                voting_results[key] = {
+                    'true_label': ex.digit,
+                    'majority': '?',
+                    'predictions': [],
+                    'correct': False
+                }
             else:
                 # Handle cases where evaluation example wasn't processed
                 voting_results[key] = {

@@ -44,8 +44,11 @@ class MNISTData:
         """Simplified augmentation for testing"""
         return examples  # Bypass real augmentation during tests
 
-    def get_test_data(self) -> List[Tuple[str, int]]:
-        test_data = [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_test, self.y_test)]
+    def get_test_data(self) -> List[dspy.Example]:
+        test_data = [
+            dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
+            for x, y in zip(self.X_test, self.y_test)
+        ]
         print(f"\nData Loader Debug:")
         print(f"Total test samples: {len(test_data)}")
         print(f"Sample label: {test_data[0][1]}")
