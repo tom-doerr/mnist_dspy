@@ -115,6 +115,7 @@ def test_never_correct_tracking(sample_ensemble):
     sample_ensemble.misclassification_history[2] = []
     
     # Verify it's no longer considered never-correct
+    # Never-correct examples are those that failed in ALL iterations
     never_correct = [ex for ex in sample_ensemble.hard_examples 
                     if all(ex in hist for hist in sample_ensemble.misclassification_history.values())]
     assert test_case not in never_correct, "Solved example should be removed from never-correct"
