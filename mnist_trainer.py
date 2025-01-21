@@ -33,7 +33,7 @@ class MNISTTrainer:
             dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_test
         ]
-        self.evaluator = MNISTEvaluator()
+        self.evaluator = MNISTEvaluator(classifier=self.classifier)
 
     def _accuracy_metric(self, example, pred, trace=None):
         # Ensure both values are strings and compare
