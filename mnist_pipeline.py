@@ -29,7 +29,7 @@ class MNISTPipeline:
                                 if ex not in ensemble.misclassification_history.get(i-1, [])])
             persistent_count = remaining - never_correct_count - new_hard_count
             
-            print(f"Iter {i+1}: ✓{acc:.0%} | 🎯{never_correct_count}⏳{persistent_count}🆕{new_hard_count} | ∑{remaining}")
+            print(f"Iter {i+1}: Acc:{acc:.0%} | Never:{never_correct_count} Persist:{persistent_count} New:{new_hard_count} | Total:{remaining}")
 
     def train_iteration(self, ensemble, iteration: int) -> float:
         """Train a single iteration classifier"""
