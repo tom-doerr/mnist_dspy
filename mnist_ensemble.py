@@ -43,7 +43,7 @@ class MNISTEnsemble:
             predictions = []
             for clf in self.classifiers:
                 result = clf(pixel_matrix=pixel_matrix)
-                predictions.append(str(result.digit))
+                predictions.append(str(result.digit).strip())  # Clean whitespace from predictions
             majority = max(set(predictions), key=predictions.count)
             return dspy.Prediction(digit=majority)
 
@@ -53,5 +53,5 @@ class MNISTEnsemble:
         
         # Update hard examples with current errors
         self.hard_examples = [ex for ex in test_data 
-                            if not ensemble_predict(ex.pixel_matrix).digit == str(ex.digit)]  # Compare string predictions
+                            if not ensemble_predict(ex.pixel_matrix).digit == str(ex.digit).strip()]  # Compare cleaned strings
         return accuracy
