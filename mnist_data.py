@@ -34,16 +34,6 @@ class MNISTData:
         # Optimized string conversion using numpy operations
         return '\n'.join([' '.join(map(str, row)) for row in reshaped])
 
-    def get_training_data(self, validation_ratio: float = 0.1) -> Tuple[List[Tuple[str, int]], List[Tuple[str, int]]]:
-        """Split training data into train/validation sets"""
-        full_data = [(self._matrix_to_text(x), int(y)) for x, y in zip(self.X_train, self.y_train)]
-        val_size = int(len(full_data) * validation_ratio)
-        # Use smaller subset for testing
-        return full_data[val_size:val_size+100], full_data[:val_size+100]
-    
-    def augment_data(self, examples: List) -> List:
-        """Simplified augmentation for testing"""
-        return examples  # Bypass real augmentation during tests
 
     def get_test_data(self) -> List[dspy.Example]:
         test_data = [

@@ -11,8 +11,6 @@ class MNISTEnsemble:
         self.classifiers: List[MNISTClassifier] = []
         self.hard_examples: List[dspy.Example] = []
         self.misclassification_history: Dict[int, List[dspy.Example]] = {}
-        self.raw_data = create_training_data(samples=1000)
-        self.test_pool = create_test_data(samples=1000)
 
     def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
         """Sample challenging examples using a priority hierarchy:
@@ -21,8 +19,6 @@ class MNISTEnsemble:
         3. New errors: Recent failures
         
         Returns list of examples ordered by difficulty"""
-        if not self.hard_examples:
-            return random.sample(self.raw_data, min(3, len(self.raw_data)))
 
         # Classify errors by persistence level
         never_correct = [

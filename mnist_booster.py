@@ -2,7 +2,6 @@
 import dspy
 from mnist_ensemble import MNISTEnsemble
 from mnist_trainer import MNISTTrainer
-from mnist_evaluation import MNISTEvaluator
 
 class MNISTBooster:
     """Orchestrates boosting iterations with hard example mining"""
