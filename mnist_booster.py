@@ -32,7 +32,7 @@ class MNISTBooster:
         # 1. Get hard examples from ensemble
         hard_examples = self.ensemble._get_hard_examples(num_samples=100)
         if not hard_examples:  # Fallback to random sample if no hard examples
-            hard_examples = MNISTData().get_training_data()[:100]
+            hard_examples = MNISTData().get_training_data()[:100]  # Uses cached dataset
             print("⚠️  No hard examples found, using random sample instead")
         print(f"📚 Training with {len(hard_examples)} hard examples")
         
@@ -49,7 +49,7 @@ class MNISTBooster:
         print("⚡ Starting MNIST Boosting Process")
         
         # Start with base classifier trained on random sample
-        initial_data = MNISTData().get_training_data()[:100]  # Initial random sample
+        initial_data = MNISTData().get_training_data()[:100]  # Uses cached dataset
         base_clf = self.trainer.train(initial_data)
         self.ensemble.classifiers.append(base_clf)
         

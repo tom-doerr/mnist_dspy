@@ -7,12 +7,22 @@ from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
 class MNISTData:
+    _dataset = None  # Class-level cache for loaded dataset
+    
     def __init__(self, test_size: float = 0.2, random_state: int = 42):
         self.test_size = test_size
         self.random_state = random_state
-        self.X_train, self.X_test, self.y_train, self.y_test = self._load_data()
+        
+        # Load dataset only once
+        if MNISTData._dataset is None:
+            MNISTData._dataset = self._load_data()
+            
+        self.X_train, self.X_test, self.y_train, self.y_test = MNISTData._dataset
 
     def _load_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        if MNISTData._dataset is not None:
+            return MNISTData._dataset
+            
         print("Loading MNIST data from Hugging Face...")
         dataset = load_dataset("mnist")
         
