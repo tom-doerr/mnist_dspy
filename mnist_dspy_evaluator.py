@@ -15,6 +15,8 @@ class MNISTDSPyEvaluator:
         self.data = MNISTData()
         # Configure DSPy with the LM from the classifier
         dspy.configure(lm=self.classifier.predict.lm)
+        # Configure DSPy with the LM from the classifier
+        dspy.configure(lm=self.classifier.predict.lm)
         
     def evaluate(self, test_data: List[dspy.Example] = None, limit: int = 100) -> float:
         """Run evaluation with threaded execution and example limiting.
