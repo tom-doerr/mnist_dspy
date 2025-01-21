@@ -55,7 +55,7 @@ class MNISTClassifier(dspy.Module):
         if self.verbose:
             print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
         result = self.predict(pixel_matrix=pixel_matrix)
-        print("result:", result)
+        # print("result:", result)
         # if self.verbose:
         if True:
             print(f"Model prediction: {result.number}")
@@ -67,17 +67,22 @@ def create_training_data(samples: int = 1000) -> List[Tuple[str, str]]:
     mnist = MNISTData()
     train_data = mnist.get_training_data()  # Only get training data
     print(f"Using {samples} samples from {len(train_data)} available training samples")
-    return [(pixels, str(label)) for pixels, label in train_data[:samples]]
+
+    # print("train_data:", train_data)
+    # return [(pixels, str(label)) for pixels, label in train_data[:samples]]
+    return train_data[:samples]
 
 def create_test_data(samples: int = 200) -> List[dspy.Example]:
     print("Creating test data...")
     mnist = MNISTData()
     raw_test = mnist.get_test_data()
     print(f"Using {samples} samples from {len(raw_test)} available test samples")
-    test_data = [
-        dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating formatted test examples
-        for pixels, label in raw_test[:samples]
-    ]
+    # test_data = [
+        # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating formatted test examples
+        # for pixels, label in raw_test[:samples]
+    # ]
+    test_data = [ dspy.Example(e['pixel_matrix'], e['number']).with_inputs('pixel_matrix') for e in raw_test[:samples] ]
+
     
     # Print sample test data
     print("\n=== Test Data Sample ===")
