@@ -20,13 +20,13 @@ class MNISTEvaluator:
             print(f"\n- Example {i+1} -")
             print(f"Input type: {type(ex.pixel_matrix)}")
             print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
-            print(f"True label type: {type(ex.digit)}")
+            print(f"True label type: {type(ex.number)}")
             
             try:
                 pred = predictor(ex.pixel_matrix)
                 print(f"Raw prediction: {pred}")
-                print(f"Predicted label type: {type(pred.digit) if hasattr(pred, 'digit') else type(pred)}")
-                print(f"True: {ex.digit} | Predicted: {pred.digit}")
+                print(f"Predicted label type: {type(pred.number) if hasattr(pred, 'number') else type(pred)}")
+                print(f"True: {ex.number} | Predicted: {pred.number}")
                 print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
             except Exception as e:
                 print(f"Prediction failed: {str(e)}")
@@ -35,8 +35,8 @@ class MNISTEvaluator:
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
         
         def metric_fn(example, pred, idx=0):
-            true_label = str(example.digit)
-            pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
+            true_label = str(example.number)
+            pred_label = str(pred.number) if hasattr(pred, 'number') else str(pred)
             match = true_label == pred_label
             
             # Debug print for first 10 examples
@@ -82,7 +82,7 @@ class MNISTEvaluator:
             print("First incorrect prediction details:")
             first_ex = test_data[0]
             pred = predictor(first_ex.pixel_matrix)
-            print(f"True: {first_ex.digit} | Pred: {pred.digit}")
+            print(f"True: {first_ex.number} | Pred: {pred.number}")
             print(f"Input matrix:\n{str(first_ex.pixel_matrix)[:500]}...")
             
         return accuracy
