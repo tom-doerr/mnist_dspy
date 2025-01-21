@@ -53,5 +53,5 @@ class MNISTEnsemble:
         
         # Update hard examples with current errors
         self.hard_examples = [ex for ex in test_data 
-                            if not ensemble_predict(ex.pixel_matrix).number == str(ex.digit).strip()]  # Compare cleaned strings
+                            if not ensemble_predict(ex.pixel_matrix).number == str(ex.number).strip()]  # Compare cleaned strings
         return accuracy
