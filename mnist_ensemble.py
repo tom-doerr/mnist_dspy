@@ -2,6 +2,7 @@ import random
 import dspy
 from typing import List, Dict
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
+from mnist_data import MNISTData
 from mnist_evaluation import MNISTEvaluator
 from mnist_data import MNISTData
 
