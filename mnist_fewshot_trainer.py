@@ -50,7 +50,7 @@ class MNISTFewShotTrainer:
             raise ValueError("Model must be trained before evaluation")
             
         print("Evaluating on test set...")
-        return self.evaluator.evaluate_accuracy(self.test_data)
+        return self.evaluator.evaluate_accuracy(self.test_data, predictor=self.optimized_classifier)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train MNIST classifier with Few-Shot learning')
