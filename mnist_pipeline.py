@@ -22,7 +22,14 @@ class MNISTPipeline:
             never_correct_pct = (sum(1 for ex in ensemble.hard_examples 
                                    if all(ex in hist for hist in ensemble.misclassification_history.values())) 
                                 / remaining * 100) if remaining > 0 else 0
-            print(f"Iteration {i+1}: Accuracy {acc:.2%} | Hard Examples: {remaining} ({remaining/100:.1%}) | Never-Correct: {never_correct_pct:.1f}%")
+            # Calculate detailed hard example metrics
+            never_correct_count = sum(1 for ex in ensemble.hard_examples 
+                                    if all(ex in hist for hist in ensemble.misclassification_history.values()))
+            new_hard_count = len([ex for ex in ensemble.hard_examples 
+                                if ex not in ensemble.misclassification_history.get(i-1, [])])
+            persistent_count = remaining - never_correct_count - new_hard_count
+            
+            print(f"Iter {i+1}: ✓{acc:.0%} | 🎯{never_correct_count}⏳{persistent_count}🆕{new_hard_count} | ∑{remaining}")
 
     def train_iteration(self, ensemble, iteration: int) -> float:
         """Train a single iteration classifier"""
