@@ -17,10 +17,19 @@ class MNISTBooster:
         self.raw_data = []       # Training data pool
         self.test_pool = []      # Evaluation data
 
-    def _get_hard_examples(self, num_samples: int = 3) -> List[dspy.Example]:
-        """Randomly select challenging examples from our training pool"""
+    def _get_hard_examples(self, num_samples: int = 3, seed: int = None) -> List[dspy.Example]:
+        """Select challenging examples from our training pool with iteration-based seeding"""
+        if seed is not None:
+            random.seed(seed)  # Seed for reproducibility
+            
         if self.hard_examples:
-            return random.sample(self.hard_examples, min(num_samples, len(self.hard_examples)))
+            # Exclude examples used in previous iteration
+            available = [ex for ex in self.hard_examples 
+                        if ex not in self.classifiers[-1].trainingset if self.classifiers]
+            sample_pool = available if available else self.hard_examples
+            return random.sample(sample_pool, min(num_samples, len(sample_pool)))
+            
+        # Initial random sample with current seed
         return random.sample(self.raw_data, min(num_samples, len(self.raw_data)))
 
     def train_iteration(self, iteration: int) -> float:
@@ -30,8 +39,8 @@ class MNISTBooster:
         3. Update tracking of persistently misclassified digits
         
         Returns accuracy on validation subset"""
-        # Phase 1: Select challenging examples
-        examples = self._get_hard_examples(3)  # Get top 3 hardest
+        # Phase 1: Select challenging examples with iteration-based seeding
+        examples = self._get_hard_examples(3, seed=iteration)  # Seed with iteration number
         
         # Phase 2: Train specialized classifier
         classifier = MNISTClassifier(model_name=self.model_name)
