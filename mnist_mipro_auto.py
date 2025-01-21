@@ -48,9 +48,10 @@ class MNISTMIPROTrainer:
         self.evaluator = MNISTEvaluator(model_name=model_name, no_cache=no_cache)
 
     def _accuracy_metric(self, example, pred, trace=None):
-        # Ensure both values are strings and compare
-        true_label = str(example.digit) if hasattr(example, 'digit') else str(example)
-        pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
+        # Safely get true label from example (handles both Example objects and raw strings)
+        true_label = str(getattr(example, 'digit', example))
+        # Safely get predicted label from prediction (handles both Prediction objects and raw strings)
+        pred_label = str(getattr(pred, 'digit', pred))
         return true_label == pred_label
 
     def train(self):

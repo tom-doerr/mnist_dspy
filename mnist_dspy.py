@@ -24,7 +24,7 @@ class MNISTBooster(dspy.Module):
         """Make ensemble prediction using majority voting."""
         predictions = []
         for model in self.models:
-            pred = model(pixel_matrix=pixel_matrix).digit
+            pred = model(pixel_matrix=pixel_matrix)
             predictions.append(pred)
             if self.verbose:
                 print(f"Model {model.model_name} prediction: {pred}")
