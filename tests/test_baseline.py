@@ -62,3 +62,32 @@ def test_classifier_output_format(sample_ensemble):
         assert isinstance(result.digit, str), f"Classifier {i} digit should be string"
         assert result.digit in {str(n) for n in range(10)}, f"Classifier {i} invalid digit: {result.digit}"
 
+def test_confidence_score_validation(sample_ensemble):
+    """Verify confidence scores are within valid range and make sense"""
+    test_input = "0 0 0 0 " + "0 "*(28*28-4)  # Minimal valid input
+    
+    for clf in sample_ensemble.classifiers:
+        result = clf(pixel_matrix=test_input)
+        assert hasattr(result, 'confidence'), "Prediction missing confidence score"
+        confidence = float(result.confidence)
+        assert 0 <= confidence <= 1, f"Invalid confidence value {confidence}"
+        
+        # If confidence is very low, check if it's an uncertain prediction
+        if confidence < 0.5:
+            assert result.digit in {'0', '1', '5'}, "Low confidence should correlate with ambiguous digits"
+
+def test_data_loader_output_format():
+    """Verify MNIST data loader returns correctly formatted examples"""
+    mnist = MNISTData()
+    train_data, val_data = mnist.get_training_data()
+    
+    # Check training data
+    for pixels, label in train_data[:100]:  # Sample first 100 examples
+        assert isinstance(pixels, str), "Pixel data should be string representation"
+        assert len(pixels.split()) == 784, "Incorrect number of pixel values"
+        assert label in range(10), "Invalid label value"
+        
+    # Check validation data
+    assert len(val_data) > 0, "Validation set should not be empty"
+    assert len(train_data) > len(val_data), "Validation set should be smaller than training set"
+

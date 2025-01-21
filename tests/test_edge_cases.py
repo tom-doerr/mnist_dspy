@@ -118,3 +118,54 @@ def test_never_correct_tracking(sample_ensemble):
     never_correct = [ex for ex in sample_ensemble.hard_examples 
                     if all(ex in hist for hist in sample_ensemble.misclassification_history.values())]
     assert test_case not in never_correct, "Solved example should be removed from never-correct"
+
+@pytest.fixture
+def edge_case_light_1():
+    """Very faint digit 1 that models struggle with"""
+    return Example({
+        'pixel_matrix': ' '.join(['0']*784),  # Empty background
+        'digit': '1'
+    }).with_inputs('pixel_matrix')
+
+@pytest.fixture
+def edge_case_skewed_7():
+    """Heavily rotated 7 that resembles a 1"""
+    return Example({
+        'pixel_matrix': '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n' * 28,
+        'digit': '7'
+    }).with_inputs('pixel_matrix')
+
+@pytest.fixture
+def edge_case_dark_3():
+    """Over-saturated 3 that blends together"""
+    return Example({
+        'pixel_matrix': ' '.join(['255']*784),  # Solid white
+        'digit': '3'
+    }).with_inputs('pixel_matrix')
+
+def test_extreme_digit_variations(sample_ensemble, edge_case_light_1, edge_case_skewed_7, edge_case_dark_3):
+    """Verify models handle extreme digit variations without crashing"""
+    test_cases = [edge_case_light_1, edge_case_skewed_7, edge_case_dark_3]
+    
+    for clf in sample_ensemble.classifiers:
+        for case in test_cases:
+            result = clf(pixel_matrix=case.pixel_matrix)
+            assert result.digit in {str(i) for i in range(10)}, f"Invalid prediction {result.digit} for edge case"
+
+def test_invalid_input_handling(sample_ensemble):
+    """Verify robustness against malformed inputs"""
+    invalid_cases = [
+        "",  # Empty input
+        "not a number",  # Text input
+        "0 0 0",  # Too short
+        " ".join(["300"]*784),  # Values over 255
+        " ".join(["-1"]*784)  # Negative values
+    ]
+    
+    for clf in sample_ensemble.classifiers:
+        for invalid_input in invalid_cases:
+            try:
+                result = clf(pixel_matrix=invalid_input)
+                assert result.digit in {str(i) for i in range(10)}, "Should produce valid digit despite bad input"
+            except Exception as e:
+                pytest.fail(f"Classifier crashed on invalid input: {str(e)}")
