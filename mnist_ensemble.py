@@ -57,5 +57,14 @@ class MNISTEnsemble:
             return dspy.Prediction(digit=majority)
 
         evaluator = MNISTEvaluator(model_name=self.model_name, num_threads=100)
+        total = len(test_data)
         correct = evaluator.evaluate_accuracy(test_data, predictor=ensemble_predict)
-        return correct / len(test_data), voting_results
+        accuracy = correct / total if total > 0 else 0.0
+        
+        # Store true labels in voting results for analysis
+        for ex in test_data:
+            key = hash(ex.pixel_matrix)
+            if key in voting_results:
+                voting_results[key]['true_label'] = ex.digit
+                
+        return accuracy, voting_results
