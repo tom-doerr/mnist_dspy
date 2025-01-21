@@ -18,14 +18,14 @@ class MNISTFewShotTrainer:
         # Load and prepare few-shot examples
         raw_train = create_training_data()
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_train[:num_examples]
         ]
         
         # Load test data
         raw_test = create_test_data()
         self.test_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_test
         ]
         
