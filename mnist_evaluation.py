@@ -34,13 +34,13 @@ class MNISTEvaluator:
         print(f"Test data size: {len(test_data)}")
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
         
-        def metric_fn(example, pred):
+        def metric_fn(example, pred, idx=0):
             true_label = str(example.digit)
             pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
             match = true_label == pred_label
             
             # Debug print for first 10 examples
-            if example._index < 10:  # Using internal _index added by Evaluate
+            if idx < 10:  # Track index manually
                 print(f"\n- Example {example._index} -")
                 print(f"True: {true_label} ({type(true_label)})")
                 print(f"Pred: {pred_label} ({type(pred_label)})")
@@ -50,9 +50,12 @@ class MNISTEvaluator:
             
             return match
 
+        # Create indexed examples for tracking
+        indexed_data = [ex.with_(idx=i) for i, ex in enumerate(test_data)]
+        
         evaluator = Evaluate(
-            devset=test_data,
-            metric=metric_fn,
+            devset=indexed_data,
+            metric=lambda ex, pred: metric_fn(ex, pred, ex.idx),
             num_threads=self.num_threads,
             display_progress=display_progress,
             display_table=5
