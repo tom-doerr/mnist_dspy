@@ -49,6 +49,7 @@ class MNISTPipeline:
             ensemble.hard_examples = never_correct + persistent_hard + new_hard[:20]
         else:
             ensemble.hard_examples = current_hard
+            new_hard = current_hard
             
         ensemble.misclassification_history[iteration] = new_hard
         return accuracy
