@@ -8,6 +8,14 @@ from mnist_evaluation import MNISTEvaluator
 import random
 import argparse
 
+
+# self.aggregator = dspy.Predict('self, predictions -> number')
+aggregator = dspy.Predict('self, predictions -> number')
+
+
+
+
+
 class MNISTBoosterV2:
     """Advanced boosting implementation with hard example tracking"""
     
@@ -17,7 +25,6 @@ class MNISTBoosterV2:
         self.model_name = model_name
         self.classifiers: List[MNISTClassifier] = []
         self.args = self.parse_args()
-        self.aggregator = dspy.Predict('self, predictions -> number')
 
     def parse_args(self):
         parser = argparse.ArgumentParser()
@@ -100,7 +107,7 @@ class MNISTBoosterV2:
         # print("Ensemble predict")
         predictions = [str(clf(pixel_matrix).number) for clf in self.classifiers]
         # majority = max(set(predictions), key=predictions.count)
-        number = self.aggregator(predictions)
+        number = aggregator(predictions)
 
         # print(f"Ensemble Prediction: {majority}")
         # return dspy.Prediction(number=majority)
