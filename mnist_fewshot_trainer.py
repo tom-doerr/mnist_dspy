@@ -4,6 +4,7 @@ import argparse
 from dspy.teleprompt import LabeledFewShot
 from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
+from mnist_data import MNISTData
 
 class MNISTFewShotTrainer:
     """Train MNIST classifier using standard few-shot learning without bootstrapping"""
