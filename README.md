@@ -70,11 +70,7 @@ print(f"Model Accuracy: {accuracy:.2%}")
 
 ## 📊 Results
 
-| Model Configuration              | Accuracy | Training Time |
-|-----------------------------------|----------|---------------|
-| Base DeepSeek-Chat                | 92.4%    | 12m           |
-| Boosted Ensemble (3 iterations)   | 95.1%    | 38m           |
-| MIPROv2 Optimized                 | 94.6%    | 52m           |
+*Benchmarks coming soon! Current experimental accuracy is ~30% - active development in progress to improve performance through better prompt engineering and model tuning.*
 
 ## 🤝 Contributing
 
