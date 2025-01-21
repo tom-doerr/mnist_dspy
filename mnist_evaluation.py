@@ -25,7 +25,7 @@ class MNISTEvaluator:
             metric=lambda example, pred: example.digit == pred,
             num_threads=self.num_threads,
             display_progress=display_progress,
-            display_table=display_table
+            display_table=5
         )
         
         # Use custom predictor if provided, else default classifier
