@@ -20,13 +20,13 @@ class MNISTEvaluator:
             print(f"\n- Example {i+1} -")
             print(f"Input type: {type(ex.pixel_matrix)}")
             print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
-            print(f"True label type: {type(ex.digit)}")
+            print(f"True label type: {type(ex.number)}")
             
             try:
                 pred = predictor(ex.pixel_matrix)
                 print(f"Raw prediction: {pred}")
                 print(f"Predicted label type: {type(pred.number) if hasattr(pred, 'number') else type(pred)}")
-                print(f"True: {ex.digit} | Predicted: {pred.digit}")
+                print(f"True: {ex.number} | Predicted: {pred.digit}")
                 print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
             except Exception as e:
                 print(f"Prediction failed: {str(e)}")
