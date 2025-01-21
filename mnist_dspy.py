@@ -85,4 +85,3 @@ def create_test_data(samples: int = 200) -> List[dspy.Example]:
     print(f"Sample pixel matrix shape: {len(sample_ex.pixel_matrix.split())}x{len(sample_ex.pixel_matrix.split('\n'))}")
     print(f"Sample label: {sample_ex.number} (type: {type(sample_ex.number)})")
     return test_data
-    ]

@@ -60,5 +60,4 @@ class MNISTData:
         sample_ex = train_data[0]
         print(f"Sample pixel matrix:\n{sample_ex.pixel_matrix[:200]}...") 
         print(f"Sample label: {sample_ex.digit} (type: {type(sample_ex.digit)})")
-        ]
         return train_data
