@@ -81,7 +81,7 @@ def create_test_data(samples: int = 200) -> List[dspy.Example]:
         # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating formatted test examples
         # for pixels, label in raw_test[:samples]
     # ]
-    test_data = [ dspy.Example(e['pixel_matrix'], e['number']).with_inputs('pixel_matrix') for e in raw_test[:samples] ]
+    test_data = [ dspy.Example(pixel_matrix=e['pixel_matrix'], number=e['number']).with_inputs('pixel_matrix') for e in raw_test[:samples] ]
 
     
     # Print sample test data
