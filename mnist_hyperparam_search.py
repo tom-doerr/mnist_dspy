@@ -3,6 +3,7 @@ import argparse
 from tabulate import tabulate
 from mnist_mipro_auto import MNISTMIPROTrainer
 
+#!/usr/bin/env python3
 class MNISTHyperparamSearch:
     """Unified hyperparameter search supporting both grid and random strategies."""
     def __init__(self, models=None):

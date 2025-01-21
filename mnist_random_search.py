@@ -8,6 +8,7 @@ from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 from mnist_hyperparam_search import MNISTHyperparamSearch
 
+#!/usr/bin/env python3
 class MNISTRandomSearch(MNISTHyperparamSearch):
     def __init__(self, max_trials: int = 10):
         self.max_trials = max_trials

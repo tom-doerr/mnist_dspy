@@ -6,6 +6,7 @@ from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier, MNISTBooster, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
+#!/usr/bin/env python3
 class MNISTMIPROTrainer:
     """Train MNIST classifier using MIPROv2 optimization with configurable automation levels."""
     
