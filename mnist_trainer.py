@@ -44,7 +44,7 @@ class MNISTTrainer:
     def train(self, data):
         # Evaluate baseline model before optimization
         print("Evaluating baseline model before optimization...")
-        baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data)
+        baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data, predictor=self.classifier)
         self.run_config['baseline_accuracy'] = float(baseline_accuracy)
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
