@@ -41,3 +41,10 @@ class MNISTData:
             for x, y in zip(self.X_test, self.y_test)
         ]
         return test_data
+
+    def get_training_data(self) -> List[dspy.Example]:
+        train_data = [
+            dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
+            for x, y in zip(self.X_train, self.y_train)
+        ]
+        return train_data
