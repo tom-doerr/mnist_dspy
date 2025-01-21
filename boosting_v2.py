@@ -25,13 +25,6 @@ class MNISTBoosterV2:
             # 1. Train new classifier on current hard examples
             classifier = MNISTClassifier(model_name=self.model_name)
             
-            # Configure and compile the classifier
-            teleprompter = dspy.teleprompt.BootstrapFewShot(
-                max_bootstrapped_demos=3,
-                max_labeled_demos=3
-            )
-            compiled_classifier = teleprompter.compile(classifier, trainset=training_data)
-            
             # 2. Get hard examples from previous iteration
             if self.hard_examples:
                 print(f"📚 Training with {len(self.hard_examples)} hard examples")
@@ -39,6 +32,13 @@ class MNISTBoosterV2:
             else:  # First iteration uses random sample
                 training_data = MNISTData().get_training_data()[:100]
                 print("⚠️  No hard examples found, using random sample instead")
+
+            # Configure and compile the classifier
+            teleprompter = dspy.teleprompt.BootstrapFewShot(
+                max_bootstrapped_demos=3,
+                max_labeled_demos=3
+            )
+            compiled_classifier = teleprompter.compile(classifier, trainset=training_data)
             
             # 3. Add compiled classifier to ensemble
             self.classifiers.append(compiled_classifier)
