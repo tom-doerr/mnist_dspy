@@ -4,9 +4,9 @@ from typing import List, Tuple
 from mnist_data import MNISTData
 
 class MNISTSignature(dspy.Signature):
-    """Classify MNIST handwritten digits from their pixel matrix."""
+    """Classify MNIST handwritten numbers from their pixel matrix."""
     pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
-    number = dspy.OutputField(desc="numerical digit from 0 to 9")
+    number = dspy.OutputField(desc="predicted number from 0 to 9")
 
 class MNISTBooster(dspy.Module):
     """DSPy module for boosted MNIST classification using ensemble voting."""
