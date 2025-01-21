@@ -17,17 +17,24 @@ class MNISTFewShotTrainer:
         
         # Load and prepare few-shot examples
         raw_train = create_training_data()
+        # print("raw_train:", raw_train)
+        # self.train_data = [
+            # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
+            # for pixels, label in raw_train[:num_examples]
+        # ]
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
-            for pixels, label in raw_train[:num_examples]
+            dspy.Example(pixel_matrix=e['pixel_matrix'], number=str(e['number'])).with_inputs('pixel_matrix')
+            for e in raw_train[:num_examples]
         ]
         
+        # print("self.train_data:", self.train_data)
         # Load test data
         raw_test = create_test_data()
-        self.test_data = [
-            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
-            for pixels, label in raw_test
-        ]
+        # self.test_data = [
+            # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
+            # for pixels, label in raw_test
+        # ]
+        self.test_data = [dspy.Example(pixel_matrix=e['pixel_matrix'], number=str(e['number'])).with_inputs('pixel_matrix') for e in raw_test]
         
         self.evaluator = MNISTEvaluator(model_name=model_name)
 
@@ -50,6 +57,8 @@ class MNISTFewShotTrainer:
             raise ValueError("Model must be trained before evaluation")
             
         print("Evaluating on test set...")
+        print("self.test_data:", self.test_data)
+        input('Press Enter to continue...')
         return self.evaluator.evaluate_accuracy(self.test_data, predictor=self.optimized_classifier)
 
 def parse_args():
