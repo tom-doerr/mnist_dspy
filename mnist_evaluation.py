@@ -19,7 +19,7 @@ class MNISTEvaluator:
         for ex in test_data[:3]:
             pred = predictor(ex.pixel_matrix)
             print(f"Input:\n{ex.pixel_matrix[:100]}...")
-            print(f"True: {ex.number} | Predicted: {pred}\n")
+            print(f"True: {ex.digit} | Predicted: {pred}\n")
         evaluator = Evaluate(
             devset=test_data,
             metric=lambda example, pred: example.number == pred,
