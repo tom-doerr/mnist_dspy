@@ -52,7 +52,7 @@ class MNISTDSPyEvaluator:
     def _accuracy_metric(self, example, pred, trace=None) -> float:
         """Simple exact match accuracy metric with debug output."""
         actual = int(example.digit)
-        predicted = int(pred.digit)
+        predicted = int(pred.number) 
         if actual != predicted:
             print(f"\n❌ Mismatch | Actual: {actual} | Predicted: {predicted}")
             print(f"Input pixels:\n{example.pixel_matrix[:200]}...")  # Show first 200 chars
