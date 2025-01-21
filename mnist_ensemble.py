@@ -79,14 +79,6 @@ class MNISTEnsemble:
         actual_correct = sum(1 for v in voting_results.values() if v.get('correct', False))
         accuracy = actual_correct / total if total > 0 else 0.0
         
-        print(f"\nDebug - Evaluator reported: {correct}/{total}")
-        print(f"Debug - Actual verified correct: {actual_correct}/{total}")
-        
-        # Print first 5 predictions with true labels
-        print("\nSample predictions:")
-        for idx, (key, result) in enumerate(list(voting_results.items())[:5]):
-            true_label = result.get('true_label', '?')
-            print(f"Ex {idx+1}: Pred {result['majority']} | True {true_label} | Votes {result['predictions']}")
         
         # Store true labels in voting results for analysis
         matched = 0

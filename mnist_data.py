@@ -50,8 +50,4 @@ class MNISTData:
             dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=int(y)).with_inputs("pixel_matrix")
             for x, y in zip(self.X_test, self.y_test)
         ]
-        print(f"\nData Loader Debug:")
-        print(f"Total test samples: {len(test_data)}")
-        print(f"Sample label: {test_data[0].digit}")
-        print(f"Sample pixels start: {test_data[0].pixel_matrix[:50]}...")
         return test_data
