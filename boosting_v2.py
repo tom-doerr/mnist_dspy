@@ -12,7 +12,7 @@ import argparse
 # self.aggregator = dspy.Predict('self, predictions -> number')
 aggregator = dspy.Predict('self, predictions -> number')
 
-classifiers: List[MNISTClassifier] = []
+# classifiers: List[MNISTClassifier] = []
 
 
 
@@ -24,7 +24,7 @@ class MNISTBoosterV2:
         self.hard_examples: List[dspy.Example] = []
         self.iterations = iterations
         self.model_name = model_name
-        # self.classifiers: List[MNISTClassifier] = []
+        self.classifiers: List[MNISTClassifier] = []
         self.args = self.parse_args()
 
     def parse_args(self):
@@ -85,8 +85,8 @@ class MNISTBoosterV2:
                 compiled_classifier = teleprompter.compile(classifier, trainset=sampled_data)
             
             # 3. Add compiled classifier to ensemble
-            # self.classifiers.append(compiled_classifier)
-            classifiers.append(compiled_classifier)
+            self.classifiers.append(compiled_classifier)
+            # classifiers.append(compiled_classifier)
             self.hard_examples = self.get_hard_examples(training_data, classifier)
             
             # 4. Evaluate current ensemble
@@ -107,9 +107,11 @@ class MNISTBoosterV2:
 
     def ensemble_predict(self, pixel_matrix: str) -> dspy.Prediction:
         # print("Ensemble predict")
-        # predictions = [str(clf(pixel_matrix).number) for clf in self.classifiers]
-        predictions = [str(clf(pixel_matrix).number) for clf in classifiers]
+        predictions = [str(clf(pixel_matrix).number) for clf in self.classifiers]
+        # predictions = [str(clf(pixel_matrix).number) for clf in classifiers]
+        print("predictions:", predictions)
         majority = max(set(predictions), key=predictions.count)
+        print("majority:", majority)
         # number = aggregator(predictions)
 
         # print(f"Ensemble Prediction: {majority}")
