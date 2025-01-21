@@ -1,5 +1,5 @@
-from .mnist_ensemble import MNISTEnsemble
-from .mnist_pipeline import MNISTPipeline
+from mnist_ensemble import MNISTEnsemble
+from mnist_pipeline import MNISTPipeline
 from typing import List, Dict, Tuple
 import random
 import dspy
