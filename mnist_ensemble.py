@@ -81,7 +81,8 @@ class MNISTEnsemble:
         # Print first 5 predictions with true labels
         print("\nSample predictions:")
         for idx, (key, result) in enumerate(list(voting_results.items())[:5]):
-            print(f"Ex {idx+1}: Pred {result['majority']} | True {result['true_label']} | Votes {result['predictions']}")
+            true_label = result.get('true_label', '?')
+            print(f"Ex {idx+1}: Pred {result['majority']} | True {true_label} | Votes {result['predictions']}")
         
         # Store true labels in voting results for analysis
         matched = 0
