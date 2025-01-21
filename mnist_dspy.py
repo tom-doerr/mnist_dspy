@@ -43,6 +43,16 @@ class MNISTClassifier(dspy.Module):
         super().__init__()
         self.model_name = model_name
         self.verbose = verbose
+        self._configure_model(model_name)
+        
+    def _configure_model(self, model_name: str):
+        lm = dspy.LM(
+            model=model_name,
+            temperature=1.0,
+            cache=True
+        )
+        dspy.settings.configure(lm=lm)
+        
         # Configure model temperature explicitly
         if model_name == "deepseek/deepseek-reasoner":
             self.predict = dspy.Predict(MNISTSignature, lm={"temperature": None})
