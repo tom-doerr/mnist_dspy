@@ -7,6 +7,8 @@ from mnist_dspy import MNISTClassifier
 from mnist_evaluation import MNISTEvaluator
 import random
 import argparse
+import os
+import datetime
 
 
 # self.aggregator = dspy.Predict('self, predictions -> number')
@@ -26,6 +28,11 @@ class MNISTBoosterV2:
         self.model_name = model_name
         self.classifiers: List[MNISTClassifier] = []
         self.args = self.parse_args()
+        
+        # Create unique run directory
+        self.run_dir = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        os.makedirs(f"runs/{self.run_dir}", exist_ok=True)
+        print(f"📁 Saving run artifacts to: runs/{self.run_dir}")
 
     def parse_args(self):
         parser = argparse.ArgumentParser()
@@ -108,7 +115,11 @@ class MNISTBoosterV2:
             
             # 3. Add compiled classifier to ensemble
             self.classifiers.append(compiled_classifier)
-            # classifiers.append(compiled_classifier)
+            # Save classifier to run directory
+            classifier_path = f"runs/{self.run_dir}/classifier_{i+1}.json"
+            compiled_classifier.save(classifier_path)
+            print(f"💾 Saved classifier to: {classifier_path}")
+            
             self.hard_examples = self.get_hard_examples(training_data, classifier)
             
             # 4. Evaluate current ensemble
