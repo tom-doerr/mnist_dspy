@@ -70,7 +70,8 @@ class MNISTBoosterV2:
                 # max_bootstrapped_demos=0,
                 # max_labeled_demos=3
             # )
-            num_few_shot = 3
+            # num_few_shot = 10
+            num_few_shot = 0
             # Store optimizer configuration
             optimizer_config = {
                 'use_mipro': self.args.mipro,
@@ -79,7 +80,9 @@ class MNISTBoosterV2:
                 'max_labeled_demos': num_few_shot if self.args.mipro else None,
                 'k': num_few_shot if not self.args.mipro else None,
                 'model_name': self.model_name,
-                'auto_setting': 'heavy',
+                # 'auto_setting': 'heavy',
+                'auto_setting': 'light',
+                'iterations': self.iterations,
             }
             
             if self.args.mipro:
