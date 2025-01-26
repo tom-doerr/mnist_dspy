@@ -1,0 +1,109 @@
+{
+  "stack[0]": {
+    "lm": null,
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Classify MNIST handwritten numbers from their pixel matrix.",
+      "fields": [
+        {
+          "prefix": "Pixel Matrix:",
+          "description": "28x28 matrix of pixel values (0-255) as text"
+        },
+        {
+          "prefix": "Previous Reasoning:",
+          "description": "previous reasoning"
+        },
+        {
+          "prefix": "Current Reasoning:",
+          "description": "current reasoning"
+        },
+        {
+          "prefix": "Number:",
+          "description": "predicted number from 0 to 9"
+        }
+      ]
+    }
+  },
+  "stack[1]": {
+    "lm": null,
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Classify MNIST handwritten numbers from their pixel matrix.",
+      "fields": [
+        {
+          "prefix": "Pixel Matrix:",
+          "description": "28x28 matrix of pixel values (0-255) as text"
+        },
+        {
+          "prefix": "Previous Reasoning:",
+          "description": "previous reasoning"
+        },
+        {
+          "prefix": "Current Reasoning:",
+          "description": "current reasoning"
+        },
+        {
+          "prefix": "Number:",
+          "description": "predicted number from 0 to 9"
+        }
+      ]
+    }
+  },
+  "stack[2]": {
+    "lm": null,
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Classify MNIST handwritten numbers from their pixel matrix.",
+      "fields": [
+        {
+          "prefix": "Pixel Matrix:",
+          "description": "28x28 matrix of pixel values (0-255) as text"
+        },
+        {
+          "prefix": "Previous Reasoning:",
+          "description": "previous reasoning"
+        },
+        {
+          "prefix": "Current Reasoning:",
+          "description": "current reasoning"
+        },
+        {
+          "prefix": "Number:",
+          "description": "predicted number from 0 to 9"
+        }
+      ]
+    }
+  },
+  "aggregator": {
+    "lm": null,
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Given the fields `numbers_votes_all`, produce the fields `number`.",
+      "fields": [
+        {
+          "prefix": "Numbers Votes All:",
+          "description": "${numbers_votes_all}"
+        },
+        {
+          "prefix": "Number:",
+          "description": "${number}"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.11.10",
+      "dspy": "2.5.43",
+      "cloudpickle": "3.1.0"
+    }
+  }
+}
