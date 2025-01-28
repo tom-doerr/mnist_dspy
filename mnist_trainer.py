@@ -5,17 +5,18 @@ from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTTrainer:
-    def __init__(self):
-        # Initialize run configuration
+    def __init__(self, optimizer: str = "MIPROv2", auto_setting: str = "light", 
+                 bootstrap_iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
         self.run_config = {
-            'model': 'MNISTClassifier',
-            'optimizer': 'MIPROv2',
-            'max_bootstrapped_demos': 20,
-            'max_labeled_demos': 20,
-            'num_threads': 100,  # High parallelism for maximum throughput
-            'train_samples': 5000,  # Increased sample size
-            'test_samples': 1000,
-            'requires_permission': False,
+            'model': model_name,
+            'optimizer': optimizer,
+            'auto_setting': auto_setting,
+            'bootstrap_iterations': bootstrap_iterations,
+            'max_bootstrapped_demos': 10,
+            'max_labeled_demos': 10,
+            'num_threads': 100,
+            'train_samples': 1000,
+            'test_samples': 200,
             'random_state': 42
         }
         
@@ -42,19 +43,26 @@ class MNISTTrainer:
         return true_label == pred_label
 
     def train(self, data):
-        # Evaluate baseline model before optimization
         print("Evaluating baseline model before optimization...")
         baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data, predictor=self.classifier)
         self.run_config['baseline_accuracy'] = float(baseline_accuracy)
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
-        print("Initializing MIPROv2 optimizer...")
-        teleprompter = MIPROv2(
-            metric=self._accuracy_metric,
-            max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
-            max_labeled_demos=self.run_config['max_labeled_demos'],
-            num_threads=self.run_config['num_threads']
-        )
+        if self.run_config['optimizer'] == 'MIPROv2':
+            print("Initializing MIPROv2 optimizer...")
+            teleprompter = MIPROv2(
+                metric=self._accuracy_metric,
+                max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
+                max_labeled_demos=self.run_config['max_labeled_demos'],
+                num_threads=self.run_config['num_threads']
+            )
+        else:  # BootstrapFewShot
+            print("Initializing BootstrapFewShot optimizer...")
+            teleprompter = dspy.teleprompt.BootstrapFewShot(
+                metric=self._accuracy_metric,
+                max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
+                max_labeled_demos=self.run_config['max_labeled_demos']
+            )
         
         print("Starting training with MIPROv2...")
         print(f"Training on {len(data)} samples")
@@ -90,14 +98,30 @@ class MNISTTrainer:
         return accuracy
 
 if __name__ == "__main__":
-    print("Running MNIST Trainer with MIPROv2 optimizer")
-    trainer = MNISTTrainer()
-    print("Training model...")
-    trainer.train()
-    accuracy = trainer.evaluate()
-    print(f"Optimized model accuracy: {accuracy:.2%}")
+    import argparse
     
-    print("\n=== Final Run Configuration ===")
-    for key, value in trainer.run_config.items():
-        print(f"{key}: {value}")
-    print("==============================")
+    parser = argparse.ArgumentParser(description='Train MNIST classifier')
+    parser.add_argument('--optimizer', choices=['MIPROv2', 'BootstrapFewShot'], 
+                      default='MIPROv2', help='Optimizer to use')
+    parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
+                      default='light', help='Optimization level')
+    parser.add_argument('--iterations', type=int, default=1,
+                      help='Number of bootstrap iterations')
+    parser.add_argument('--model', choices=['reasoner', 'chat'],
+                      default='chat', help='Model type to use')
+    args = parser.parse_args()
+    
+    model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
+    
+    print(f"Running MNIST Trainer with {args.optimizer}")
+    trainer = MNISTTrainer(
+        optimizer=args.optimizer,
+        auto_setting=args.auto,
+        bootstrap_iterations=args.iterations,
+        model_name=model_name
+    )
+    
+    print("Training model...")
+    trainer.train(trainer.train_data)
+    accuracy = trainer.evaluate()
+    print(f"\nOptimized model accuracy: {accuracy:.2%}")
