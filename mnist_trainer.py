@@ -11,19 +11,10 @@ class MNISTTrainer:
         self.model_name = model_name
         self.iterations = iterations
         
-        self.classifier = MNISTClassifier()
-        raw_train = create_training_data()
-        self.train_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
-            for pixels, label in raw_train
-        ]
-        
-        raw_test = create_test_data()
-        self.test_data = [
-            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
-            for pixels, label in raw_test
-        ]
-        self.evaluator = MNISTEvaluator()
+        self.classifier = MNISTClassifier(model_name=model_name)
+        mnist_data = MNISTData()
+        self.train_data = mnist_data.get_training_data()[:1000]  # Get 1000 training samples
+        self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
 
     def _accuracy_metric(self, example, pred, trace=None):
         return str(example.digit) == str(pred.digit)
