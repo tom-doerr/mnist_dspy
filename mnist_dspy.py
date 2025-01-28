@@ -8,6 +8,13 @@ class MNISTSignature(dspy.Signature):
     pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
     number = dspy.OutputField(desc="predicted number from 0 to 9")
 
+class MNISTSignatureStack(dspy.Signature):
+    """Classify MNIST handwritten numbers from their pixel matrix."""
+    pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
+    previous_reasoning = dspy.InputField(desc="previous reasoning")
+    current_reasoning = dspy.OutputField(desc="current reasoning")
+    number = dspy.OutputField(desc="predicted number from 0 to 9")
+
 class MNISTBooster(dspy.Module):
     """DSPy module for boosted MNIST classification using ensemble voting."""
     
@@ -44,6 +51,7 @@ class MNISTClassifier(dspy.Module):
         self.model_name = model_name
         self.verbose = verbose
         self._configure_model(model_name)
+        self.aggregator = dspy.Predict('numbers_votes_all -> number')
         
     def _configure_model(self, model_name: str):
         lm = dspy.LM(
@@ -54,23 +62,47 @@ class MNISTClassifier(dspy.Module):
         dspy.settings.configure(lm=lm)
         
         # Configure model temperature explicitly
-        if model_name == "deepseek/deepseek-reasoner":
-            self.predict = dspy.Predict(MNISTSignature, lm={"temperature": None})
-        elif "chat" in model_name:
-            self.predict = dspy.Predict(MNISTSignature, lm={"temperature": 1.0})
-        else:
+        # if model_name == "deepseek/deepseek-reasoner":
+            # self.predict = dspy.Predict(MNISTSignature, lm={"temperature": None})
+        # elif "chat" in model_name:
+            # self.predict = dspy.Predict(MNISTSignature, lm={"temperature": 1.0})
+        # else:
+            # self.predict = dspy.Predict(MNISTSignature)
+        if False:
             self.predict = dspy.Predict(MNISTSignature)
+        else:
+            stack = []
+            for i in range(3):
+                stack.append(dspy.Predict(MNISTSignatureStack))
+
+            self.stack = stack
         
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
         if self.verbose:
             print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
-        result = self.predict(pixel_matrix=pixel_matrix)
+        if False:
+            result = self.predict(pixel_matrix=pixel_matrix)
+        else:
+            previous_reasoning = ''
+            results = []
+            for stack_module in self.stack:
+                result = stack_module(pixel_matrix=pixel_matrix, previous_reasoning=previous_reasoning)
+                results.append(result)
+                previous_reasoning = result.current_reasoning
+
+        # majority_vote = max(set(results), key=results.count)
+        result_numbers = [int(result.number) for result in results]
+        majority_vote = max(set(result_numbers), key=result_numbers.count)
+
         # print("result:", result)
-        # if self.verbose:
-        if True:
+        if self.verbose:
+        # if True:
             print(f"Model prediction: {result.number}")
             print(f"Full prediction result: {result}")
-        return result
+        # return result
+        # prediction = dspy.Prediction(number=majority_vote)
+        prediction = self.aggregator(numbers_votes_all=results)
+        return prediction
 
 def create_training_data(samples: int = 1000) -> List[Tuple[str, str]]:
     print("Creating training data...")
