@@ -6,11 +6,16 @@ from mnist_data import MNISTData
 
 class MNISTTrainer:
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
-                 model_name: str = "deepseek/deepseek-chat", opt_level: str = "light"):
+                 model_name: str = "deepseek/deepseek-chat", auto: str = "light"):
         self.optimizer = optimizer
         self.model_name = model_name
         self.iterations = iterations
-        self.opt_level = opt_level
+        self.auto = auto
+        print(f"\nInitializing trainer with:")
+        print(f"- Optimizer: {optimizer}")
+        print(f"- Model: {model_name}")
+        print(f"- Auto setting: {auto}")
+        print(f"- Iterations: {iterations}\n")
         
         self.classifier = MNISTClassifier(model_name=model_name)
         mnist_data = MNISTData()
@@ -31,27 +36,18 @@ class MNISTTrainer:
         baseline_accuracy = correct / total
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
-        # Configure optimization parameters based on level
-        if self.opt_level == "heavy":
-            bootstrap_demos = 50
-            labeled_demos = 50
-            num_threads = 200
-        elif self.opt_level == "medium":
-            bootstrap_demos = 25
-            labeled_demos = 25
-            num_threads = 150
-        else:  # light
-            bootstrap_demos = 10
-            labeled_demos = 10
-            num_threads = 100
-
         optimizer_class = MIPROv2 if self.optimizer == 'MIPROv2' else dspy.teleprompt.BootstrapFewShot
-        teleprompter = optimizer_class(
-            metric=self._accuracy_metric,
-            max_bootstrapped_demos=bootstrap_demos,
-            max_labeled_demos=labeled_demos,
-            **(dict(num_threads=num_threads) if self.optimizer == 'MIPROv2' else {})
-        )
+        if self.optimizer == 'MIPROv2':
+            teleprompter = optimizer_class(
+                metric=self._accuracy_metric,
+                auto=self.auto
+            )
+        else:
+            teleprompter = optimizer_class(
+                metric=self._accuracy_metric,
+                max_bootstrapped_demos=10,
+                max_labeled_demos=10
+            )
         
         print("Starting training with MIPROv2...")
         print(f"Training on {len(data)} samples")
@@ -95,8 +91,8 @@ if __name__ == "__main__":
                       help='Number of optimization iterations')
     parser.add_argument('--model', choices=['reasoner', 'chat'],
                       default='chat', help='Model type to use')
-    parser.add_argument('--opt-level', choices=['light', 'medium', 'heavy'],
-                      default='light', help='Optimization level')
+    parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
+                      default='light', help='Auto optimization setting for MIPROv2')
     args = parser.parse_args()
     
     model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
@@ -106,7 +102,7 @@ if __name__ == "__main__":
         optimizer=args.optimizer,
         iterations=args.iterations,
         model_name=model_name,
-        opt_level=args.opt_level
+        auto=args.auto
     )
     
     print("Training model...")
