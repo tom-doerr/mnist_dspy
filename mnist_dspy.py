@@ -61,34 +61,18 @@ class MNISTClassifier(dspy.Module):
         )
         dspy.settings.configure(lm=lm)
         
-        # Configure model temperature explicitly
-        # if model_name == "deepseek/deepseek-reasoner":
-            # self.predict = dspy.Predict(MNISTSignature, lm={"temperature": None})
-        # elif "chat" in model_name:
-            # self.predict = dspy.Predict(MNISTSignature, lm={"temperature": 1.0})
-        # else:
-            # self.predict = dspy.Predict(MNISTSignature)
-        if False:
-            self.predict = dspy.Predict(MNISTSignature)
-        else:
-            stack = []
-            for i in range(3):
-                stack.append(dspy.Predict(MNISTSignatureStack))
-
-            self.stack = stack
+        stack = []
+        for i in range(3):
+            stack.append(dspy.Predict(MNISTSignatureStack))
+        self.stack = stack
         
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
-        if self.verbose:
-            print(f"\nInput pixel matrix:\n{pixel_matrix[:100]}...")  # Show first 100 chars
-        if False:
-            result = self.predict(pixel_matrix=pixel_matrix)
-        else:
-            previous_reasoning = ''
-            results = []
-            for stack_module in self.stack:
-                result = stack_module(pixel_matrix=pixel_matrix, previous_reasoning=previous_reasoning)
-                results.append(result)
-                previous_reasoning = result.current_reasoning
+        previous_reasoning = ''
+        results = []
+        for stack_module in self.stack:
+            result = stack_module(pixel_matrix=pixel_matrix, previous_reasoning=previous_reasoning)
+            results.append(result)
+            previous_reasoning = result.current_reasoning
 
         # majority_vote = max(set(results), key=results.count)
         result_numbers = [int(result.number) for result in results]

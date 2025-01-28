@@ -14,29 +14,9 @@ class MNISTEvaluator:
     def evaluate_accuracy(self, test_data: List[Tuple[str, str]], predictor=None, 
                         display_progress: bool = True, display_table: int = 0, 
                         display_summary: bool = False) -> float:
-        # Print sample predictions with more debug info
-        print("\n=== DEBUG: Sample predictions ===")
-        for i, ex in enumerate(test_data[:3]):
-            print(f"\n- Example {i+1} -")
-            print(f"Input type: {type(ex.pixel_matrix)}")
-            print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
-            print(f"True label type: {type(ex.digit)}")
-            
-            try:
-                pred = predictor(ex.pixel_matrix) if predictor else None
-                if pred and hasattr(pred, 'digit'):
-                    print(f"Raw prediction: {pred}")
-                    print(f"Predicted label type: {type(pred.digit)}")
-                    print(f"True: {ex.digit} | Predicted: {pred.digit}")
-                    print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
-                else:
-                    print(f"Invalid prediction format: {pred}")
-            except Exception as e:
-                print(f"Prediction failed: {str(e)}")
-                pred = dspy.Prediction(digit='N/A')
-        print("\n=== DEBUG: Creating evaluator ===")
-        print(f"Test data size: {len(test_data)}")
-        print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
+        # Basic validation of test data
+        if not test_data:
+            raise ValueError("No test data provided")
         
         def metric_fn(example, pred):
             true_label = str(example.digit)
