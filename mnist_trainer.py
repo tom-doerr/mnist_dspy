@@ -2,7 +2,6 @@
 import dspy
 from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier
-from mnist_evaluation import MNISTEvaluator
 from mnist_data import MNISTData
 
 class MNISTTrainer:
@@ -22,7 +21,13 @@ class MNISTTrainer:
 
     def train(self, data):
         print("Evaluating baseline model before optimization...")
-        baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data, predictor=self.classifier)
+        correct = 0
+        total = len(self.test_data)
+        for example in self.test_data:
+            pred = self.classifier(example.pixel_matrix)
+            if str(pred.digit) == str(example.digit):
+                correct += 1
+        baseline_accuracy = correct / total
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
         optimizer_class = MIPROv2 if self.optimizer == 'MIPROv2' else dspy.teleprompt.BootstrapFewShot
@@ -50,9 +55,13 @@ class MNISTTrainer:
             
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples")
-        optimized_evaluator = MNISTEvaluator()
-        optimized_evaluator.inference.classifier = self.optimized_classifier
-        accuracy = optimized_evaluator.evaluate_accuracy(self.test_data)
+        correct = 0
+        total = len(self.test_data)
+        for example in self.test_data:
+            pred = self.optimized_classifier(example.pixel_matrix)
+            if str(pred.digit) == str(example.digit):
+                correct += 1
+        accuracy = correct / total
         
         print(f"\nOptimizer: {self.optimizer}")
         print(f"Model: {self.model_name}")
