@@ -7,18 +7,10 @@ from mnist_evaluation import MNISTEvaluator
 class MNISTTrainer:
     def __init__(self, optimizer: str = "MIPROv2", auto_setting: str = "light", 
                  bootstrap_iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
-        self.run_config = {
-            'model': model_name,
-            'optimizer': optimizer,
-            'auto_setting': auto_setting,
-            'bootstrap_iterations': bootstrap_iterations,
-            'max_bootstrapped_demos': 10,
-            'max_labeled_demos': 10,
-            'num_threads': 100,
-            'train_samples': 1000,
-            'test_samples': 200,
-            'random_state': 42
-        }
+        self.optimizer = optimizer
+        self.model_name = model_name
+        self.bootstrap_iterations = bootstrap_iterations
+        self.auto_setting = auto_setting
         
         self.classifier = MNISTClassifier()
         # Create training data with proper dspy.Example format
@@ -45,23 +37,22 @@ class MNISTTrainer:
     def train(self, data):
         print("Evaluating baseline model before optimization...")
         baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data, predictor=self.classifier)
-        self.run_config['baseline_accuracy'] = float(baseline_accuracy)
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
-        if self.run_config['optimizer'] == 'MIPROv2':
+        if self.optimizer == 'MIPROv2':
             print("Initializing MIPROv2 optimizer...")
             teleprompter = MIPROv2(
                 metric=self._accuracy_metric,
-                max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
-                max_labeled_demos=self.run_config['max_labeled_demos'],
-                num_threads=self.run_config['num_threads']
+                max_bootstrapped_demos=10,
+                max_labeled_demos=10,
+                num_threads=100
             )
         else:  # BootstrapFewShot
             print("Initializing BootstrapFewShot optimizer...")
             teleprompter = dspy.teleprompt.BootstrapFewShot(
                 metric=self._accuracy_metric,
-                max_bootstrapped_demos=self.run_config['max_bootstrapped_demos'],
-                max_labeled_demos=self.run_config['max_labeled_demos']
+                max_bootstrapped_demos=10,
+                max_labeled_demos=10
             )
         
         print("Starting training with MIPROv2...")
@@ -81,20 +72,16 @@ class MNISTTrainer:
             
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples")
-        # Create new evaluator with optimized model
         optimized_evaluator = MNISTEvaluator()
         optimized_evaluator.inference.classifier = self.optimized_classifier
         accuracy = optimized_evaluator.evaluate_accuracy(self.test_data)
         
-        # Add final results to run config
-        self.run_config['final_accuracy'] = float(accuracy)
+        print(f"\nOptimizer: {self.optimizer}")
+        print(f"Model: {self.model_name}")
+        print(f"Auto setting: {self.auto_setting}")
+        print(f"Bootstrap iterations: {self.bootstrap_iterations}")
+        print(f"Final accuracy: {accuracy:.2%}")
         
-        print("\n=== Run Configuration ===")
-        for key, value in self.run_config.items():
-            print(f"{key}: {value}")
-        print("========================")
-        
-        print("\nEvaluation completed")
         return accuracy
 
 if __name__ == "__main__":
