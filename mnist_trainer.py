@@ -6,10 +6,9 @@ from mnist_evaluation import MNISTEvaluator
 
 class MNISTTrainer:
     def __init__(self, optimizer: str = "MIPROv2", auto_setting: str = "light", 
-                 bootstrap_iterations: int = 1, model_name: str = "deepseek/deepseek-chat"):
+                 model_name: str = "deepseek/deepseek-chat"):
         self.optimizer = optimizer
         self.model_name = model_name
-        self.bootstrap_iterations = bootstrap_iterations
         self.auto_setting = auto_setting
         
         self.classifier = MNISTClassifier()
@@ -29,31 +28,20 @@ class MNISTTrainer:
         self.evaluator = MNISTEvaluator()
 
     def _accuracy_metric(self, example, pred, trace=None):
-        # Ensure both values are strings and compare
-        true_label = str(example.digit) if hasattr(example, 'digit') else str(example)
-        pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
-        return true_label == pred_label
+        return str(example.digit) == str(pred.digit)
 
     def train(self, data):
         print("Evaluating baseline model before optimization...")
         baseline_accuracy = self.evaluator.evaluate_accuracy(self.test_data, predictor=self.classifier)
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         
-        if self.optimizer == 'MIPROv2':
-            print("Initializing MIPROv2 optimizer...")
-            teleprompter = MIPROv2(
-                metric=self._accuracy_metric,
-                max_bootstrapped_demos=10,
-                max_labeled_demos=10,
-                num_threads=100
-            )
-        else:  # BootstrapFewShot
-            print("Initializing BootstrapFewShot optimizer...")
-            teleprompter = dspy.teleprompt.BootstrapFewShot(
-                metric=self._accuracy_metric,
-                max_bootstrapped_demos=10,
-                max_labeled_demos=10
-            )
+        optimizer_class = MIPROv2 if self.optimizer == 'MIPROv2' else dspy.teleprompt.BootstrapFewShot
+        teleprompter = optimizer_class(
+            metric=self._accuracy_metric,
+            max_bootstrapped_demos=10,
+            max_labeled_demos=10,
+            **(dict(num_threads=100) if self.optimizer == 'MIPROv2' else {})
+        )
         
         print("Starting training with MIPROv2...")
         print(f"Training on {len(data)} samples")
@@ -92,8 +80,6 @@ if __name__ == "__main__":
                       default='MIPROv2', help='Optimizer to use')
     parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
                       default='light', help='Optimization level')
-    parser.add_argument('--iterations', type=int, default=1,
-                      help='Number of bootstrap iterations')
     parser.add_argument('--model', choices=['reasoner', 'chat'],
                       default='chat', help='Model type to use')
     args = parser.parse_args()
@@ -104,7 +90,6 @@ if __name__ == "__main__":
     trainer = MNISTTrainer(
         optimizer=args.optimizer,
         auto_setting=args.auto,
-        bootstrap_iterations=args.iterations,
         model_name=model_name
     )
     
