@@ -1,7 +1,14 @@
 # MNIST Classification with DSPy & DeepSeek
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+<div align="center">
+
+![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
+![Python](https://img.shields.io/badge/python-3.8+-blue?style=flat-square&logo=python)
+![DSPy](https://img.shields.io/badge/DSPy-latest-orange?style=flat-square)
+![DeepSeek](https://img.shields.io/badge/DeepSeek-chat%20%7C%20reasoner-purple?style=flat-square)
+![Status](https://img.shields.io/badge/status-active-success?style=flat-square)
+
+</div>
 
 MNIST digit classification using DSPy and DeepSeek models, with configurable optimizers and training iterations.
 
