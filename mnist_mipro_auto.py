@@ -36,7 +36,7 @@ class MNISTMIPROTrainer:
         random.shuffle(raw_train)
         sampled_train = raw_train[:self.run_config['train_samples']]
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
             for pixels, label in sampled_train
         ]
         
