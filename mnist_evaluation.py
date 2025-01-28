@@ -20,13 +20,13 @@ class MNISTEvaluator:
             print(f"\n- Example {i+1} -")
             print(f"Input type: {type(ex.pixel_matrix)}")
             print(f"Input length: {len(ex.pixel_matrix) if hasattr(ex, 'pixel_matrix') else 'N/A'}")
-            print(f"True label type: {type(ex.number)}")
+            print(f"True label type: {type(ex.digit)}")
             
             try:
                 pred = predictor(ex.pixel_matrix)
                 print(f"Raw prediction: {pred}")
-                print(f"Predicted label type: {type(pred.number) if hasattr(pred, 'number') else type(pred)}")
-                print(f"True: {ex.number} | Predicted: {pred.number}")
+                print(f"Predicted label type: {type(pred.digit) if hasattr(pred, 'digit') else type(pred)}")
+                print(f"True: {ex.digit} | Predicted: {pred.digit}")
                 print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
             except Exception as e:
                 print(f"Prediction failed: {str(e)}")
@@ -35,8 +35,8 @@ class MNISTEvaluator:
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
         
         def metric_fn(example, pred):
-            true_label = str(example.number)
-            pred_label = str(pred.number) if hasattr(pred, 'number') else str(pred)
+            true_label = str(example.digit)
+            pred_label = str(pred.digit) if hasattr(pred, 'digit') else str(pred)
             match = true_label == pred_label
             
             # Debug print for first 10 examples
@@ -54,7 +54,7 @@ class MNISTEvaluator:
         # Create new examples with idx field added
         indexed_data = []
         for i, ex in enumerate(test_data):
-            new_ex = dspy.Example(pixel_matrix=ex.pixel_matrix, number=ex.number, idx=i).with_inputs('pixel_matrix')
+            new_ex = dspy.Example(pixel_matrix=ex.pixel_matrix, digit=ex.digit, idx=i).with_inputs('pixel_matrix')
             indexed_data.append(new_ex)
         
         evaluator = Evaluate(
@@ -86,7 +86,7 @@ class MNISTEvaluator:
             print("First incorrect prediction details:")
             first_ex = test_data[0]
             pred = predictor(first_ex.pixel_matrix)
-            print(f"True: {first_ex.number} | Pred: {pred.number}") 
+            print(f"True: {first_ex.digit} | Pred: {pred.digit}") 
             print(f"Input matrix:\n{str(first_ex.pixel_matrix)[:500]}...")
             
         return accuracy
