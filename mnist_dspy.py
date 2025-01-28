@@ -6,14 +6,14 @@ from mnist_data import MNISTData
 class MNISTSignature(dspy.Signature):
     """Classify MNIST handwritten numbers from their pixel matrix."""
     pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
-    number = dspy.OutputField(desc="predicted number from 0 to 9")
+    digit = dspy.OutputField(desc="predicted number from 0 to 9")
 
 class MNISTSignatureStack(dspy.Signature):
     """Classify MNIST handwritten numbers from their pixel matrix."""
     pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
     previous_reasoning = dspy.InputField(desc="previous reasoning")
     current_reasoning = dspy.OutputField(desc="current reasoning")
-    number = dspy.OutputField(desc="predicted number from 0 to 9")
+    digit = dspy.OutputField(desc="predicted number from 0 to 9")
 
 class MNISTBooster(dspy.Module):
     """DSPy module for boosted MNIST classification using ensemble voting."""
@@ -123,7 +123,7 @@ def create_test_data(samples: int = 200) -> List[dspy.Example]:
         # dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')  # Creating formatted test examples
         # for pixels, label in raw_test[:samples]
     # ]
-    test_data = [ dspy.Example(pixel_matrix=e['pixel_matrix'], number=e['number']).with_inputs('pixel_matrix') for e in raw_test[:samples] ]
+    test_data = [ dspy.Example(pixel_matrix=e['pixel_matrix'], digit=e['digit']).with_inputs('pixel_matrix') for e in raw_test[:samples] ]
 
     
     # Print sample test data
