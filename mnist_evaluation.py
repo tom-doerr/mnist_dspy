@@ -23,13 +23,17 @@ class MNISTEvaluator:
             print(f"True label type: {type(ex.digit)}")
             
             try:
-                pred = predictor(ex.pixel_matrix)
-                print(f"Raw prediction: {pred}")
-                print(f"Predicted label type: {type(pred.digit) if hasattr(pred, 'digit') else type(pred)}")
-                print(f"True: {ex.digit} | Predicted: {pred.digit}")
-                print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
+                pred = predictor(ex.pixel_matrix) if predictor else None
+                if pred and hasattr(pred, 'digit'):
+                    print(f"Raw prediction: {pred}")
+                    print(f"Predicted label type: {type(pred.digit)}")
+                    print(f"True: {ex.digit} | Predicted: {pred.digit}")
+                    print(f"Input preview:\n{str(ex.pixel_matrix)[:100]}...")
+                else:
+                    print(f"Invalid prediction format: {pred}")
             except Exception as e:
                 print(f"Prediction failed: {str(e)}")
+                pred = dspy.Prediction(digit='N/A')
         print("\n=== DEBUG: Creating evaluator ===")
         print(f"Test data size: {len(test_data)}")
         print(f"First example keys: {vars(test_data[0]).keys() if test_data else 'No data'}")
