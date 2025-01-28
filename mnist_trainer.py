@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import dspy
 from dspy.teleprompt import MIPROv2
-from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
+from mnist_dspy import MNISTClassifier
 from mnist_evaluation import MNISTEvaluator
+from mnist_data import MNISTData
 
 class MNISTTrainer:
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
