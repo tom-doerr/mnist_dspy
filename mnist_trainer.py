@@ -5,21 +5,19 @@ from mnist_dspy import MNISTClassifier, create_training_data, create_test_data
 from mnist_evaluation import MNISTEvaluator
 
 class MNISTTrainer:
-    def __init__(self, optimizer: str = "MIPROv2", auto_setting: str = "light", 
+    def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
                  model_name: str = "deepseek/deepseek-chat"):
         self.optimizer = optimizer
         self.model_name = model_name
-        self.auto_setting = auto_setting
+        self.iterations = iterations
         
         self.classifier = MNISTClassifier()
-        # Create training data with proper dspy.Example format
         raw_train = create_training_data()
         self.train_data = [
-            dspy.Example(pixel_matrix=pixels, number=str(label)).with_inputs('pixel_matrix')
+            dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
             for pixels, label in raw_train
         ]
         
-        # Create test data with proper dspy.Example format
         raw_test = create_test_data()
         self.test_data = [
             dspy.Example(pixel_matrix=pixels, digit=str(label)).with_inputs('pixel_matrix')
@@ -66,8 +64,7 @@ class MNISTTrainer:
         
         print(f"\nOptimizer: {self.optimizer}")
         print(f"Model: {self.model_name}")
-        print(f"Auto setting: {self.auto_setting}")
-        print(f"Bootstrap iterations: {self.bootstrap_iterations}")
+        print(f"Iterations: {self.iterations}")
         print(f"Final accuracy: {accuracy:.2%}")
         
         return accuracy
@@ -78,8 +75,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train MNIST classifier')
     parser.add_argument('--optimizer', choices=['MIPROv2', 'BootstrapFewShot'], 
                       default='MIPROv2', help='Optimizer to use')
-    parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
-                      default='light', help='Optimization level')
+    parser.add_argument('--iterations', type=int, default=1,
+                      help='Number of optimization iterations')
     parser.add_argument('--model', choices=['reasoner', 'chat'],
                       default='chat', help='Model type to use')
     args = parser.parse_args()
@@ -89,7 +86,7 @@ if __name__ == "__main__":
     print(f"Running MNIST Trainer with {args.optimizer}")
     trainer = MNISTTrainer(
         optimizer=args.optimizer,
-        auto_setting=args.auto,
+        iterations=args.iterations,
         model_name=model_name
     )
     
