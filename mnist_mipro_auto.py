@@ -25,15 +25,11 @@ class MNISTMIPROTrainer:
             'boosting_iterations': boosting_iterations
         }
         
-        # Initialize the base classifier first
-        self.base_classifier = MNISTClassifier(model_name=model_name)
-        
-        # Then create the booster with the base classifier
+        # Initialize the booster
         self.classifier = MNISTBooster(
             model_name=model_name,
             boosting_iterations=boosting_iterations,
-            verbose=False,
-            base_classifier=self.base_classifier
+            verbose=False
         )
         # Create training data with proper dspy.Example format
         raw_train = create_training_data(samples=self.run_config['train_samples'])
