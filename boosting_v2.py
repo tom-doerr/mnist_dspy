@@ -220,6 +220,6 @@ class MNISTBoosterV2:
 
 if __name__ == "__main__":
     # Run full boosting process with 3 iterations
-    booster = MNISTBoosterV2(iterations=10)
+    booster = MNISTBoosterV2(iterations=1)
     final_accuracy = booster.run()
     print(f"\n🏆 Final Boosted Ensemble Accuracy: {final_accuracy:.2%}")
