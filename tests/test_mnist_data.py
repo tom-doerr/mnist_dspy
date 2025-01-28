@@ -4,6 +4,7 @@ import numpy as np
 import dspy
 from mnist_data import MNISTData
 
+@pytest.mark.slow
 def test_mnist_data_loading():
     """Test MNIST data loading and formatting"""
     data = MNISTData()
