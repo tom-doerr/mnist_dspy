@@ -72,6 +72,7 @@ class MNISTTrainer:
             pred = self.optimized_classifier(example.pixel_matrix)
             if str(pred.digit) == str(example.digit):
                 correct += 1
+            print(f"Predicted: {pred.digit}, Actual: {example.digit} - {correct}/{total}; ", end='')
         accuracy = correct / total
         
         print(f"\nOptimizer: {self.optimizer}")
