@@ -16,7 +16,12 @@ class MNISTClassifier(dspy.Module):
         
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
         try:
-            return self.predict(pixel_matrix=pixel_matrix)
+            # return self.predict(pixel_matrix=pixel_matrix)
+            prediction = self.predict(pixel_matrix=pixel_matrix)
+            # print("prediction:", prediction)
+            return prediction
         except Exception as e:
             print(f"Prediction failed: {str(e)}")
-            return dspy.Prediction(digit='0')  # Return default prediction on error
+            # return dspy.Prediction(digit='0')  # Return default prediction on error
+            return dspy.Prediction(digit=None) 
+            # return None
