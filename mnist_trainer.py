@@ -67,14 +67,26 @@ class MNISTTrainer:
             raise ValueError("Model must be trained before evaluation")
             
         print("Evaluating model on test data...")
-        print(f"Using {len(self.test_data)} test samples")
+        print(f"Using {len(self.test_data)} test samples with 10 threads")
+        
+        from concurrent.futures import ThreadPoolExecutor
+        from tqdm import tqdm
+        
+        def process_example(example):
+            pred = self.optimized_classifier(example.pixel_matrix)
+            return str(pred.digit) == str(example.digit)
+        
         correct = 0
         total = len(self.test_data)
-        for example in self.test_data:
-            pred = self.optimized_classifier(example.pixel_matrix)
-            if str(pred.digit) == str(example.digit):
-                correct += 1
-            print(f"Predicted: {pred.digit}, Actual: {example.digit} - {correct}/{total}; ", end='')
+        
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            results = list(tqdm(
+                executor.map(process_example, self.test_data),
+                total=total,
+                desc="Evaluating"
+            ))
+            
+        correct = sum(results)
         accuracy = correct / total
         
         print(f"\n\nBaseline accuracy: {self.baseline_accuracy:.2%}")
