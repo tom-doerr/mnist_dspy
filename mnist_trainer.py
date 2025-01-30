@@ -5,6 +5,7 @@ from mnist_dspy import MNISTClassifier
 from mnist_data import MNISTData
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
+import os
 
 class MNISTTrainer:
     DEFAULT_NUM_WORKERS = 100  # Static variable for default number of workers
@@ -102,7 +103,6 @@ class MNISTTrainer:
             teleprompter = optimizer_class(
                 metric=self._accuracy_metric,
                 num_threads=self.DEFAULT_NUM_WORKERS,
-                # log_dir='mipro_logs',
                 auto=self.auto
             )
         else:
@@ -168,7 +168,8 @@ class MNISTTrainer:
 
 if __name__ == "__main__":
     import argparse
-    
+    import os
+
     parser = argparse.ArgumentParser(description='Train MNIST classifier')
     parser.add_argument('--optimizer', choices=['MIPROv2', 'BootstrapFewShot'], 
                       default='MIPROv2', help='Optimizer to use')
