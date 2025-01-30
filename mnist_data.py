@@ -12,7 +12,7 @@ class MNISTData:
 
         Args:
             test_size (float, optional): Proportion of data for testing. Defaults to 0.2.
-            random_state (int, optional): Seed for random operations. Defaults to 42.
+            random_state (int, optional): Seed for random operations; `None` for system random.
         """
         self.test_size = test_size
         self.random_state = random_state
