@@ -59,17 +59,30 @@ class MNISTTrainer:
             float: The accuracy of the base model on the test data.
         """
         print("Evaluating base model...")
-        correct = 0
-        total = len(self.test_data)
-        with tqdm(total=total, desc="Evaluating base model") as pbar:
-            for example in self.test_data:
-                pred = self.classifier(example.pixel_matrix)
-                if str(pred.digit) == str(example.digit):
-                    correct += 1
-                pbar.update(1)
-        accuracy = correct / total
+        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
+            with tqdm(total=len(self.test_data), desc="Evaluating base model") as pbar:
+                futures = [executor.submit(self._evaluate_base_example, example) for example in self.test_data]
+                results = []
+                for future in futures:
+                    results.append(future.result())
+                    pbar.update(1)
+                
+        correct = sum(results)
+        accuracy = correct / len(self.test_data)
         print(f"Base model accuracy: {accuracy:.2%}")
         return accuracy
+
+    def _evaluate_base_example(self, example):
+        """Evaluate a single example using the base classifier.
+
+        Args:
+            example: The example to evaluate.
+
+        Returns:
+            bool: True if the prediction is correct, False otherwise.
+        """
+        pred = self.classifier(example.pixel_matrix)
+        return str(example.digit) == str(pred.digit)
 
     def train(self, data):
         """Train the model using the specified data.
