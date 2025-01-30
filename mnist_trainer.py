@@ -35,11 +35,13 @@ class MNISTTrainer:
                 correct += 1
         baseline_accuracy = correct / total
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
+        self.baseline_accuracy = baseline_accuracy
         
         optimizer_class = MIPROv2 if self.optimizer == 'MIPROv2' else dspy.teleprompt.BootstrapFewShot
         if self.optimizer == 'MIPROv2':
             teleprompter = optimizer_class(
                 metric=self._accuracy_metric,
+                num_threads=10,
                 auto=self.auto
             )
         else:
@@ -75,6 +77,7 @@ class MNISTTrainer:
             print(f"Predicted: {pred.digit}, Actual: {example.digit} - {correct}/{total}; ", end='')
         accuracy = correct / total
         
+        print(f"\n\nBaseline accuracy: {self.baseline_accuracy:.2%}")
         print(f"\nOptimizer: {self.optimizer}")
         print(f"Model: {self.model_name}")
         print(f"Iterations: {self.iterations}")
@@ -90,19 +93,20 @@ if __name__ == "__main__":
                       default='MIPROv2', help='Optimizer to use')
     parser.add_argument('--iterations', type=int, default=1,
                       help='Number of optimization iterations')
-    parser.add_argument('--model', choices=['reasoner', 'chat'],
-                      default='chat', help='Model type to use')
+    # parser.add_argument('--model', choices=['reasoner', 'chat'],
+                      # default='chat', help='Model type to use')
+    parser.add_argument('--model', default='deepseek/deepseek-chat', help='Model type to use')
     parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
                       default='light', help='Auto optimization setting for MIPROv2')
     args = parser.parse_args()
     
-    model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
+    # model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
     
     print(f"Running MNIST Trainer with {args.optimizer}")
     trainer = MNISTTrainer(
         optimizer=args.optimizer,
         iterations=args.iterations,
-        model_name=model_name,
+        model_name=args.model,
         auto=args.auto
     )
     
