@@ -3,6 +3,8 @@ import dspy
 from dspy.teleprompt import MIPROv2
 from mnist_dspy import MNISTClassifier
 from mnist_data import MNISTData
+from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
 
 class MNISTTrainer:
     DEFAULT_NUM_WORKERS = 10  # Static variable for default number of workers
@@ -30,8 +32,12 @@ class MNISTTrainer:
         
         self.classifier = MNISTClassifier(model_name=self.model_name)
         mnist_data = MNISTData()
-        self.train_data = mnist_data.get_training_data()[:10000]  # Get 1000 training samples
-        self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
+        with tqdm(desc="Loading training data") as pbar:
+            self.train_data = mnist_data.get_training_data()[:10000]  # Get 1000 training samples
+            pbar.update(1)
+        with tqdm(desc="Loading test data") as pbar:
+            self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
+            pbar.update(1)
 
     def _accuracy_metric(self, example, pred, trace=None):
         """Calculate the accuracy metric by comparing the predicted digit with the actual digit.
@@ -58,10 +64,12 @@ class MNISTTrainer:
         print("Evaluating baseline model before optimization...")
         correct = 0
         total = len(self.test_data)
-        for example in self.test_data:
-            pred = self.classifier(example.pixel_matrix)
-            if str(pred.digit) == str(example.digit):
-                correct += 1
+        with tqdm(total=total, desc="Evaluating baseline") as pbar:
+            for example in self.test_data:
+                pred = self.classifier(example.pixel_matrix)
+                if str(pred.digit) == str(example.digit):
+                    correct += 1
+                pbar.update(1)
         baseline_accuracy = correct / total
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         self.baseline_accuracy = baseline_accuracy
@@ -103,33 +111,15 @@ class MNISTTrainer:
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
         
-        from concurrent.futures import ThreadPoolExecutor
-        from tqdm import tqdm
-        
-        def process_example(example):
-            """Process a single example to evaluate the model.
-
-            Args:
-                example: The example to process.
-
-            Returns:
-                bool: True if the prediction is correct, False otherwise.
-            """
-            pred = self.optimized_classifier(example.pixel_matrix)
-            return str(pred.digit) == str(example.digit)
-        
-        correct = 0
-        total = len(self.test_data)
-        
-        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
-            results = list(tqdm(
-                executor.map(process_example, self.test_data),
-                total=total,
-                desc="Evaluating"
-            ))
-            
-        correct = sum(results)
-        accuracy = correct / total
+        with tqdm(total=len(self.test_data), desc="Evaluating") as pbar:
+            correct = 0
+            for example in self.test_data:
+                pred = self.optimized_classifier(example.pixel_matrix)
+                if str(pred.digit) == str(example.digit):
+                    correct += 1
+                pbar.update(1)
+                
+        accuracy = correct / len(self.test_data)
         
         print(f"\n\nBaseline accuracy: {self.baseline_accuracy:.2%}")
         print(f"\nOptimizer: {self.optimizer}")
@@ -163,8 +153,14 @@ if __name__ == "__main__":
     )
     
     print("Training model...")
-    trainer.train(trainer.train_data)
+    with tqdm(ncols=75, desc="Training progress") as pbar:
+        pbar.set_description("Training model")
+        trainer.train(trainer.train_data)
+        pbar.update(1)
     
     print("\nEvaluating optimized model on test data...")
-    accuracy = trainer.evaluate()
+    with tqdm(ncols=75, desc="Evaluation progress") as pbar:
+        pbar.set_description("Evaluating model")
+        accuracy = trainer.evaluate()
+        pbar.update(1)
     print(f"Final test accuracy: {accuracy:.2%}")
