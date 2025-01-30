@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 
 class MNISTTrainer:
-    DEFAULT_NUM_WORKERS = 10  # Static variable for default number of workers
+    DEFAULT_NUM_WORKERS = 100  # Static variable for default number of workers
     DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
@@ -62,15 +62,16 @@ class MNISTTrainer:
             The optimized classifier.
         """
         print("Evaluating baseline model before optimization...")
-        correct = 0
-        total = len(self.test_data)
-        with tqdm(total=total, desc="Evaluating baseline") as pbar:
-            for example in self.test_data:
-                pred = self.classifier(example.pixel_matrix)
-                if str(pred.digit) == str(example.digit):
-                    correct += 1
-                pbar.update(1)
-        baseline_accuracy = correct / total
+        # correct = 0
+        # total = len(self.test_data)
+        # with tqdm(total=total, desc="Evaluating baseline") as pbar:
+            # for example in self.test_data:
+                # pred = self.classifier(example.pixel_matrix)
+                # if str(pred.digit) == str(example.digit):
+                    # correct += 1
+                # pbar.update(1)
+        # baseline_accuracy = correct / total
+        baseline_accuracy = self.evaluate()
         print(f"Baseline accuracy: {baseline_accuracy:.2%}")
         self.baseline_accuracy = baseline_accuracy
         
