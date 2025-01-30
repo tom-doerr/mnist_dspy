@@ -33,7 +33,7 @@ class MNISTTrainer:
         self.classifier = MNISTClassifier(model_name=self.model_name)
         mnist_data = MNISTData()
         with tqdm(desc="Loading training data") as pbar:
-            self.train_data = mnist_data.get_training_data()[:10000]
+            self.train_data = mnist_data.get_training_data()[:10000]  # Get 1000 training samples
             pbar.update(1)
         with tqdm(desc="Loading test data") as pbar:
             self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
@@ -111,16 +111,15 @@ class MNISTTrainer:
         print("Evaluating model on test data...")
         print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
         
-        with tqdm(total=len(self.test_data), desc="Evaluating") as pbar:
-            correct = 0
-            for example in self.test_data:
-                pred = self.optimized_classifier(example.pixel_matrix)
-                if str(pred.digit) == str(example.digit):
-                    correct += 1
-                current_accuracy = correct / len(self.test_data)
-                pbar.set_postfix({'accuracy': f"{current_accuracy:.2%}"})
-                pbar.update(1)
+        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
+            with tqdm(total=len(self.test_data), desc="Evaluating") as pbar:
+                futures = [executor.submit(self._evaluate_example, example) for example in self.test_data]
+                results = []
+                for future in futures:
+                    results.append(future.result())
+                    pbar.update(1)
                 
+        correct = sum(results)
         accuracy = correct / len(self.test_data)
         
         print(f"\n\nBaseline accuracy: {self.baseline_accuracy:.2%}")
@@ -130,6 +129,18 @@ class MNISTTrainer:
         print(f"Final accuracy: {accuracy:.2%}")
         
         return accuracy
+
+    def _evaluate_example(self, example):
+        """Evaluate a single example using the optimized classifier.
+
+        Args:
+            example: The example to evaluate.
+
+        Returns:
+            bool: True if the prediction is correct, False otherwise.
+        """
+        pred = self.optimized_classifier(example.pixel_matrix)
+        return str(example.digit) == str(pred.digit)
 
 if __name__ == "__main__":
     import argparse
