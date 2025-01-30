@@ -33,7 +33,7 @@ class MNISTTrainer:
         self.classifier = MNISTClassifier(model_name=self.model_name)
         mnist_data = MNISTData()
         with tqdm(desc="Loading training data") as pbar:
-            self.train_data = mnist_data.get_training_data()[:10000]  # Get 1000 training samples
+            self.train_data = mnist_data.get_training_data()[:10000] 
             pbar.update(1)
         with tqdm(desc="Loading test data") as pbar:
             self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
