@@ -102,6 +102,7 @@ class MNISTTrainer:
             teleprompter = optimizer_class(
                 metric=self._accuracy_metric,
                 num_threads=self.DEFAULT_NUM_WORKERS,
+                # log_dir='mipro_logs',
                 auto=self.auto
             )
         else:
