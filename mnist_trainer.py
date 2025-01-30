@@ -6,20 +6,21 @@ from mnist_data import MNISTData
 
 class MNISTTrainer:
     DEFAULT_NUM_WORKERS = 10  # Static variable for default number of workers
+    DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
-                 model_name: str = "deepseek/deepseek-chat", auto: str = "light"):
+                 model_name: str = None, auto: str = "light"):
         self.optimizer = optimizer
-        self.model_name = model_name
+        self.model_name = model_name or self.DEFAULT_MODEL_NAME
         self.iterations = iterations
         self.auto = auto
         print(f"\nInitializing trainer with:")
         print(f"- Optimizer: {optimizer}")
-        print(f"- Model: {model_name}")
+        print(f"- Model: {self.model_name}")
         print(f"- Auto setting: {auto}")
         print(f"- Iterations: {iterations}\n")
         
-        self.classifier = MNISTClassifier(model_name=model_name)
+        self.classifier = MNISTClassifier(model_name=self.model_name)
         mnist_data = MNISTData()
         self.train_data = mnist_data.get_training_data()[:1000]  # Get 1000 training samples
         self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
@@ -107,20 +108,18 @@ if __name__ == "__main__":
                       default='MIPROv2', help='Optimizer to use')
     parser.add_argument('--iterations', type=int, default=1,
                       help='Number of optimization iterations')
-    # parser.add_argument('--model', choices=['reasoner', 'chat'],
-                      # default='chat', help='Model type to use')
-    parser.add_argument('--model', default='deepseek/deepseek-chat', help='Model type to use')
+    parser.add_argument('--model', default=None, help='Model type to use')
     parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
                       default='light', help='Auto optimization setting for MIPROv2')
     args = parser.parse_args()
     
-    # model_name = 'deepseek/deepseek-reasoner' if args.model == 'reasoner' else 'deepseek/deepseek-chat'
+    model_name = args.model or MNISTTrainer.DEFAULT_MODEL_NAME
     
     print(f"Running MNIST Trainer with {args.optimizer}")
     trainer = MNISTTrainer(
         optimizer=args.optimizer,
         iterations=args.iterations,
-        model_name=args.model,
+        model_name=model_name,
         auto=args.auto
     )
     
@@ -130,3 +129,4 @@ if __name__ == "__main__":
     print("\nEvaluating optimized model on test data...")
     accuracy = trainer.evaluate()
     print(f"Final test accuracy: {accuracy:.2%}")
+```
