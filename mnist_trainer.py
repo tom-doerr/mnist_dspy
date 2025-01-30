@@ -9,9 +9,9 @@ class MNISTTrainer:
     DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
-                 model_name: str = None, auto: str = "light"):
+                 model_name: str = DEFAULT_MODEL_NAME, auto: str = "light"):
         self.optimizer = optimizer
-        self.model_name = model_name or self.DEFAULT_MODEL_NAME
+        self.model_name = model_name
         self.iterations = iterations
         self.auto = auto
         print(f"\nInitializing trainer with:")
