@@ -129,4 +129,3 @@ if __name__ == "__main__":
     print("\nEvaluating optimized model on test data...")
     accuracy = trainer.evaluate()
     print(f"Final test accuracy: {accuracy:.2%}")
-```
