@@ -5,6 +5,8 @@ from mnist_dspy import MNISTClassifier
 from mnist_data import MNISTData
 
 class MNISTTrainer:
+    DEFAULT_NUM_WORKERS = 10  # Static variable for default number of workers
+
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
                  model_name: str = "deepseek/deepseek-chat", auto: str = "light"):
         self.optimizer = optimizer
@@ -41,7 +43,7 @@ class MNISTTrainer:
         if self.optimizer == 'MIPROv2':
             teleprompter = optimizer_class(
                 metric=self._accuracy_metric,
-                num_threads=10,
+                num_threads=self.DEFAULT_NUM_WORKERS,
                 auto=self.auto
             )
         else:
@@ -67,7 +69,7 @@ class MNISTTrainer:
             raise ValueError("Model must be trained before evaluation")
             
         print("Evaluating model on test data...")
-        print(f"Using {len(self.test_data)} test samples with 10 threads")
+        print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
         
         from concurrent.futures import ThreadPoolExecutor
         from tqdm import tqdm
@@ -79,7 +81,7 @@ class MNISTTrainer:
         correct = 0
         total = len(self.test_data)
         
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
             results = list(tqdm(
                 executor.map(process_example, self.test_data),
                 total=total,
