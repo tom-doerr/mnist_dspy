@@ -2,6 +2,7 @@
 import os
 import numpy as np
 from dspy import Example
+from typing import Tuple, List
 
 class MNISTData:
     _dataset = None  # Class-level cache for loaded dataset
