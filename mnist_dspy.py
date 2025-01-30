@@ -15,4 +15,8 @@ class MNISTClassifier(dspy.Module):
         dspy.settings.configure(lm=lm)
         
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
-        return self.predict(pixel_matrix=pixel_matrix)
+        try:
+            return self.predict(pixel_matrix=pixel_matrix)
+        except Exception as e:
+            print(f"Prediction failed: {str(e)}")
+            return dspy.Prediction(digit='0')  # Return default prediction on error
