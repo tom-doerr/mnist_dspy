@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 
 class MNISTData:
     _dataset = None  # Class-level cache for loaded dataset
+    RANDOM_STATE = 42
     
     def __init__(self, test_size: float = 0.2, random_state: int = 42):
         self.test_size = test_size
@@ -51,6 +52,7 @@ class MNISTData:
             dspy.Example(pixel_matrix=self._matrix_to_text(x), digit=str(y)).with_inputs("pixel_matrix")  # Creating base test examples
             for x, y in zip(self.X_test, self.y_test)
         ]
+        random.shuffle(test_data, random_state=self.RANDOM_STATE)
         return test_data
 
     def get_training_data(self) -> List[dspy.Example]:
