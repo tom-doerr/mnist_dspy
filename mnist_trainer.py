@@ -117,6 +117,8 @@ class MNISTTrainer:
                 pred = self.optimized_classifier(example.pixel_matrix)
                 if str(pred.digit) == str(example.digit):
                     correct += 1
+                current_accuracy = correct / len(self.test_data)
+                pbar.set_postfix({'accuracy': f"{current_accuracy:.2%}"})
                 pbar.update(1)
                 
         accuracy = correct / len(self.test_data)
