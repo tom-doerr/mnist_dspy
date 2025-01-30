@@ -52,6 +52,25 @@ class MNISTTrainer:
         """
         return str(example.digit) == str(pred.digit)
 
+    def evaluate_base_model(self):
+        """Evaluate the base model on the test data before any optimization.
+
+        Returns:
+            float: The accuracy of the base model on the test data.
+        """
+        print("Evaluating base model...")
+        correct = 0
+        total = len(self.test_data)
+        with tqdm(total=total, desc="Evaluating base model") as pbar:
+            for example in self.test_data:
+                pred = self.classifier(example.pixel_matrix)
+                if str(pred.digit) == str(example.digit):
+                    correct += 1
+                pbar.update(1)
+        accuracy = correct / total
+        print(f"Base model accuracy: {accuracy:.2%}")
+        return accuracy
+
     def train(self, data):
         """Train the model using the specified data.
 
@@ -61,18 +80,8 @@ class MNISTTrainer:
         Returns:
             The optimized classifier.
         """
-        print("Evaluating baseline model before optimization...")
-        # correct = 0
-        # total = len(self.test_data)
-        # with tqdm(total=total, desc="Evaluating baseline") as pbar:
-            # for example in self.test_data:
-                # pred = self.classifier(example.pixel_matrix)
-                # if str(pred.digit) == str(example.digit):
-                    # correct += 1
-                # pbar.update(1)
-        # baseline_accuracy = correct / total
-        baseline_accuracy = self.evaluate()
-        print(f"Baseline accuracy: {baseline_accuracy:.2%}")
+        baseline_accuracy = self.evaluate_base_model()
+        print(f"\nBaseline accuracy: {baseline_accuracy:.2%}")
         self.baseline_accuracy = baseline_accuracy
         
         optimizer_class = MIPROv2 if self.optimizer == 'MIPROv2' else dspy.teleprompt.BootstrapFewShot
@@ -109,7 +118,7 @@ class MNISTTrainer:
         if not hasattr(self, 'optimized_classifier'):
             raise ValueError("Model must be trained before evaluation")
             
-        print("Evaluating model on test data...")
+        print("Evaluating optimized model on test data...")
         print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
         
         with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
