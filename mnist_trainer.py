@@ -10,6 +10,14 @@ class MNISTTrainer:
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
                  model_name: str = DEFAULT_MODEL_NAME, auto: str = "light"):
+        """Initialize the MNIST trainer with specified parameters.
+
+        Args:
+            optimizer (str, optional): The optimizer to use. Defaults to "MIPROv2".
+            iterations (int, optional): Number of optimization iterations. Defaults to 1.
+            model_name (str, optional): The model to use. Defaults to DEFAULT_MODEL_NAME.
+            auto (str, optional): Auto optimization setting for MIPROv2. Defaults to "light".
+        """
         self.optimizer = optimizer
         self.model_name = model_name
         self.iterations = iterations
@@ -26,9 +34,27 @@ class MNISTTrainer:
         self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
 
     def _accuracy_metric(self, example, pred, trace=None):
+        """Calculate the accuracy metric by comparing the predicted digit with the actual digit.
+
+        Args:
+            example: The example containing the actual digit.
+            pred: The prediction containing the predicted digit.
+            trace (optional): The trace of the prediction process.
+
+        Returns:
+            bool: True if the prediction matches the actual digit, False otherwise.
+        """
         return str(example.digit) == str(pred.digit)
 
     def train(self, data):
+        """Train the model using the specified data.
+
+        Args:
+            data: The training data to use.
+
+        Returns:
+            The optimized classifier.
+        """
         print("Evaluating baseline model before optimization...")
         correct = 0
         total = len(self.test_data)
@@ -66,6 +92,11 @@ class MNISTTrainer:
         return self.optimized_classifier
 
     def evaluate(self):
+        """Evaluate the optimized model on the test data.
+
+        Returns:
+            float: The accuracy of the model on the test data.
+        """
         if not hasattr(self, 'optimized_classifier'):
             raise ValueError("Model must be trained before evaluation")
             
@@ -76,6 +107,14 @@ class MNISTTrainer:
         from tqdm import tqdm
         
         def process_example(example):
+            """Process a single example to evaluate the model.
+
+            Args:
+                example: The example to process.
+
+            Returns:
+                bool: True if the prediction is correct, False otherwise.
+            """
             pred = self.optimized_classifier(example.pixel_matrix)
             return str(pred.digit) == str(example.digit)
         
