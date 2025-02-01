@@ -83,8 +83,8 @@ class MNISTTrainer:
         Returns:
             bool: True if the prediction is correct, False otherwise.
         """
-        pred = self.classifier(example.pixel_matrix)
-        return str(example.digit) == str(pred.digit)
+        pred = self.classifier(example.inputs["pixel_matrix"])
+        return str(example.labels["digit"]) == str(pred.digit)
 
     def train(self, data):
         """Train the model using the specified data.
@@ -164,8 +164,8 @@ class MNISTTrainer:
         Returns:
             bool: True if the prediction is correct, False otherwise.
         """
-        pred = self.optimized_classifier(example.pixel_matrix)
-        return str(example.digit) == str(pred.digit)
+        pred = self.optimized_classifier(example.inputs["pixel_matrix"])
+        return str(example.labels["digit"]) == str(pred.digit)
 
 if __name__ == "__main__":
     import argparse
