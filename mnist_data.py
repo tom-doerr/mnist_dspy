@@ -36,10 +36,15 @@ class MNISTData:
         rng.shuffle(train_images, axis=0)
         rng.shuffle(train_labels)
         
-        # Split dataset
-        train_idx, test_idx = self._split_indices(train_images.shape[0], self.test_size, self.random_state)
-        train_images, train_labels = train_images[train_idx], train_labels[train_idx]
-        test_images, test_labels = test_images[test_idx], test_labels[test_idx]
+        # Split training dataset
+        train_idx = np.arange(int(train_images.shape[0] * (1 - self.test_size)))
+        train_images = train_images[train_idx]
+        train_labels = train_labels[train_idx]
+
+        # Use a portion of test dataset
+        test_size = int(test_images.shape[0] * (1 - self.test_size))
+        test_images = test_images[:test_size]
+        test_labels = test_labels[:test_size]
 
         return train_images, train_labels, test_images, test_labels
 
