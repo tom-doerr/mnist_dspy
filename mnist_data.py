@@ -48,16 +48,6 @@ class MNISTData:
 
         return train_images, train_labels, test_images, test_labels
 
-    def _matrix_to_text(self, matrix: np.ndarray) -> str:
-        """Convert a matrix to a text representation.
-
-        Args:
-            matrix (np.ndarray): The matrix to convert.
-
-        Returns:
-            str: Text representation of the matrix.
-        """
-        return '\n'.join([''.join(['#' if pixel > 0.5 else ' ' for pixel in row]) for row in matrix])
 
     def get_test_data(self) -> List[Example]:
         """Get the test data as a list of dspy.Example objects.

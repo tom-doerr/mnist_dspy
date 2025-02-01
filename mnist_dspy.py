@@ -4,7 +4,7 @@ from mnist_data import MNISTData
 
 class MNISTSignature(dspy.Signature):
     """Classify MNIST handwritten numbers from their pixel matrix."""
-    pixel_matrix = dspy.InputField(desc="28x28 matrix of pixel values (0-255) as text")
+    pixel_matrix = dspy.InputField(desc="784-dimensional numpy array of pixel values between 0 and 1")
     digit = dspy.OutputField(desc="predicted number from 0 to 9")
 
 class MNISTClassifier(dspy.Module):
