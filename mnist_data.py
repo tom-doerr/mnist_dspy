@@ -70,9 +70,9 @@ class MNISTData:
         examples = []
         for image, label in zip(test_images, test_labels):
             example = Example(
-                inputs={"pixel_matrix": image},
-                labels={"digit": str(label)}
-            )
+                pixel_matrix=image,
+                digit=str(label)
+            ).with_inputs('pixel_matrix').with_labels('digit')
             examples.append(example)
         return examples
 
@@ -87,9 +87,9 @@ class MNISTData:
         examples = []
         for image, label in zip(train_images, train_labels):
             example = Example(
-                inputs={"pixel_matrix": image},
-                labels={"digit": str(label)}
-            )
+                pixel_matrix=image,
+                digit=str(label)
+            ).with_inputs('pixel_matrix').with_labels('digit')
             examples.append(example)
         return examples
 
