@@ -40,12 +40,30 @@ mnist_dspy/
 
 Train a model with specific optimizer and iterations:
 ```bash
-# Use MIPROv2 optimizer with 3 iterations
-python mnist_trainer.py --optimizer MIPROv2 --iterations 3 --model reasoner
+# Use MIPROv2 optimizer with light optimization
+python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model deepseek/deepseek-chat --auto light
 
-# Use BootstrapFewShot with 5 iterations
-python mnist_trainer.py --optimizer BootstrapFewShot --iterations 5 --model chat
+# Use MIPROv2 with medium optimization
+python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model deepseek/deepseek-chat --auto medium
+
+# Use BootstrapFewShot optimizer
+python mnist_trainer.py --optimizer BootstrapFewShot --iterations 1 --model deepseek/deepseek-chat
 ```
+
+## 🔧 Configuration Options
+
+- `--optimizer`: Choose between 'MIPROv2' or 'BootstrapFewShot' (default: MIPROv2)
+- `--iterations`: Number of optimization iterations (default: 1)
+- `--model`: Model identifier (default: deepseek/deepseek-chat)
+- `--auto`: Optimization intensity for MIPROv2 ['light', 'medium', 'heavy'] (default: light)
+
+## 📊 Data Processing
+
+The trainer:
+- Uses a subset of MNIST data for faster experimentation
+- Processes 10,000 training examples
+- Evaluates on 200 test examples
+- Supports multi-threaded evaluation
 
 ## 📄 License
 
