@@ -72,7 +72,7 @@ class MNISTData:
             example = Example(
                 pixel_matrix=image,
                 digit=str(label)
-            ).with_inputs('pixel_matrix').with_labels('digit')
+            ).with_inputs('pixel_matrix')
             examples.append(example)
         return examples
 
@@ -89,7 +89,7 @@ class MNISTData:
             example = Example(
                 pixel_matrix=image,
                 digit=str(label)
-            ).with_inputs('pixel_matrix').with_labels('digit')
+            ).with_inputs('pixel_matrix')
             examples.append(example)
         return examples
 
