@@ -9,7 +9,7 @@ import os
 import random
 
 class MNISTTrainer:
-    DEFAULT_NUM_WORKERS = 100  # Static variable for default number of workers
+    DEFAULT_NUM_WORKERS = 1
     DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
