@@ -3,6 +3,7 @@ import os
 import numpy as np
 from dspy import Example
 from typing import Tuple, List
+from datasets import load_dataset
 
 class MNISTData:
     _dataset = None  # Class-level cache for loaded dataset
@@ -20,10 +21,8 @@ class MNISTData:
 
     def _load_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """Load and preprocess the MNIST dataset."""
-        from dspy.datasets import HFDataset
-        
         # Load MNIST dataset from HuggingFace
-        dataset = HFDataset("mnist")
+        dataset = load_dataset("mnist")
         train_ds = dataset["train"]
         test_ds = dataset["test"]
         
@@ -33,9 +32,9 @@ class MNISTData:
         test_images = np.array([example['image'] for example in test_ds])
         test_labels = np.array([example['label'] for example in test_ds])
         
-        # Normalize pixel values to be between 0 and 1
-        train_images = train_images.astype('float32') / 255.0
-        test_images = test_images.astype('float32') / 255.0
+        # Convert images to numpy arrays and normalize
+        train_images = np.array([np.array(img) for img in train_images]).astype('float32') / 255.0
+        test_images = np.array([np.array(img) for img in test_images]).astype('float32') / 255.0
         
         # Reshape images to 784-dimensional vectors
         train_images = train_images.reshape((-1, 784))
