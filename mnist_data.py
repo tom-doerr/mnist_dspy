@@ -23,8 +23,10 @@ class MNISTData:
         """Load and preprocess the MNIST dataset."""
         # Load MNIST dataset from HuggingFace
         dataset = load_dataset("mnist")
-        train_ds = dataset["train"]
-        test_ds = dataset["test"]
+        # train_ds = dataset["train"]
+        train_ds = dataset["train"].select(range(1000))
+        # test_ds = dataset["test"]
+        test_ds = dataset["test"].select(range(100))
         
         # Extract images and labels
         train_images = np.array([example['image'] for example in train_ds])
@@ -41,13 +43,18 @@ class MNISTData:
         test_images = test_images.reshape((-1, 784))
         
         # Apply random state for reproducibility if specified
-        if self.random_state is not None:
-            rng = np.random.default_rng(self.random_state)
-            train_idx = rng.permutation(len(train_images))
-            train_images = train_images[train_idx]
-            train_labels = train_labels[train_idx]
-        
+        if False:
+            if self.random_state is not None:
+                rng = np.random.default_rng(self.random_state)
+                train_idx = rng.permutation(len(train_images))
+                train_images = train_images[train_idx]
+                train_labels = train_labels[train_idx]
+                test_idx = rng.permutation(len(test_images))
+                test_images = test_images[test_idx]
+                test_labels = test_labels[test_idx]
+
         return train_images, train_labels, test_images, test_labels
+
 
 
     def get_test_data(self) -> List[Example]:
@@ -61,7 +68,7 @@ class MNISTData:
         examples = []
         for image, label in zip(test_images, test_labels):
             example = Example(
-                pixel_matrix=image,
+                pixel_matrix=str(image),
                 digit=str(label)
             ).with_inputs('pixel_matrix')
             examples.append(example)
@@ -78,7 +85,7 @@ class MNISTData:
         examples = []
         for image, label in zip(train_images, train_labels):
             example = Example(
-                pixel_matrix=image,
+                pixel_matrix=str(image),
                 digit=str(label)
             ).with_inputs('pixel_matrix')
             examples.append(example)
