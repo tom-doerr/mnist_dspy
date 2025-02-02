@@ -9,7 +9,7 @@ import os
 import random
 
 class MNISTTrainer:
-    DEFAULT_NUM_WORKERS = 1
+    DEFAULT_NUM_WORKERS = 100
     DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
@@ -35,10 +35,10 @@ class MNISTTrainer:
         self.classifier = MNISTClassifier(model_name=self.model_name)
         mnist_data = MNISTData()
         with tqdm(desc="Loading training data") as pbar:
-            self.train_data = mnist_data.get_training_data()[:10000] 
+            self.train_data = mnist_data.get_training_data()
             pbar.update(1)
         with tqdm(desc="Loading test data") as pbar:
-            self.test_data = mnist_data.get_test_data()[:200]  # Get 200 test samples
+            self.test_data = mnist_data.get_test_data()
             pbar.update(1)
 
     def _accuracy_metric(self, example, pred, trace=None):
@@ -52,6 +52,8 @@ class MNISTTrainer:
         Returns:
             bool: True if the prediction matches the actual digit, False otherwise.
         """
+        # print("example.digit:", example.digit, flush=True)
+        # print("pred.digit:", pred.digit, flush=True)
         return str(example.digit) == str(pred.digit)
 
     def evaluate_base_model(self):
@@ -83,9 +85,11 @@ class MNISTTrainer:
         Returns:
             bool: True if the prediction is correct, False otherwise.
         """
-        inputs = example.inputs()
-        pred = self.classifier(inputs["pixel_matrix"])
-        return str(example.labels()["digit"]) == str(pred.digit)
+        # inputs = example.inputs()
+        # pred = self.classifier(inputs["pixel_matrix"])
+        pred = self.classifier(example.pixel_matrix)
+        # return str(example.labels()["digit"]) == str(pred.digit)
+        return str(example.digit) == str(pred.digit)
 
     def train(self, data):
         """Train the model using the specified data.
@@ -148,7 +152,6 @@ class MNISTTrainer:
         correct = sum(results)
         accuracy = correct / len(self.test_data)
         
-        print(f"\n\nBaseline accuracy: {self.baseline_accuracy:.2%}")
         print(f"\nOptimizer: {self.optimizer}")
         print(f"Model: {self.model_name}")
         print(f"Iterations: {self.iterations}")
@@ -165,9 +168,11 @@ class MNISTTrainer:
         Returns:
             bool: True if the prediction is correct, False otherwise.
         """
-        inputs = example.inputs()
-        pred = self.optimized_classifier(inputs["pixel_matrix"])
-        return str(example.labels()["digit"]) == str(pred.digit)
+        # inputs = example.inputs()
+        # pred = self.optimized_classifier(inputs["pixel_matrix"])
+        pred = self.optimized_classifier(example.pixel_matrix)
+        # return str(example.labels()["digit"]) == str(pred.digit)
+        return str(example.digit) == str(pred.digit)
 
 if __name__ == "__main__":
     import argparse
@@ -204,4 +209,6 @@ if __name__ == "__main__":
         pbar.set_description("Evaluating model")
         accuracy = trainer.evaluate()
         pbar.update(1)
+
+    print(f"\n\nBaseline accuracy: {trainer.baseline_accuracy:.2%}")
     print(f"Final test accuracy: {accuracy:.2%}")
