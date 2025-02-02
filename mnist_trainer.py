@@ -9,11 +9,11 @@ import os
 import random
 
 class MNISTTrainer:
-    DEFAULT_NUM_WORKERS = 100
     DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
 
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
-                 model_name: str = DEFAULT_MODEL_NAME, auto: str = "light"):
+                 model_name: str = DEFAULT_MODEL_NAME, auto: str = "light",
+                 num_workers: int = 100):
         """Initialize the MNIST trainer with specified parameters.
 
         Args:
@@ -26,6 +26,7 @@ class MNISTTrainer:
         self.model_name = model_name
         self.iterations = iterations
         self.auto = auto
+        self.num_workers = num_workers
         print(f"\nInitializing trainer with:")
         print(f"- Optimizer: {optimizer}")
         print(f"- Model: {self.model_name}")
@@ -63,7 +64,7 @@ class MNISTTrainer:
             float: The accuracy of the base model on the test data.
         """
         print("Evaluating base model...")
-        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
+        with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
             with tqdm(total=len(self.test_data), desc="Evaluating base model") as pbar:
                 futures = [executor.submit(self._evaluate_base_example, example) for example in self.test_data]
                 results = []
@@ -108,7 +109,7 @@ class MNISTTrainer:
         if self.optimizer == 'MIPROv2':
             teleprompter = optimizer_class(
                 metric=self._accuracy_metric,
-                num_threads=self.DEFAULT_NUM_WORKERS,
+                num_threads=self.num_workers,
                 auto=self.auto
             )
         else:
@@ -141,7 +142,7 @@ class MNISTTrainer:
         print("Evaluating optimized model on test data...")
         print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
         
-        with ThreadPoolExecutor(max_workers=self.DEFAULT_NUM_WORKERS) as executor:
+        with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
             with tqdm(total=len(self.test_data), desc="Evaluating") as pbar:
                 futures = [executor.submit(self._evaluate_example, example) for example in self.test_data]
                 results = []
@@ -186,6 +187,8 @@ if __name__ == "__main__":
     parser.add_argument('--model', default=None, help='Model type to use')
     parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
                       default='light', help='Auto optimization setting for MIPROv2')
+    parser.add_argument('--num-workers', type=int, default=100,
+                      help='Number of worker threads to use')
     args = parser.parse_args()
     
     model_name = args.model or MNISTTrainer.DEFAULT_MODEL_NAME
@@ -195,7 +198,8 @@ if __name__ == "__main__":
         optimizer=args.optimizer,
         iterations=args.iterations,
         model_name=model_name,
-        auto=args.auto
+        auto=args.auto,
+        num_workers=args.num_workers
     )
     
     print("Training model...")
