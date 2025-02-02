@@ -19,33 +19,35 @@ class MNISTData:
         self._load_data()
 
     def _load_data(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        """Load and preprocess the MNIST dataset.
-
-        Returns:
-            Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: 
-                (train_images, train_labels, test_images, test_labels)
-        """
-        # Load MNIST dataset
-        train_images = np.random.rand(60000, 784)  # Simulated training images
-        train_labels = np.random.randint(0, 10, 60000)  # Simulated training labels
-        test_images = np.random.rand(10000, 784)  # Simulated test images
-        test_labels = np.random.randint(0, 10, 10000)  # Simulated test labels
-
-        # Apply random state for reproducibility
-        rng = np.random.default_rng(self.random_state)
-        rng.shuffle(train_images, axis=0)
-        rng.shuffle(train_labels)
+        """Load and preprocess the MNIST dataset."""
+        from dspy.datasets import HFDataset
         
-        # Split training dataset
-        train_idx = np.arange(int(train_images.shape[0] * (1 - self.test_size)))
-        train_images = train_images[train_idx]
-        train_labels = train_labels[train_idx]
-
-        # Use a portion of test dataset
-        test_size = int(test_images.shape[0] * (1 - self.test_size))
-        test_images = test_images[:test_size]
-        test_labels = test_labels[:test_size]
-
+        # Load MNIST dataset from HuggingFace
+        dataset = HFDataset("mnist")
+        train_ds = dataset["train"]
+        test_ds = dataset["test"]
+        
+        # Extract images and labels
+        train_images = np.array([example['image'] for example in train_ds])
+        train_labels = np.array([example['label'] for example in train_ds])
+        test_images = np.array([example['image'] for example in test_ds])
+        test_labels = np.array([example['label'] for example in test_ds])
+        
+        # Normalize pixel values to be between 0 and 1
+        train_images = train_images.astype('float32') / 255.0
+        test_images = test_images.astype('float32') / 255.0
+        
+        # Reshape images to 784-dimensional vectors
+        train_images = train_images.reshape((-1, 784))
+        test_images = test_images.reshape((-1, 784))
+        
+        # Apply random state for reproducibility if specified
+        if self.random_state is not None:
+            rng = np.random.default_rng(self.random_state)
+            train_idx = rng.permutation(len(train_images))
+            train_images = train_images[train_idx]
+            train_labels = train_labels[train_idx]
+        
         return train_images, train_labels, test_images, test_labels
 
 
