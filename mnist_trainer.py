@@ -193,7 +193,7 @@ if __name__ == "__main__":
     trainer = MNISTTrainer(
         optimizer=args.optimizer,
         iterations=args.iterations,
-        model_name=model_name,
+        model_name=args.model,
         auto=args.auto,
         num_workers=args.num_workers
     )
