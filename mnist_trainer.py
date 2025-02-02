@@ -9,10 +9,8 @@ import os
 import random
 
 class MNISTTrainer:
-    DEFAULT_MODEL_NAME = "deepseek/deepseek-chat"  # Static variable for default model name
-
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
-                 model_name: str = DEFAULT_MODEL_NAME, auto: str = "light",
+                 model_name: str = "deepseek/deepseek-chat", auto: str = "light",
                  num_workers: int = 100):
         """Initialize the MNIST trainer with specified parameters.
 
@@ -184,14 +182,12 @@ if __name__ == "__main__":
                       default='MIPROv2', help='Optimizer to use')
     parser.add_argument('--iterations', type=int, default=1,
                       help='Number of optimization iterations')
-    parser.add_argument('--model', default=None, help='Model type to use')
+    parser.add_argument('--model', default="deepseek/deepseek-chat", help='Model type to use')
     parser.add_argument('--auto', choices=['light', 'medium', 'heavy'],
                       default='light', help='Auto optimization setting for MIPROv2')
     parser.add_argument('--num-workers', type=int, default=100,
                       help='Number of worker threads to use')
     args = parser.parse_args()
-    
-    model_name = args.model or MNISTTrainer.DEFAULT_MODEL_NAME
     
     print(f"Running MNIST Trainer with {args.optimizer}")
     trainer = MNISTTrainer(
