@@ -11,7 +11,7 @@ import random
 class MNISTTrainer:
     def __init__(self, optimizer: str = "MIPROv2", iterations: int = 1,
                  model_name: str = "deepseek/deepseek-chat", auto: str = "light",
-                 num_workers: int = 100):
+                 num_workers: int = 100, cache: bool = True):
         """Initialize the MNIST trainer with specified parameters.
 
         Args:
@@ -25,13 +25,15 @@ class MNISTTrainer:
         self.iterations = iterations
         self.auto = auto
         self.num_workers = num_workers
+        self.cache = cache
         print(f"\nInitializing trainer with:")
         print(f"- Optimizer: {optimizer}")
         print(f"- Model: {self.model_name}")
         print(f"- Auto setting: {auto}")
+        print(f"- Cache enabled: {cache}")
         print(f"- Iterations: {iterations}\n")
         
-        self.classifier = MNISTClassifier(model_name=self.model_name)
+        self.classifier = MNISTClassifier(model_name=self.model_name, cache=self.cache)
         mnist_data = MNISTData()
         with tqdm(desc="Loading training data") as pbar:
             self.train_data = mnist_data.get_training_data()
@@ -187,6 +189,8 @@ if __name__ == "__main__":
                       default='light', help='Auto optimization setting for MIPROv2')
     parser.add_argument('--num-workers', type=int, default=100,
                       help='Number of worker threads to use')
+    parser.add_argument('--cache', type=bool, default=True,
+                      help='Enable/disable LLM response caching')
     args = parser.parse_args()
     
     print(f"Running MNIST Trainer with {args.optimizer}")
@@ -195,7 +199,8 @@ if __name__ == "__main__":
         iterations=args.iterations,
         model_name=args.model,
         auto=args.auto,
-        num_workers=args.num_workers
+        num_workers=args.num_workers,
+        cache=args.cache
     )
     
     print("Training model...")

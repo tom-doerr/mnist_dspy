@@ -9,10 +9,10 @@ class MNISTSignature(dspy.Signature):
     digit = dspy.OutputField(desc="predicted number from 0 to 9")
 
 class MNISTClassifier(dspy.Module):
-    def __init__(self, model_name: str = "deepseek/deepseek-chat"):
+    def __init__(self, model_name: str = "deepseek/deepseek-chat", cache: bool = True):
         super().__init__()
         self.predict = dspy.Predict(MNISTSignature)
-        lm = dspy.LM(model=model_name, temperature=1.0, cache=True, num_retries=12)
+        lm = dspy.LM(model=model_name, temperature=1.0, cache=cache, num_retries=12)
         dspy.settings.configure(lm=lm)
         
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
