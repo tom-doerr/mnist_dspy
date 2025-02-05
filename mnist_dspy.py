@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import dspy
 from mnist_data import MNISTData
+import time
 
 class MNISTSignature(dspy.Signature):
     """Classify MNIST handwritten numbers from their pixel matrix."""
@@ -17,7 +18,9 @@ class MNISTClassifier(dspy.Module):
     def forward(self, pixel_matrix: str) -> dspy.Prediction:
         try:
             # return self.predict(pixel_matrix=pixel_matrix)
+            request_start = time.time()
             prediction = self.predict(pixel_matrix=pixel_matrix)
+            print(f"Prediction took {time.time() - request_start:.3f} seconds")
             # print("prediction:", prediction)
             return prediction
         except Exception as e:

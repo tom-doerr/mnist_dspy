@@ -138,7 +138,7 @@ class MNISTTrainer:
             raise ValueError("Model must be trained before evaluation")
             
         print("Evaluating optimized model on test data...")
-        print(f"Using {len(self.test_data)} test samples with {self.DEFAULT_NUM_WORKERS} threads")
+        print(f"Using {len(self.test_data)} test samples with {self.num_workers} threads")
         
         with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
             with tqdm(total=len(self.test_data), desc="Evaluating") as pbar:
