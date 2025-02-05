@@ -1,23 +1,42 @@
-# MNIST Classification with DSPy & DeepSeek
+<h1 align="center"> 🔢 MNIST Classification with DSPy </h1>
 
-<div align="center">
+<p align="center">
+    <a href="https://github.com/yourusername/mnist-dspy/stargazers"
+        ><img
+            src="https://img.shields.io/github/stars/yourusername/mnist-dspy?colorA=2c2837&colorB=c9cbff&style=for-the-badge&logo=starship style=flat-square"
+            alt="Repository's starts"
+    /></a>
+    <a href="https://github.com/yourusername/mnist-dspy/issues"
+        ><img
+            src="https://img.shields.io/github/issues-raw/yourusername/mnist-dspy?colorA=2c2837&colorB=f2cdcd&style=for-the-badge&logo=starship style=flat-square"
+            alt="Issues"
+    /></a>
+    <a href="https://github.com/yourusername/mnist-dspy/blob/main/LICENSE"
+        ><img
+            src="https://img.shields.io/github/license/yourusername/mnist-dspy?colorA=2c2837&colorB=b5e8e0&style=for-the-badge&logo=starship style=flat-square"
+            alt="License"
+    /><br />
+    <a href="https://github.com/yourusername/mnist-dspy/commits/main"
+        ><img
+            src="https://img.shields.io/github/last-commit/yourusername/mnist-dspy/main?colorA=2c2837&colorB=ddb6f2&style=for-the-badge&logo=starship style=flat-square"
+            alt="Latest commit"
+    /></a>
+    <a href="https://github.com/yourusername/mnist-dspy"
+        ><img
+            src="https://img.shields.io/github/repo-size/yourusername/mnist-dspy?colorA=2c2837&colorB=89DCEB&style=for-the-badge&logo=starship style=flat-square"
+            alt="GitHub repository size"
+    /></a>
+</p>
 
-![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.8+-blue?style=flat-square&logo=python)
-![DSPy](https://img.shields.io/badge/DSPy-latest-orange?style=flat-square)
-![DeepSeek](https://img.shields.io/badge/DeepSeek-chat%20%7C%20reasoner-purple?style=flat-square)
-![Status](https://img.shields.io/badge/status-active-success?style=flat-square)
-
-</div>
-
-MNIST digit classification using DSPy and DeepSeek models, with configurable optimizers and training iterations.
+MNIST digit classification using DSPy framework with support for various LLM backends. Configure optimizers and training iterations for optimal performance.
 
 ## 🚀 Features
 
-- **DSPy-powered MNIST classification** with DeepSeek models
+- **DSPy-powered MNIST classification** with support for multiple LLM backends
 - **Flexible optimizer selection** (MIPROv2, BootstrapFewShot)
-- **Configurable training iterations**
-- **Model selection** (DeepSeek Chat or Reasoner)
+- **Configurable training iterations** and worker threads
+- **Model selection** (supports any LLM compatible with DSPy)
+- **Response caching** for faster iterations
 
 ## 📦 Installation
 
@@ -41,21 +60,23 @@ mnist_dspy/
 Train a model with specific optimizer and iterations:
 ```bash
 # Use MIPROv2 optimizer with light optimization
-python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model deepseek/deepseek-chat --auto light
+python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model your-llm-model --auto light
 
-# Use MIPROv2 with medium optimization
-python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model deepseek/deepseek-chat --auto medium
+# Use MIPROv2 with medium optimization and caching disabled
+python mnist_trainer.py --optimizer MIPROv2 --iterations 1 --model your-llm-model --auto medium --no-cache
 
-# Use BootstrapFewShot optimizer
-python mnist_trainer.py --optimizer BootstrapFewShot --iterations 1 --model deepseek/deepseek-chat
+# Use BootstrapFewShot optimizer with custom number of workers
+python mnist_trainer.py --optimizer BootstrapFewShot --iterations 1 --model your-llm-model --num-workers 50
 ```
 
 ## 🔧 Configuration Options
 
 - `--optimizer`: Choose between 'MIPROv2' or 'BootstrapFewShot' (default: MIPROv2)
 - `--iterations`: Number of optimization iterations (default: 1)
-- `--model`: Model identifier (default: deepseek/deepseek-chat)
+- `--model`: Model identifier for your LLM
 - `--auto`: Optimization intensity for MIPROv2 ['light', 'medium', 'heavy'] (default: light)
+- `--num-workers`: Number of worker threads (default: 100)
+- `--no-cache`: Disable LLM response caching
 
 ## 📊 Data Processing
 
