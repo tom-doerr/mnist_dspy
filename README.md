@@ -31,7 +31,7 @@
 MNIST digit classification using DSPy framework with support for various LLM backends. Configure optimizers and training iterations for optimal performance.
 
 <div align="center">
-  <video src="https://github.com/tom-doerr/bins/raw/main/mnist_dspy/output.mp4" width="600" controls></video>
+  <a href="https://github.com/tom-doerr/bins/raw/main/mnist_dspy/output.mp4">👆 Click to watch the demo video</a>
 </div>
 
 ## 🚀 Features
