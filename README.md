@@ -32,7 +32,7 @@ MNIST digit classification using DSPy framework with support for various LLM bac
 
 <p align="center">
   <video width="600" controls>
-    <source src="https://raw.githubusercontent.com/tom-doerr/bins/main/mnist_dspy/output.mp4" type="video/mp4">
+    <source src="https://github.com/tom-doerr/bins/raw/refs/heads/main/mnist_dspy/output.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </p>
