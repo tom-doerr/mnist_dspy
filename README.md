@@ -31,7 +31,7 @@
 MNIST digit classification using DSPy framework with support for various LLM backends. Configure optimizers and training iterations for optimal performance.
 
 <div align="center">
-  <a href="https://github.com/tom-doerr/bins/raw/main/mnist_dspy/output.mp4">👆 Click to watch the demo video</a>
+  <video src="https://private-user-images.githubusercontent.com/23431444/410143213-6fed41d1-ed43-4492-8d63-0da7f2d5ca04.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Mzg3ODMwNTgsIm5iZiI6MTczODc4Mjc1OCwicGF0aCI6Ii8yMzQzMTQ0NC80MTAxNDMyMTMtNmZlZDQxZDEtZWQ0My00NDkyLThkNjMtMGRhN2YyZDVjYTA0Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTAyMDUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwMjA1VDE5MTIzOFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWM5NTdmZThhMmNkMDMxNGQzZjNkOGFlNmViYjgyODExZjI0NmE4MWYyMjA1MmU1M2E5YTdkYjQ3YTU0NGVmMzQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.ZRKhWDLOGBGzY7NarOoe0X_uIuwJhvgzZHWkhSAb1rQ" width="600" controls></video>
 </div>
 
 ## 🚀 Features
