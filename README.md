@@ -1,29 +1,29 @@
 <h1 align="center"> 🔢 MNIST Classification with DSPy </h1>
 
 <p align="center">
-    <a href="https://github.com/tom-doerr/mnist-dspy/stargazers"
+    <a href="https://github.com/tom-doerr/mnist_dspy/stargazers"
         ><img
-            src="https://img.shields.io/github/stars/tom-doerr/mnist-dspy?colorA=2c2837&colorB=c9cbff&style=for-the-badge&logo=starship style=flat-square"
+            src="https://img.shields.io/github/stars/tom-doerr/mnist_dspy?colorA=2c2837&colorB=c9cbff&style=for-the-badge&logo=starship style=flat-square"
             alt="Repository's starts"
     /></a>
-    <a href="https://github.com/tom-doerr/mnist-dspy/issues"
+    <a href="https://github.com/tom-doerr/mnist_dspy/issues"
         ><img
-            src="https://img.shields.io/github/issues-raw/tom-doerr/mnist-dspy?colorA=2c2837&colorB=f2cdcd&style=for-the-badge&logo=starship style=flat-square"
+            src="https://img.shields.io/github/issues-raw/tom-doerr/mnist_dspy?colorA=2c2837&colorB=f2cdcd&style=for-the-badge&logo=starship style=flat-square"
             alt="Issues"
     /></a>
-    <a href="https://github.com/tom-doerr/mnist-dspy/blob/main/LICENSE"
+    <a href="https://github.com/tom-doerr/mnist_dspy/blob/main/LICENSE"
         ><img
-            src="https://img.shields.io/github/license/tom-doerr/mnist-dspy?colorA=2c2837&colorB=b5e8e0&style=for-the-badge&logo=starship style=flat-square"
+            src="https://img.shields.io/github/license/tom-doerr/mnist_dspy?colorA=2c2837&colorB=b5e8e0&style=for-the-badge&logo=starship style=flat-square"
             alt="License"
     /><br />
-    <a href="https://github.com/tom-doerr/mnist-dspy/commits/main"
+    <a href="https://github.com/tom-doerr/mnist_dspy/commits/main"
         ><img
-            src="https://img.shields.io/github/last-commit/tom-doerr/mnist-dspy/main?colorA=2c2837&colorB=ddb6f2&style=for-the-badge&logo=starship style=flat-square"
+            src="https://img.shields.io/github/last-commit/tom-doerr/mnist_dspy/main?colorA=2c2837&colorB=ddb6f2&style=for-the-badge&logo=starship style=flat-square"
             alt="Latest commit"
     /></a>
-    <a href="https://github.com/tom-doerr/mnist-dspy"
+    <a href="https://github.com/tom-doerr/mnist_dspy"
         ><img
-            src="https://img.shields.io/github/repo-size/tom-doerr/mnist-dspy?colorA=2c2837&colorB=89DCEB&style=for-the-badge&logo=starship style=flat-square"
+            src="https://img.shields.io/github/repo-size/tom-doerr/mnist_dspy?colorA=2c2837&colorB=89DCEB&style=for-the-badge&logo=starship style=flat-square"
             alt="GitHub repository size"
     /></a>
 </p>
@@ -48,8 +48,8 @@ MNIST digit classification using DSPy framework with support for various LLM bac
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/tom-doerr/mnist-dspy.git
-cd mnist-dspy
+git clone https://github.com/tom-doerr/mnist_dspy.git
+cd mnist_dspy
 pip install -r requirements.txt
 ```
 
