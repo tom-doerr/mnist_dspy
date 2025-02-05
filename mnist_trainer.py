@@ -189,8 +189,8 @@ if __name__ == "__main__":
                       default='light', help='Auto optimization setting for MIPROv2')
     parser.add_argument('--num-workers', type=int, default=100,
                       help='Number of worker threads to use')
-    parser.add_argument('--cache', type=bool, default=True,
-                      help='Enable/disable LLM response caching')
+    parser.add_argument('--no-cache', action='store_false', dest='cache',
+                      help='Disable LLM response caching')
     args = parser.parse_args()
     
     print(f"Running MNIST Trainer with {args.optimizer}")
